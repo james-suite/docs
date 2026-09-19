@@ -1,0 +1,5 @@
+flowchart LR
+    A[Usuário / Ação no Sistema] -->|Mutação Eloquent| B(Modelo de Negócio)
+    B -->|LogsActivity Trait| C[(Tabela activity_log)]
+    C --> D[Painel /audit]
+    D --> E[Visualizador de diff]

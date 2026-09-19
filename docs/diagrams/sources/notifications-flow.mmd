@@ -1,0 +1,9 @@
+flowchart TD
+    A[Evento no Sistema / Scheduler / Job] -->|Dispara Notificação| B(GeneralNotification)
+    B --> C{Pipeline de Canais}
+    C -->|Obrigatório / Sempre Ativo| D[(Database)]
+    C -->|Se TELEGRAM configurado| E[Bot do Telegram]
+    C -->|Se NOTIFICATIONS_MAIL_ENABLED| F[E-mail Transacional]
+    D --> G[Sidebar Badge & Painel /notifications]
+    E --> H[Notificação Push no Celular]
+    F --> I[Caixa de Entrada]

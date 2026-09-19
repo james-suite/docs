@@ -1,0 +1,33 @@
+erDiagram
+    CONTACTS ||--o{ SETTLEMENTS : "tem (contact_id)"
+    CONTACTS ||--o{ CONTACT_SETTLEMENT_ARCHIVES : "arquiva (contact_id)"
+    SETTLEMENT_GROUPS ||--o{ SETTLEMENTS : "agrupa (settlement_group_id)"
+    FINANCIAL_TRANSACTIONS |o--o{ SETTLEMENTS : "gera (financial_transaction_id)"
+    FINANCIAL_TRANSACTIONS |o--o| SETTLEMENT_GROUPS : "gera (financial_transaction_id)"
+
+    SETTLEMENT_GROUPS {
+        bigint id PK
+        string description
+        decimal total_amount
+        date date
+        string mode
+        decimal my_amount
+        bigint financial_transaction_id FK
+    }
+
+    SETTLEMENTS {
+        bigint id PK
+        bigint contact_id FK
+        bigint settlement_group_id FK
+        bigint financial_transaction_id FK
+        string type "TheyOwe, TheyPaid, IOwe, IPaid"
+        decimal amount
+        string description
+        date date
+    }
+
+    CONTACT_SETTLEMENT_ARCHIVES {
+        bigint id PK
+        bigint contact_id FK
+        timestamp archived_at
+    }

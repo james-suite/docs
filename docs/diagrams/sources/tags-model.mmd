@@ -1,0 +1,24 @@
+erDiagram
+    FINANCIAL_TAGS {
+        bigint id PK
+        string name
+        string icon
+        string color_hex
+        boolean is_protected
+    }
+    FINANCIAL_TAGGABLES {
+        bigint financial_tag_id FK
+        bigint financial_taggable_id FK
+        string financial_taggable_type
+        boolean is_primary
+    }
+    FINANCIAL_TRANSACTIONS {
+        bigint id PK
+    }
+    FINANCIAL_TRANSACTION_ITEMS {
+        bigint id PK
+    }
+
+    FINANCIAL_TAGS ||--o{ FINANCIAL_TAGGABLES : "possui"
+    FINANCIAL_TRANSACTIONS ||--o{ FINANCIAL_TAGGABLES : "morphToMany"
+    FINANCIAL_TRANSACTION_ITEMS ||--o{ FINANCIAL_TAGGABLES : "morphToMany"

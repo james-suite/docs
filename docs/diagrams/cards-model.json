@@ -1,0 +1,13 @@
+{
+  "id": "cards-model",
+  "kind": "er",
+  "title": "Modelo relacional de cartões",
+  "description": "Relações entre contas, cartões, faturas e transações de cartão.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/cards-model.mmd" },
+  "summary": "Uma conta financeira pode possuir cartões; cada cartão gera faturas, e as faturas agregam transações com os respectivos estados financeiros.",
+  "sourceRefs": ["content/cartoes.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

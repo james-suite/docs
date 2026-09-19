@@ -1,0 +1,29 @@
+erDiagram
+    CONTACTS ||--o{ CONTACT_CONTACT_GROUP : "pertence a"
+    CONTACT_GROUPS ||--o{ CONTACT_CONTACT_GROUP : "agrupa"
+
+    CONTACTS {
+        bigint id PK
+        varchar name "Obrigatório, max 255"
+        varchar relationship_category "Opcional, max 255"
+        date birthdate "Opcional, data de nascimento"
+        jsonb phones "Opcional, array de objetos {number: '...', type: '...'}"
+        jsonb emails "Opcional, array de objetos {value: '...', type: '...'}"
+        text notes "Opcional, anotações ricas em Markdown"
+        timestamp deleted_at "Soft Delete"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CONTACT_GROUPS {
+        bigint id PK
+        varchar name "Obrigatório, max 255"
+        text notes "Opcional"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CONTACT_CONTACT_GROUP {
+        bigint contact_id FK
+        bigint contact_group_id FK
+    }

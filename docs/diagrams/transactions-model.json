@@ -1,0 +1,13 @@
+{
+  "id": "transactions-model",
+  "kind": "er",
+  "title": "Modelo relacional de transações",
+  "description": "Transações conectam contas, faturas, recorrências, itens e tags financeiras.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/transactions-model.mmd" },
+  "summary": "Transações podem vir de contas, faturas ou recorrências; possuem itens e tags, e duas transações podem formar o par de uma transferência.",
+  "sourceRefs": ["content/transacoes.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

@@ -1,0 +1,11 @@
+flowchart TD
+    A[Dashboard Controller] -->|Solicita Dados| B(FinanceDashboardService)
+    B --> C{Cache Inteligente}
+    C -->|Coleta Contas| D[(FinancialAccounts)]
+    C -->|Coleta Cartões| E[(FinancialCreditCards)]
+    C -->|Coleta Faturas| F[(FinancialInvoices)]
+    C -->|Coleta Transações| G[(FinancialTransactions)]
+    C --> H[Cálculo de Projeção]
+    H --> I[Indicadores de KPI]
+    H --> J["Projeção de Saldo (Mês Atual e Próximo)"]
+    H --> K[James Radar]

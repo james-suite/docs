@@ -1,0 +1,24 @@
+erDiagram
+    FINANCIAL_ACCOUNTS {
+        bigint id PK
+        string name
+        enum type "checking, investment, wallet"
+        jsonb pix_keys
+        timestamp deleted_at
+    }
+    FINANCIAL_CREDIT_CARDS {
+        bigint id PK
+        bigint financial_account_id FK
+    }
+    FINANCIAL_TRANSACTIONS {
+        bigint id PK
+        bigint financial_account_id FK
+    }
+    FINANCIAL_RECURRENCES {
+        bigint id PK
+        bigint financial_account_id FK
+    }
+
+    FINANCIAL_ACCOUNTS ||--o{ FINANCIAL_CREDIT_CARDS : "possui (restrictOnDelete)"
+    FINANCIAL_ACCOUNTS ||--o{ FINANCIAL_TRANSACTIONS : "recebe/paga (restrictOnDelete)"
+    FINANCIAL_ACCOUNTS ||--o{ FINANCIAL_RECURRENCES : "origina (restrictOnDelete)"

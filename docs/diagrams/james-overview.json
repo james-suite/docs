@@ -1,0 +1,95 @@
+{
+  "id": "james-overview",
+  "kind": "architecture",
+  "title": "Visão de arquitetura do James",
+  "description": "A aplicação Laravel coordena a interface autenticada, a persistência relacional, os arquivos privados e as rotinas assíncronas do James.",
+  "summary": "O navegador acessa a aplicação Laravel protegida por autenticação. A aplicação persiste dados no PostgreSQL, guarda mídia em discos privados e usa fila e scheduler para rotinas financeiras e notificações.",
+  "sourceRefs": [
+    "https://github.com/james-suite/james/blob/master/compose.yaml",
+    "https://github.com/james-suite/james/blob/master/routes/web.php",
+    "https://github.com/james-suite/james/blob/master/config/filesystems.php",
+    "https://github.com/james-suite/james/blob/master/config/queue.php",
+    "https://github.com/james-suite/james/blob/master/routes/console.php"
+  ],
+  "zones": [
+    { "label": "ACESSO", "x": 40, "y": 48, "width": 248, "height": 320 },
+    { "label": "APLICAÇÃO", "x": 328, "y": 48, "width": 440, "height": 320 },
+    { "label": "SUPORTE", "x": 808, "y": 48, "width": 400, "height": 320 }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "kind": "input",
+      "tag": "CLIENTE",
+      "label": "Navegador",
+      "detail": "views Blade e Vite",
+      "x": 80,
+      "y": 160,
+      "width": 168,
+      "height": 104
+    },
+    {
+      "id": "laravel",
+      "kind": "focal",
+      "tag": "CORE",
+      "label": "Laravel 13",
+      "detail": "rotas e regras de negócio",
+      "x": 368,
+      "y": 112,
+      "width": 184,
+      "height": 104
+    },
+    {
+      "id": "auth",
+      "kind": "backend",
+      "tag": "ACESSO",
+      "label": "Fortify",
+      "detail": "login e recuperação",
+      "x": 368,
+      "y": 248,
+      "width": 184,
+      "height": 104
+    },
+    {
+      "id": "postgres",
+      "kind": "store",
+      "tag": "DADOS",
+      "label": "PostgreSQL",
+      "detail": "dados relacionais e filas",
+      "x": 624,
+      "y": 112,
+      "width": 184,
+      "height": 104
+    },
+    {
+      "id": "private-media",
+      "kind": "store",
+      "tag": "PRIVADO",
+      "label": "Media Library",
+      "detail": "avatares e anexos",
+      "x": 864,
+      "y": 112,
+      "width": 184,
+      "height": 104
+    },
+    {
+      "id": "workers",
+      "kind": "backend",
+      "tag": "AUTOMAÇÃO",
+      "label": "Fila e scheduler",
+      "detail": "recorrências e alertas",
+      "x": 864,
+      "y": 248,
+      "width": 184,
+      "height": 104
+    }
+  ],
+  "edges": [
+    { "id": "request", "from": "browser", "to": "laravel", "label": "ACESSA", "tone": "accent" },
+    { "id": "protect", "from": "auth", "to": "laravel", "label": "PROTEGE" },
+    { "id": "persist", "from": "laravel", "to": "postgres", "label": "PERSISTE" },
+    { "id": "media", "from": "laravel", "to": "private-media", "label": "ARMAZENA" },
+    { "id": "schedule", "from": "laravel", "to": "workers", "label": "AGENDA" },
+    { "id": "queue", "from": "workers", "to": "postgres", "label": "ENFILEIRA", "tone": "link" }
+  ]
+}

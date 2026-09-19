@@ -1,0 +1,13 @@
+{
+  "id": "contacts-model",
+  "kind": "er",
+  "title": "Modelo relacional de contatos",
+  "description": "Contatos se associam a grupos por uma tabela de junção.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/contacts-model.mmd" },
+  "summary": "Contatos e grupos possuem uma relação muitos-para-muitos representada pela tabela CONTACT_CONTACT_GROUP; os dados complementares do contato ficam no próprio registro.",
+  "sourceRefs": ["content/contatos.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

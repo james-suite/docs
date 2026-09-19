@@ -1,0 +1,103 @@
+{
+  "siteTitle": "James",
+  "siteDescription": "Documentação funcional e técnica do James, um ERP pessoal e auto-hospedado.",
+  "language": "pt-BR",
+  "outputDirectory": "dist",
+  "framework": {
+    "name": "Aurelius",
+    "version": "0.4.19"
+  },
+  "brand": {
+    "title": "James",
+    "kicker": "Produto · Funcionalidades · Desenvolvimento",
+    "name": "James",
+    "logoSource": "assets/logo.svg",
+    "logoAlt": "Logo do James"
+  },
+  "repository": {
+    "url": "https://github.com/james-suite/james"
+  },
+  "navigation": {
+    "primary": [
+      "home",
+      "primeiros-passos",
+      "visao-geral",
+      "funcionalidades",
+      "contribuicao"
+    ],
+    "sections": [
+      {
+        "label": "Visão geral",
+        "items": [
+          "home",
+          "visao-geral",
+          "roadmap"
+        ]
+      },
+      {
+        "label": "Primeiros passos",
+        "items": [
+          "primeiros-passos",
+          "autenticacao",
+          "deploy"
+        ]
+      },
+      {
+        "label": "Funcionalidades",
+        "items": [
+          "funcionalidades",
+          "dashboard",
+          "contatos",
+          "financas",
+          "acertos",
+          "notificacoes",
+          "auditoria"
+        ]
+      },
+      {
+        "label": "Finanças",
+        "items": [
+          "contas-financeiras",
+          "cartoes",
+          "transacoes",
+          "recorrencias",
+          "tags-financeiras",
+          "automacoes",
+          "painel-financeiro",
+          "relatorios",
+          "nfce"
+        ]
+      },
+      {
+        "label": "Arquitetura e desenvolvimento",
+        "items": [
+          "arquitetura",
+          "tecnologias",
+          "decisoes",
+          "traits-e-helpers"
+        ]
+      },
+      {
+        "label": "Contribuição",
+        "items": [
+          "contribuicao"
+        ]
+      }
+    ]
+  },
+  "colors": {
+    "paper": "#faf8f8",
+    "paper2": "#f1eeee",
+    "ink": "#2b2b2b",
+    "muted": "#4e4e4e",
+    "soft": "#777777",
+    "rule": "rgba(43, 43, 43, 0.14)",
+    "accent": "#84a59d",
+    "accentTint": "rgba(132, 165, 157, 0.16)",
+    "link": "#284b63"
+  },
+  "footer": {
+    "left": "James · documentação funcional e técnica",
+    "right": "Fonte para pessoas e agentes · Aurelius"
+  }
+}

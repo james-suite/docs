@@ -1,0 +1,28 @@
+erDiagram
+    FINANCIAL_ACCOUNTS {
+        bigint id PK
+    }
+    FINANCIAL_CREDIT_CARDS {
+        bigint id PK
+        bigint financial_account_id FK
+        integer closing_day
+        integer due_day
+    }
+    FINANCIAL_CREDIT_CARD_INVOICES {
+        bigint id PK
+        bigint financial_credit_card_id FK
+        date reference_month
+        date closing_date
+        date due_date
+        decimal amount_paid
+    }
+    FINANCIAL_TRANSACTIONS {
+        bigint id PK
+        bigint financial_credit_card_invoice_id FK
+        bigint financial_account_id FK
+        enum status "draft, pending, posted"
+    }
+
+    FINANCIAL_ACCOUNTS ||--o{ FINANCIAL_CREDIT_CARDS : "paga a fatura"
+    FINANCIAL_CREDIT_CARDS ||--o{ FINANCIAL_CREDIT_CARD_INVOICES : "gera"
+    FINANCIAL_CREDIT_CARD_INVOICES ||--o{ FINANCIAL_TRANSACTIONS : "agrega"

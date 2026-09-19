@@ -1,0 +1,13 @@
+{
+  "id": "recurrences-model",
+  "kind": "er",
+  "title": "Modelo relacional de recorrências",
+  "description": "Recorrências se vinculam a uma conta ou cartão e materializam transações históricas.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/recurrences-model.mmd" },
+  "summary": "Uma recorrência tem vínculo exclusivo com uma conta financeira ou cartão de crédito e pode materializar várias transações ao longo do tempo.",
+  "sourceRefs": ["content/recorrencias.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

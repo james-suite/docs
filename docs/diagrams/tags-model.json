@@ -1,0 +1,13 @@
+{
+  "id": "tags-model",
+  "kind": "er",
+  "title": "Modelo relacional de tags financeiras",
+  "description": "Tags se associam a transações e itens por uma relação polimórfica.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/tags-model.mmd" },
+  "summary": "Tags financeiras são ligadas a transações ou itens por FINANCIAL_TAGGABLES, que guarda o tipo polimórfico e o marcador de tag primária.",
+  "sourceRefs": ["content/tags-financeiras.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

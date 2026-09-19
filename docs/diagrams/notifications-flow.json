@@ -1,0 +1,13 @@
+{
+  "id": "notifications-flow",
+  "kind": "flowchart",
+  "title": "Fluxo de notificações",
+  "description": "Uma notificação é persistida e pode ser distribuída por canais externos configurados.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/notifications-flow.mmd" },
+  "summary": "Eventos do sistema passam por GeneralNotification e pelo pipeline de canais. O banco é o canal interno; Telegram e e-mail são opcionais conforme a configuração.",
+  "sourceRefs": ["content/notificacoes.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

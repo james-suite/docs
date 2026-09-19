@@ -1,0 +1,13 @@
+{
+  "id": "finance-dashboard-flow",
+  "kind": "flowchart",
+  "title": "Processamento do painel financeiro",
+  "description": "O painel reúne fontes financeiras e calcula indicadores e projeções.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/finance-dashboard-flow.mmd" },
+  "summary": "O controller solicita dados ao serviço do painel; a coleta reúne contas, cartões, faturas e transações antes de calcular projeções, KPIs e o James Radar.",
+  "sourceRefs": ["content/painel-financeiro.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

@@ -1,0 +1,13 @@
+{
+  "id": "accounts-model",
+  "kind": "er",
+  "title": "Modelo relacional de contas",
+  "description": "Entidades financeiras dependentes de uma conta financeira.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/accounts-model.mmd" },
+  "summary": "Contas financeiras recebem cartões, transações e recorrências. Essas relações restringem a exclusão de uma conta enquanto existirem registros dependentes.",
+  "sourceRefs": ["content/contas-financeiras.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

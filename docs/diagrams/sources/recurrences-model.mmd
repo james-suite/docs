@@ -1,0 +1,23 @@
+erDiagram
+    FINANCIAL_ACCOUNTS {
+        bigint id PK
+    }
+    FINANCIAL_CREDIT_CARDS {
+        bigint id PK
+    }
+    FINANCIAL_RECURRENCES {
+        bigint id PK
+        bigint financial_account_id FK
+        bigint financial_credit_card_id FK
+        string frequency
+        date start_date
+        date next_processing_date
+    }
+    FINANCIAL_TRANSACTIONS {
+        bigint id PK
+        bigint financial_recurrence_id FK
+    }
+
+    FINANCIAL_ACCOUNTS ||--o{ FINANCIAL_RECURRENCES : "vinculada (XOR)"
+    FINANCIAL_CREDIT_CARDS ||--o{ FINANCIAL_RECURRENCES : "vinculada (XOR)"
+    FINANCIAL_RECURRENCES ||--o{ FINANCIAL_TRANSACTIONS : "materializa em (histórico)"

@@ -1,0 +1,13 @@
+{
+  "id": "audit-flow",
+  "kind": "flowchart",
+  "title": "Fluxo de auditoria",
+  "description": "Mutações Eloquent são registradas e expostas no painel de auditoria.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/audit-flow.mmd" },
+  "summary": "Uma ação do usuário altera um modelo de negócio; o LogsActivity registra a mutação na tabela activity_log e o painel mostra o diff da alteração.",
+  "sourceRefs": ["content/auditoria.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

@@ -1,0 +1,13 @@
+{
+  "id": "settlements-model",
+  "kind": "er",
+  "title": "Modelo relacional de acertos",
+  "description": "Entidades que relacionam contatos, grupos de despesas, acertos e transações financeiras.",
+  "source": { "language": "mermaid", "path": "diagrams/sources/settlements-model.mmd" },
+  "summary": "Contatos podem ter acertos individuais ou pertencer a grupos. Acertos e grupos podem gerar transações financeiras, enquanto o arquivo de arquivamento registra o encerramento da relação de acertos.",
+  "sourceRefs": ["content/acertos.md"],
+  "nodes": [],
+  "edges": [],
+  "groups": [],
+  "zones": []
+}

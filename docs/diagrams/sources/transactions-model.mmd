@@ -1,0 +1,33 @@
+erDiagram
+    FINANCIAL_ACCOUNTS {
+        bigint id PK
+    }
+    FINANCIAL_CREDIT_CARD_INVOICES {
+        bigint id PK
+    }
+    FINANCIAL_RECURRENCES {
+        bigint id PK
+    }
+    FINANCIAL_TRANSACTIONS {
+        bigint id PK
+        string type
+        decimal amount
+        enum status "draft, pending, posted"
+        bigint transfer_pair_id FK
+    }
+    FINANCIAL_TRANSACTION_ITEMS {
+        bigint id PK
+    }
+    FINANCIAL_TAGGABLES {
+        bigint financial_tag_id FK
+        bigint financial_taggable_id FK
+        string financial_taggable_type
+        boolean is_primary
+    }
+
+    FINANCIAL_ACCOUNTS ||--o{ FINANCIAL_TRANSACTIONS : "recebe/paga (direto)"
+    FINANCIAL_CREDIT_CARD_INVOICES ||--o{ FINANCIAL_TRANSACTIONS : "agrega"
+    FINANCIAL_RECURRENCES ||--o{ FINANCIAL_TRANSACTIONS : "materializa em"
+    FINANCIAL_TRANSACTIONS ||--o{ FINANCIAL_TRANSACTION_ITEMS : "possui detalhes"
+    FINANCIAL_TRANSACTIONS ||--o{ FINANCIAL_TAGGABLES : "possui tags polimórficas"
+    FINANCIAL_TRANSACTIONS ||--o| FINANCIAL_TRANSACTIONS : "par de transferência"
