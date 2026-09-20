@@ -14,7 +14,7 @@ source_refs: https://github.com/james-suite/james/blob/master/routes/web.php, ht
 
 Notificações é a camada de comunicação do James. Ela transforma eventos de finanças, automações, importações e rotinas em mensagens com título, nível, detalhes e uma ação que leva de volta ao sistema.
 
-Toda notificação destinada ao usuário é persistida no banco de dados. Telegram e e-mail são canais complementares: podem estar desabilitados ou indisponíveis sem impedir a criação do registro interno.
+Os fluxos automáticos persistem suas notificações no banco de dados. `GeneralNotification` faz isso quando `database` está presente em `channels`; Telegram e e-mail são canais complementares e podem estar desabilitados sem impedir o registro interno quando ele foi solicitado.
 
 {{diagram:notifications-flow}}
 
