@@ -27,7 +27,7 @@ O James é um ERP pessoal e auto-hospedado. A aplicação reúne autenticação,
 ## Repositórios e referências
 
 - [Código da aplicação James](https://github.com/james-suite/james)
-- [Repositório desta documentação](https://github.com/sge-suite/docs)
+- [Repositório desta documentação](https://github.com/james-suite/docs)
 - [Documentação oficial do Aurelius](https://arthurwillers.github.io/Aurelius/)
 
 Os artefatos `llms.txt`, `llms-full.txt`, `api/manifest.json` e os documentos em Markdown/JSON são gerados pelo Aurelius a partir destas fontes.

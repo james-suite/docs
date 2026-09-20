@@ -32,4 +32,4 @@ O James é um projeto pessoal e auto-hospedado. A documentação pública descre
 - [Traits e helpers](doc:traits-e-helpers) para padrões reutilizados no código;
 - [Roadmap](doc:roadmap) para módulos planejados;
 - [Repositório da aplicação](https://github.com/james-suite/james) para abrir uma mudança;
-- [Repositório da documentação](https://github.com/sge-suite/docs) para corrigir ou ampliar estas páginas.
+- [Repositório da documentação](https://github.com/james-suite/docs) para corrigir ou ampliar estas páginas.
