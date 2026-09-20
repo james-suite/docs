@@ -1,51 +1,56 @@
 ---
 id: funcionalidades
 title: Funcionalidades
-description: Índice dos módulos ativos e planejados do James.
+description: Mapa dos módulos ativos, das integrações entre eles e dos recursos ainda planejados.
 type: overview
 status: observed
 visibility: public
-tags: módulos, produto, navegação
-related: home, dashboard, contatos, financas, acertos, notificacoes, auditoria, roadmap
-source_refs: https://github.com/james-suite/james/blob/master/README.md, https://github.com/james-suite/james/blob/master/routes/web.php, https://github.com/james-suite/james/blob/master/routes/financial.php, https://github.com/james-suite/james/blob/master/routes/settlements.php
+tags: módulos, produto, navegação, integrações
+related: home, dashboard, contatos, financas, acertos, notificacoes, auditoria, automacoes, roadmap
+source_refs: https://github.com/james-suite/james/blob/master/README.md, https://github.com/james-suite/james/blob/master/routes/web.php, https://github.com/james-suite/james/blob/master/routes/contacts.php, https://github.com/james-suite/james/blob/master/routes/financial.php, https://github.com/james-suite/james/blob/master/routes/settlements.php, https://github.com/james-suite/james/blob/master/routes/console.php
 ---
 
-O sistema é dividido em diversos módulos temáticos para facilitar a organização e gestão de diferentes áreas da sua vida. Abaixo está a lista de todos os módulos disponíveis:
+## Como o produto é organizado
 
-### Dashboard
-Visão geral consolidada dos indicadores e atalhos rápidos para as principais áreas do sistema.
+O James separa o cadastro pessoal, a competência de acertos e o caixa financeiro em módulos conectados. Essa separação evita que uma dívida informal seja confundida com uma movimentação bancária e permite que cada tela tenha uma regra clara.
 
-[Ver documentação →](doc:dashboard)
+| Área | Responsabilidade | Entrada principal |
+| --- | --- | --- |
+| [Dashboard](doc:dashboard) | Triagem diária e indicadores rápidos. | `/dashboard` |
+| [Contatos](doc:contatos) | Pessoas, grupos, notas e avatares. | `/contacts` |
+| [Finanças](doc:financas) | Contas, transações, cartões, faturas, recorrências, tags e relatórios. | `/financial` |
+| [Acertos](doc:acertos) | Saldos pessoais e despesas compartilhadas. | `/settlements` |
+| [Notificações](doc:notificacoes) | Alertas internos e canais externos opcionais. | `/notifications` |
+| [Auditoria e logs](doc:auditoria) | Histórico das mutações de dados de negócio. | `/audit` |
+| [Rotinas automáticas](doc:automacoes) | Scheduler, filas e materialização de dados. | comandos Artisan |
 
-### Contatos
-Registro pessoal centralizado de contatos, grupos e relacionamentos, atuando como a base relacional (Single Source of Truth) do sistema.
+## Integrações entre módulos
 
-[Ver documentação →](doc:contatos)
+### Contatos → Acertos
 
-### Finanças
-Gestão financeira pessoal com controle de contas, cartões, faturas, recorrências, tags dinâmicas, status de transação e relatórios analíticos (Sankey e evolução).
+Um acerto sempre aponta para um contato. O módulo de Contatos é a fonte do nome, avatar, categoria e grupos usados nas telas de saldos e rateios.
 
-[Ver documentação →](doc:financas)
+### Acertos → Finanças
 
-### Acertos
-Controle de dívidas informais e despesas compartilhadas em grupo com outras pessoas (regime de competência integrado ao fluxo financeiro).
+Um lançamento ou uma divisão pode criar uma transação financeira opcional. A relação por `financial_transaction_id` permite navegar entre a promessa de pagamento e a entrada/saída efetiva do caixa.
 
-[Ver documentação →](doc:acertos)
+### Finanças → Notificações
 
-### Notificações
-Pipeline unificado e multi-canal (Database, Telegram e E-mail) para avisos, lembretes de rotinas, faturas e ações do sistema.
+Scheduler, vencimentos de faturas, recorrências, resumos mensais e importações de NFC-e usam a central de notificações para entregar contexto e uma ação de retorno.
 
-[Ver documentação →](doc:notificacoes)
+### Todos os módulos → Auditoria
 
-### Auditoria e Logs
-Rastreabilidade completa e vitalícia de mutações em models de negócio (created, updated, deleted, restored, forceDeleted) com histórico de alterações.
+Models de negócio que usam `LogsActivity` deixam um diff dos campos alterados. Operações automáticas podem aparecer como realizadas pelo sistema quando não existe usuário autenticado.
 
-[Ver documentação →](doc:auditoria)
+## Status da documentação
 
-### Veículos
-Módulo planejado para gestão de abastecimentos, despesas, manutenções, custos e lembretes dos veículos, inspirado no [Drivvo](https://www.drivvo.com/).
+As páginas marcadas como `observed` descrevem comportamentos encontrados no código atual. Itens do [Roadmap](doc:roadmap) são intenções futuras e não devem ser tratados como funcionalidades disponíveis.
 
-### Saúde e Treinos
-Módulo planejado para acompanhar a saúde e a rotina de exercícios. A parte de treinos será inspirada no [openGym](https://opengym.duarte-santos.ch/), com foco em rotinas, exercícios, progressão e histórico de evolução.
+Os módulos planejados incluem veículos e saúde/treinos. Eles permanecem separados do mapa de funcionalidades ativas para evitar expectativa de telas que ainda não existem.
 
-Para a lista completa de módulos planejados, consulte o [Roadmap](doc:roadmap).
+## Por onde começar
+
+- Usuário novo: [Primeiros passos](doc:primeiros-passos), [Dashboard](doc:dashboard) e [Visão geral](doc:visao-geral).
+- Uso financeiro: [Finanças](doc:financas), [Painel financeiro](doc:painel-financeiro) e [Relatórios](doc:relatorios).
+- Organização pessoal: [Contatos](doc:contatos) e [Acertos](doc:acertos).
+- Desenvolvimento: [Arquitetura](doc:arquitetura), [Rotinas automáticas](doc:automacoes) e [Contribuição](doc:contribuicao).

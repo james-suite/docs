@@ -1,157 +1,160 @@
 ---
 id: notificacoes
 title: Notificações
-description: Alertas persistidos no banco e distribuídos opcionalmente por Telegram e e-mail.
+description: Alertas persistidos no banco, filtráveis no painel e distribuídos opcionalmente por Telegram e e-mail.
 type: feature
 status: observed
 visibility: public
-tags: notificações, telegram, e-mail
-related: funcionalidades, automacoes, auditoria
-source_refs: https://github.com/james-suite/james/blob/master/app/Notifications/GeneralNotification.php, https://github.com/james-suite/james/blob/master/app/Http/Controllers/NotificationController.php, https://github.com/james-suite/james/blob/master/routes/web.php
+tags: notificações, telegram, e-mail, filas
+related: automacoes, financas, nfce, auditoria, dashboard
+source_refs: https://github.com/james-suite/james/blob/master/routes/web.php, https://github.com/james-suite/james/blob/master/app/Http/Controllers/NotificationController.php, https://github.com/james-suite/james/blob/master/app/Notifications/GeneralNotification.php, https://github.com/james-suite/james/blob/master/app/Notifications/DueTodayNotification.php, https://github.com/james-suite/james/blob/master/app/Notifications/FinancialSummaryNotification.php, https://github.com/james-suite/james/blob/master/app/Console/Commands/SendDueTodayAlerts.php, https://github.com/james-suite/james/blob/master/app/Console/Commands/SendMonthlyFinancialDigest.php, https://github.com/james-suite/james/blob/master/app/Jobs/ScrapeNfceInvoiceJob.php
 ---
 
-### Visão Geral
+## O que o módulo entrega
 
-O módulo de **Notificações** do James fornece uma infraestrutura unificada e multi-canal para alertar o usuário sobre eventos críticos, lembretes de rotinas financeiras, vencimentos de faturas, atualizações de acertos e relatórios do sistema.
+Notificações é a camada de comunicação do James. Ela transforma eventos de finanças, automações, importações e rotinas em mensagens com título, nível, detalhes e uma ação que leva de volta ao sistema.
 
-Todas as notificações são **sempre registradas internamente no banco de dados** (alimentando a central `/notifications` e o badge numérico na sidebar) e podem ser espelhadas de forma transparente para canais externos como **Telegram** e **E-mail**.
+Toda notificação destinada ao usuário é persistida no banco de dados. Telegram e e-mail são canais complementares: podem estar desabilitados ou indisponíveis sem impedir a criação do registro interno.
 
 {{diagram:notifications-flow}}
 
----
+## Contrato de uma notificação
 
-## 1. Níveis de Notificação (`NotificationLevel`)
-
-Namespace: `App\Enums\NotificationLevel`
-
-Cada notificação possui uma severidade semântica que controla as cores de destaque e os ícones exibidos na interface e nas mensagens:
-
-| Nível | Case | Cor | Ícone Heroicon | Finalidade |
-| --- | --- | --- | --- | --- |
-| **Informativo** | `NotificationLevel::Info` | Azul | `heroicon-o-information-circle` | Conclusão de rotinas, backups, relatórios gerados. |
-| **Sucesso** | `NotificationLevel::Success` | Verde | `heroicon-o-check-circle` | Acerto liquidado, fatura quitada, sincronização com êxito. |
-| **Alerta** | `NotificationLevel::Warning` | Amarelo | `heroicon-o-exclamation-triangle` | Fatura fechada aguardando pagamento, dívida próxima do vencimento. |
-| **Atenção / Erro** | `NotificationLevel::Danger` | Vermelho | `heroicon-o-exclamation-circle` | Falha em conciliação, erro em automação, saldo em risco. |
-
----
-
-## 2. A Classe `GeneralNotification`
-
-Namespace: `App\Notifications\GeneralNotification`
-
-A classe `GeneralNotification` centraliza todo o despacho de notificações da aplicação através de um construtor flexível e fortemente tipado:
+`GeneralNotification` recebe um payload estável:
 
 ```php
-public function __construct(
-    public readonly string $title,
-    public readonly string $message,
-    public readonly ?string $actionUrl = null,
-    NotificationLevel|string $level = NotificationLevel::Info,
-    public readonly array $details = [],
-    public readonly array $channels = ['database', 'telegram', 'mail'],
+new GeneralNotification(
+    title: 'Título curto',
+    message: 'Explicação do que aconteceu.',
+    actionUrl: route('financial.dashboard'),
+    level: NotificationLevel::Warning,
+    details: ['Valor' => 'R$ 150,00'],
+    channels: ['database', 'telegram', 'mail'],
+    actionLabel: 'Abrir painel',
+    items: [],
 )
 ```
 
-### Exemplos Práticos de Uso
+| Campo | Uso |
+| --- | --- |
+| `title` | Título exibido no painel, e-mail e Telegram. |
+| `message` | Texto principal da ocorrência. |
+| `action_url` | Link opcional para a tela relacionada. |
+| `action_label` | Texto do botão da ação. |
+| `level` | `info`, `success`, `warning` ou `danger`. |
+| `details` | Mapa chave/valor para metadados legíveis. |
+| `items` | Lista de itens com descrição, quantidade, preço unitário e total. |
+| `channels` | Canais desejados para `GeneralNotification`. |
 
-#### Notificação Simples (Apenas no Banco de Dados)
+As notificações específicas de vencimentos e resumo financeiro usam payloads adicionais (`due_alert` e `financial_summary`) para renderizar blocos estruturados na interface e nas mensagens externas.
+
+## Níveis
+
+| Case | Valor | Uso visual |
+| --- | --- | --- |
+| `NotificationLevel::Info` | `info` | Informação ou conclusão sem alerta. |
+| `NotificationLevel::Success` | `success` | Operação concluída com êxito. |
+| `NotificationLevel::Warning` | `warning` | Prazo, pendência ou atenção necessária. |
+| `NotificationLevel::Danger` | `danger` | Erro, falha ou risco financeiro. |
+
+Cada nível fornece rótulo, cor e ícone Heroicon. No e-mail, o nível `Danger` usa o estilo de erro do Laravel Mail; no Telegram, o nível aparece em caixa alta no cabeçalho.
+
+## De onde as notificações vêm
+
+### Alertas de vencimentos
+
+O comando `finance:due-today-alerts` procura itens para hoje e amanhã em três fontes:
+
+- transações pendentes ou efetivadas que se enquadram no período;
+- faturas de cartão não pagas com vencimento no período;
+- recorrências ativas ainda não materializadas, sem duplicar as recorrências já representadas pela fatura do cartão.
+
+O alerta consolida quantidade, receitas, despesas, impacto líquido e a lista de dias/itens. Ele não é enviado quando não há itens. Um cache por usuário impede reenvio do mesmo dia; `--force` permite reenviar manualmente.
+
+### Resumo financeiro mensal
+
+O comando `finance:monthly-digest` calcula o mês anterior e compara receitas, despesas e resultado com o mês anterior a ele. O resumo inclui:
+
+- receitas, despesas e resultado do período;
+- variações em relação ao período comparado;
+- saldo atual das contas;
+- compromissos pendentes;
+- saldo líquido;
+- distribuição por categorias de receita e despesa.
+
+O envio mensal também usa uma chave de cache por usuário e período. `--force` permite repetir o resumo quando necessário.
+
+### Rotinas e importação de NFC-e
+
+O processamento de recorrências, a rolagem de faturas e outras automações usam `GeneralNotification` para informar sucesso ou falha. A importação assíncrona de NFC-e envia uma notificação com ação para abrir o rascunho ou tentar novamente. Consulte [Rotinas automáticas](doc:automacoes) e [Importação de NFC-e](doc:nfce).
+
+## Canais de entrega
+
+### Banco de dados
+
+É o canal interno e alimenta `/notifications`. O JSON persistido contém o payload da notificação e permite renderizar detalhes, itens, nível e ação sem depender do canal externo.
+
+### Telegram
+
+O canal é usado somente quando `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` estão preenchidos. A mensagem inclui título, texto, detalhes, itens e botão de ação quando a URL é externa.
+
+Se a URL aponta para `localhost` ou `127.0.0.1`, o James não cria um botão inline inválido para a API do Telegram; ele coloca o endereço como texto seguro na mensagem.
+
+### E-mail
+
+O e-mail exige destinatário com endereço preenchido e `NOTIFICATIONS_MAIL_ENABLED=true`. A mensagem usa os templates transacionais do Laravel, inclui detalhes e itens e adiciona um botão quando existe `actionUrl`.
+
+### Filas
+
+`GeneralNotification`, `DueTodayNotification` e `FinancialSummaryNotification` implementam `ShouldQueue`. Em produção, o worker precisa estar ativo para que as notificações queued sejam processadas. O registro no banco, o envio externo e a disponibilidade da fila devem ser tratados como partes distintas do fluxo.
+
+## Central `/notifications`
+
+O painel autenticado permite:
+
+- pesquisar no payload JSON da notificação;
+- filtrar por `unread` ou `read`;
+- filtrar por data inicial e final;
+- ordenar do mais novo para o mais antigo ou vice-versa;
+- navegar por páginas de 20 registros;
+- abrir uma notificação, marcando-a como lida;
+- marcar todas as notificações como lidas;
+- excluir uma notificação individual.
+
+O contador da sidebar e o cartão do Dashboard usam somente notificações não lidas. A tela de detalhes verifica se a notificação pertence ao usuário autenticado antes de exibi-la ou alterá-la.
+
+## Exemplos para desenvolvimento
+
+### Notificação somente interna
+
 ```php
-use App\Enums\NotificationLevel;
 use App\Notifications\GeneralNotification;
 
 $user->notify(new GeneralNotification(
-    title: 'Backup Realizado',
-    message: 'A rotina periódica de backup foi finalizada com êxito.',
-    level: NotificationLevel::Info,
-    channels: ['database']
+    title: 'Rascunho pronto',
+    message: 'A NFC-e foi importada e aguarda revisão.',
+    actionUrl: route('financial.transactions.edit', $transaction),
+    channels: ['database'],
 ));
 ```
 
-#### Alerta Acionável com Metadados Estruturados (Multi-canal)
-```php
-use App\Enums\NotificationLevel;
-use App\Notifications\GeneralNotification;
+### Notificação com itens
 
+```php
 $user->notify(new GeneralNotification(
-    title: 'Fatura de Cartão Fechada',
-    message: 'A fatura do seu cartão fechou e já está disponível para conferência.',
-    actionUrl: route('financial.cards.index'),
-    level: NotificationLevel::Warning,
-    details: [
-        'Cartão' => 'Nubank Ultravioleta',
-        'Valor Total' => 'R$ 4.850,20',
-        'Vencimento' => '25/08/2026',
-        'Status' => 'Aguardando Pagamento',
+    title: 'Importação concluída',
+    message: 'Revise os itens antes de efetivar a transação.',
+    details: ['Emitente' => 'Comércio exemplo', 'Total' => 'R$ 120,00'],
+    items: [
+        ['description' => 'Produto', 'quantity' => '2', 'unit_price' => 'R$ 60,00', 'total' => 'R$ 120,00'],
     ],
-    channels: ['database', 'telegram', 'mail']
 ));
 ```
 
-#### Notificação Crítica / Erro
-```php
-use App\Enums\NotificationLevel;
-use App\Notifications\GeneralNotification;
+Nos testes, use `Notification::fake()` e faça asserções por destinatário, classe, nível, título e payload. O projeto mantém testes de unidade para os três formatos de notificação e testes de feature para a central web.
 
-$user->notify(new GeneralNotification(
-    title: 'Falha na Rotina Automática',
-    message: 'Não foi possível processar a recorrência mensal de aluguel.',
-    actionUrl: route('financial.recurrences.index'),
-    level: NotificationLevel::Danger,
-    details: [
-        'Recorrência' => 'Aluguel do Apartamento',
-        'Motivo' => 'Conta de origem inexistente ou inativa',
-    ]
-));
-```
+### Referências
 
----
-
-## 3. Entrega por Canal e Regras de Segurança (*Fail-Gracefully*)
-
-1. **Database (`database`)**:
-   - Sempre ativo quando incluído em `$channels`.
-   - Persiste os dados na tabela nativa `notifications` do Laravel em formato JSON.
-   - Alimenta o contador de não lidas no menu lateral e o painel `/notifications`.
-
-2. **Telegram (`telegram`)**:
-   - Ativo apenas se as variáveis `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` estiverem preenchidas no `.env`.
-   - As mensagens enviadas ao Bot contêm cabeçalho com o nível da notificação em caixa alta, título em negrito, corpo da mensagem, lista formatada de metadados (`details`) e botão de ação interativo.
-   - **Proteção Localhost**: Caso o `actionUrl` aponte para um domínio local (`http://localhost` ou `127.0.0.1`), a API do Telegram recusaria o botão inline com erro HTTP 400. O James intercepta isso automaticamente e inclui a URL em formato de texto seguro dentro do corpo da mensagem.
-
-3. **E-mail (`mail`)**:
-   - Ativo apenas se `NOTIFICATIONS_MAIL_ENABLED=true` e o usuário destinatário possuir endereço de e-mail válido.
-   - Renderiza um e-mail transacional limpo e responsivo baseado no `MailMessage` do Laravel com suporte a botão de ação direta.
-
----
-
-## 4. Painel Web de Notificações (`/notifications`)
-
-A interface do James oferece uma central completa para gerenciamento de alertas:
-- **Badge Numérico em Tempo Real:** Mostra a quantidade de notificações não lidas diretamente no link "Notificações" da sidebar (com limitação visual `99+` caso acumule muitas).
-- **Lista Cronológica Paginada:** Exibe o histórico de notificações com badges coloridos por nível (`Info`, `Success`, `Warning`, `Danger`).
-- **Leitura Rápida:** Clicar em uma notificação não lida exibe os detalhes completos (incluindo metadados estruturados) e a marca automaticamente como lida.
-- **Ações em Massa:** Botão "Marcar todas como lidas" para zerar o contador com um único clique.
-- **Exclusão:** Possibilidade de excluir notificações do histórico individualmente.
-
----
-
-## 5. Testes Automatizados com Pest
-
-Ao escrever testes para qualquer funcionalidade que envie notificações, utilize a fachada `Notification::fake()`:
-
-```php
-use App\Enums\NotificationLevel;
-use App\Notifications\GeneralNotification;
-use Illuminate\Support\Facades\Notification;
-
-test('notifica o usuario quando um acerto e finalizado', function () {
-    Notification::fake();
-
-    // Executa a ação do teste...
-
-    Notification::assertSentTo($user, GeneralNotification::class, function ($notification) {
-        return $notification->title === 'Acerto Finalizado'
-            && $notification->level === NotificationLevel::Success;
-    });
-});
-```
+- [Rotinas automáticas](doc:automacoes) — comandos que produzem alertas.
+- [Finanças](doc:financas) — origem de vencimentos e resumos.
+- [Auditoria e logs](doc:auditoria) — rastreia as mutações que deram origem a parte dos avisos.

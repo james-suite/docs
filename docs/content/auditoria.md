@@ -1,83 +1,129 @@
 ---
 id: auditoria
 title: Auditoria e logs
-description: Rastreabilidade das mutações de negócio, autores e diferenças de atributos.
+description: Rastreabilidade das mutações de negócio, autores, filtros, retenção e diferenças de atributos.
 type: architecture
 status: observed
 visibility: public
-tags: auditoria, logs, activitylog
-related: funcionalidades, notificacoes, decisoes
-source_refs: https://github.com/james-suite/james/blob/master/config/activitylog.php, https://github.com/james-suite/james/blob/master/app/Http/Controllers/AuditController.php
+tags: auditoria, logs, activitylog, rastreabilidade
+related: contatos, acertos, notificacoes, decisoes, arquitetura
+source_refs: https://github.com/james-suite/james/blob/master/routes/web.php, https://github.com/james-suite/james/blob/master/app/Http/Controllers/AuditController.php, https://github.com/james-suite/james/blob/master/app/Enums/AuditAction.php, https://github.com/james-suite/james/blob/master/app/View/Components/ActivityLog.php, https://github.com/james-suite/james/blob/master/config/activitylog.php, https://github.com/james-suite/james/blob/master/database/migrations/2026_07_18_162729_create_activity_log_table.php
 ---
 
-### Visão Geral
+## O que é registrado
 
-O módulo de **Auditoria e Logs do Sistema** (`/audit`) oferece rastreabilidade completa e vitalícia de todas as mutações que ocorrem nas entidades de negócio do James. Construído sobre o pacote `spatie/laravel-activitylog` (v5+), o sistema registra automaticamente quem alterou, quando alterou e exatamente quais atributos foram modificados (antes vs. depois).
+O painel autenticado `/audit` usa `spatie/laravel-activitylog` para registrar mutações em entidades de negócio. O log guarda o sujeito alterado, o autor, a ação, o nome do log e as mudanças de atributos.
 
 {{diagram:audit-flow}}
 
----
+O registro não é um log de todas as requisições HTTP. Ele acompanha eventos de modelos que optaram por `LogsActivity`, sempre priorizando o que mudou no dado de negócio.
 
-## 1. Eventos Auditados
+## Entidades monitoradas
 
-Os modelos monitorados registram os seguintes ciclos de vida:
+Hoje participam do mecanismo de auditoria:
 
-| Evento | Descrição | Estilização no Painel |
+- usuário;
+- contato e grupo de contatos;
+- acerto individual, divisão de conta e arquivamento de saldo;
+- conta financeira;
+- cartão de crédito e fatura;
+- transação e item de transação;
+- recorrência financeira;
+- tag financeira.
+
+O conjunto exato de eventos depende do modelo. Entidades com soft delete podem registrar exclusão lógica, restauração e exclusão permanente; entidades sem esse ciclo registram apenas criação, atualização e exclusão.
+
+## Ações e ciclo de vida
+
+| Descrição | Significado |
+| --- | --- |
+| `created` | Registro criado. |
+| `updated` | Um ou mais campos foram alterados. |
+| `deleted` | Registro enviado para a lixeira por soft delete. |
+| `restored` | Registro restaurado. |
+| `forceDeleted` | Registro removido fisicamente. |
+| `item_deleted` | Evento usado para marcar a remoção definitiva de um item de transação. |
+
+Na atualização, o log usa apenas atributos preenchíveis que ficaram sujos. Um `save()` sem alteração real não cria uma entrada vazia.
+
+## Quem realizou a mudança
+
+O `causer` normalmente é o usuário autenticado. Alterações disparadas por comandos do scheduler ou jobs sem sessão HTTP podem não ter `causer_id`; o painel as apresenta como **Sistema / Rotina Automática**.
+
+Isso permite diferenciar, por exemplo:
+
+- uma transação editada manualmente;
+- uma recorrência materializada pelo scheduler;
+- uma fatura avançada para o período seguinte;
+- uma alteração de dados feita por um job de importação.
+
+## Filtros do painel
+
+Em `/audit`, a consulta é paginada em até 100 registros e pode ser filtrada por:
+
+- **Módulo/sujeito** (`subject_type`);
+- **ID do sujeito** (`subject_id`);
+- **Ação** (`description`);
+- **Usuário** ou opção **Sistema** para registros sem autor;
+- **Data inicial** e **data final**;
+- ordem mais recente ou mais antiga.
+
+As opções de módulo, ação e usuário são montadas a partir do próprio histórico existente. Isso evita uma lista fixa que fique desatualizada quando um novo modelo passa a registrar atividades.
+
+## Visualização do diff
+
+Ao abrir `/audit/{activity}`, o James normaliza os dados da atividade e mostra:
+
+- valor anterior (`old`);
+- valor novo (`attributes`);
+- campos criados ou removidos;
+- autor, sujeito, ação, data e nome do log.
+
+O formatador trata arrays e objetos como JSON, datas com o timezone da aplicação, valores nulos como `null` e booleanos como `true`/`false`. Quando a entidade ainda está disponível, a tela tenta criar um link para seu registro.
+
+Em exclusões, o activity log pode guardar o estado anterior em `old` ou em `attributes`, dependendo do evento. O controller normaliza os dois formatos para que a tela mostre os dados que foram removidos.
+
+## Histórico dentro das telas
+
+Além do painel global, o componente `ActivityLog` aparece nas telas de entidades que oferecem histórico contextual. Ele carrega os 20 eventos mais recentes do sujeito, junto com o avatar do autor quando existe.
+
+Assim, a investigação pode começar pelo detalhe de um contato, acerto ou entidade financeira e depois continuar no filtro global `/audit`.
+
+## Configuração e retenção
+
+As opções principais estão em `config/activitylog.php`:
+
+| Configuração | Padrão | Efeito |
 | --- | --- | --- |
-| `created` | Registro recém-criado no banco de dados. | Badge Verde (`Criado`) |
-| `updated` | Atualização em um ou mais campos. | Badge Azul (`Atualizado`) |
-| `deleted` | Exclusão lógica do registro (Soft Delete). | Badge Amarelo / Laranja (`Enviado para a lixeira`) |
-| `restored` | Restauração de um item que estava na lixeira. | Badge Roxo (`Restaurado`) |
-| `forceDeleted` | Exclusão física permanente e definitiva do banco. | Badge Vermelho (`Excluído permanentemente`) |
+| `ACTIVITYLOG_ENABLED` | `true` | Liga ou desliga a gravação. |
+| `clean_after_days` | `365` | Idade usada pelo comando de limpeza do pacote. |
+| `include_soft_deleted_subjects` | `false` | Define se a relação de sujeito inclui modelos apagados logicamente. |
+| `ACTIVITYLOG_BUFFER_ENABLED` | `false` | Permite buffer de atividades para inserção em lote, quando necessário. |
 
----
+O valor de 365 dias é a política padrão para uma futura execução de limpeza; não significa que cada requisição apague logs automaticamente. Se a limpeza for adotada em produção, ela deve ser executada de forma consciente porque reduz a capacidade de investigação histórica.
 
-## 2. Rastreamento de Autores (*Causers*)
+## Como habilitar uma nova entidade
 
-O sistema diferencia automaticamente se a alteração partiu do usuário autenticado ou de uma rotina automática em background:
+Uma nova model de negócio deve:
 
-- **Usuário Logado:** Exibe o nome e o avatar do usuário responsável pela ação.
-- **Sistema / Rotina Automática:** Quando o `causer_id` é nulo (como na execução dos comandos do Scheduler, `ProcessFinancialRecurrences` ou `RolloverCreditCardInvoices`), a interface exibe o autor como **"Sistema / Rotina Automática"** com ícone representativo de engrenagem.
+1. usar `LogsActivity`;
+2. declarar em `$recordEvents` somente eventos relevantes;
+3. retornar `LogOptions::defaults()` com `logFillable()`;
+4. usar `logOnlyDirty()` e `dontLogEmptyChanges()`;
+5. escolher um nome de log específico com `useLogName()`;
+6. evitar registrar segredos, tokens ou campos técnicos que não pertençam ao histórico funcional.
 
----
-
-## 3. Visualização de Diferenças (Diff de Alterações)
-
-Ao acessar a tela de detalhes de um registro de auditoria (`/audit/{activity}`), o controller (`AuditController`) descompacta e formata as propriedades alteradas:
-
-- **Valores Anteriores (`old`):** Exibidos com destaque avermelhado e tachado quando modificados.
-- **Novos Valores (`attributes`):** Exibidos com destaque verde.
-- **Formatação Inteligente de Valores:**
-  - Valores monetários são automaticamente formatados via `CurrencyHelper`.
-  - Datas e timestamps são exibidos no timezone da aplicação via `DateHelper`.
-  - Booleans e Enums são traduzidos para rótulos legíveis em português (ex: `true` $\rightarrow$ `Sim`, `pending` $\rightarrow$ `Pendente`).
-
----
-
-## 4. Convenções e Implementação nos Models
-
-Para que uma nova Model de negócio participe do sistema de auditoria, siga o padrão estabelecido no projeto:
+Exemplo mínimo:
 
 ```php
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-class ExemploModel extends Model
+class ExampleModel extends Model
 {
-    use HasFactory, LogsActivity, SoftDeletes;
+    use LogsActivity;
 
-    protected $fillable = [
-        'name',
-        'amount',
-        'status',
-    ];
-
-    // Inclua restored e forceDeleted apenas se o model usar SoftDeletes
-    protected static array $recordEvents = ['created', 'updated', 'deleted', 'restored', 'forceDeleted'];
+    protected static array $recordEvents = ['created', 'updated', 'deleted'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -85,16 +131,17 @@ class ExemploModel extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
-            ->useLogName('exemplo_model');
+            ->useLogName('example_model');
     }
 }
 ```
 
-### Regras Obrigatórias:
-1. **Apenas `$fillable`:** Utilize `logFillable()` para auditar estritamente os campos seguros, evitando logar tokens ou campos internos efêmeros.
-2. **`logOnlyDirty()` e `dontLogEmptyChanges()`:** Evita poluir o banco de logs quando um `save()` é chamado sem alterações reais nos dados.
-3. **Escopo de Negócio:** Auditoria destina-se a mutações de dados de negócio. Não utilize activity log para monitorar execuções técnicas puras de jobs ou requisições HTTP sem mutação.
+### Caso especial: itens de transação
 
-### Exclusão de itens de transação
+Itens removidos durante a edição de uma transação financeira podem ser excluídos fisicamente para não continuar compondo cálculos. Antes da remoção, o James registra o evento com descrição `item_deleted`, preservando descrição, quantidade, preço unitário, total e vínculo com a transação no histórico.
 
-Itens removidos durante a edição de uma transação financeira são excluídos definitivamente para que não continuem compondo os valores e relatórios. Antes disso, o sistema registra uma atividade `forceDeleted` com os dados anteriores do item. Assim, o painel de auditoria mantém a rastreabilidade da descrição, quantidade, preço unitário, total e vínculo com a transação mesmo após a remoção.
+### Referências
+
+- [Contatos](doc:contatos) e [Acertos](doc:acertos) — exemplos de telas com histórico contextual.
+- [Rotinas automáticas](doc:automacoes) — explica por que o autor pode aparecer como sistema.
+- [Decisões arquiteturais](doc:decisoes) — escolhas de auditoria e dados.

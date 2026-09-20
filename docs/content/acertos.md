@@ -1,72 +1,134 @@
 ---
 id: acertos
 title: Acertos
-description: Gestão de dívidas individuais e divisão de despesas em grupo.
+description: Controle de saldos entre contatos, lançamentos individuais e divisões de despesas com integração financeira opcional.
 type: feature
 status: observed
 visibility: public
-tags: acertos, dívidas, despesas
-related: funcionalidades, contatos, financas, auditoria
-source_refs: https://github.com/james-suite/james/blob/master/app/Models/Settlement.php, https://github.com/james-suite/james/blob/master/app/Models/SettlementGroup.php, https://github.com/james-suite/james/blob/master/routes/settlements.php
+tags: acertos, dívidas, despesas, rateio
+related: contatos, financas, auditoria, dashboard
+source_refs: https://github.com/james-suite/james/blob/master/routes/settlements.php, https://github.com/james-suite/james/blob/master/app/Models/Settlement.php, https://github.com/james-suite/james/blob/master/app/Models/SettlementGroup.php, https://github.com/james-suite/james/blob/master/app/Models/ContactSettlementArchive.php, https://github.com/james-suite/james/blob/master/app/Enums/SettlementType.php, https://github.com/james-suite/james/blob/master/app/Services/SettlementBalanceCalculator.php, https://github.com/james-suite/james/blob/master/app/Services/SettlementGroupService.php
 ---
 
-### Visão Geral
+## O que o módulo resolve
 
-O Módulo de Acertos foi idealizado para substituir o uso de planilhas e aplicativos como o Splitwise. Este módulo é fortemente inspirado no projeto [BalanceFlow](https://github.com/ArthurWillers/BalanceFlow).
+Acertos registra obrigações informais entre o usuário e seus contatos: empréstimos, despesas pagas por alguém, reembolsos e pagamentos recebidos. Ele responde a duas perguntas diferentes:
 
-Sua principal finalidade é gerenciar a relação de débitos e créditos informais com outras pessoas ("Eu Devo" e "Me Devem") de maneira rápida, centralizada e performática.
+- **Quem tem saldo a receber ou a pagar?** O módulo de competência calcula isso por contato.
+- **Quando o dinheiro realmente entrou ou saiu de uma conta?** Essa parte pertence ao módulo de [Finanças](doc:financas) e só é criada quando o usuário escolhe integrar o lançamento.
 
-## Principais Funcionalidades
-
-- **Gestão de Dívidas**: Controle claro de quem deve a quem.
-- **Rateios e Divisões**: Suporte a rateios exatos (valores definidos) e percentuais (ex: 50/50, 70/30).
-- **Ações em Massa**: Possibilidade de interagir e liquidar múltiplas dívidas ao mesmo tempo.
-- **Zerar Dívida**: Botão rápido para liquidar rapidamente um saldo com um contato específico.
-- **Interface Centrada no Contato**: A interface é primariamente focada nas pessoas com quem você interage, facilitando o entendimento de saldos globais.
-- **Grupos Frequentes**: Possibilidade de salvar grupos de divisão recorrentes (ex: "Mãe e Irmão").
-
-## Regras de Negócio e Princípios Arquiteturais
-
-1. **Dependência do CRM (Single Source of Truth)**
-   O Módulo de Acertos não cria entidades de "Pessoas". Ele possui uma integração obrigatória com o Módulo CRM. Toda pessoa adicionada em um acerto deve ser um contato previamente (ou no momento) cadastrado no CRM. Os participantes da dívida são sempre referências (Foreign Keys) para os contatos.
-
-2. **Separação de Regimes (Competência vs. Caixa)**
-   Este módulo lida exclusivamente com o **Regime de Competência**. Ou seja, ele registra a "promessa de pagamento" ou o fato de que a despesa ocorreu, mas **não** é o extrato bancário. O registro aqui diz "Eu devo R$ 50 para o João", e não que "R$ 50 saíram da conta corrente".
-
-3. **Liquidação e Integração Financeira**
-   A separação de regimes garante que não tenhamos "God Tables". As tabelas de acertos e despesas compartilhadas são totalmente isoladas das transações reais do fluxo de caixa. Quando uma dívida é marcada como "Paga" neste módulo, o sistema realiza a liquidação lógica do acerto e, se necessário, prepara um gatilho para gerar opcionalmente a transação correspondente (de entrada ou saída) no Módulo Financeiro (Regime de Caixa).
-
-### Tabelas e Modelagem (`settlements`)
-
-A modelagem de dados do módulo de Acertos foi projetada para garantir flexibilidade e, ao mesmo tempo, organização entre acertos simples e divisões em grupo.
+Um acerto não é uma conta bancária nem uma fatura de cartão. Ele representa a relação entre pessoas; a transação financeira vinculada é opcional.
 
 {{diagram:settlements-model}}
 
-- `settlements` (Acertos Individuais): É a entidade base. Cada registro representa uma movimentação unidirecional entre o usuário e um Contato. Contém o valor, descrição, data e o `type` (seja *TheyOwe*, *TheyPaid*, *IOwe*, *IPaid*).
-- `settlement_groups` (Despesas em Grupo): Entidade pai que agrupa múltiplos `settlements`. Ela guarda o valor total da despesa (`total_amount`), a descrição geral e a data. Utilizado em rachadinhas (ex: Pizza, Viagens) para permitir edição em massa e rateio simplificado.
-- `contact_settlement_archives` (Arquivamento de Saldo): Utilizado para a funcionalidade de "Zerar Saldo". Em vez de apagar os registros antigos, eles são arquivados para manter o histórico, mas retirados do cálculo do saldo atual do contato.
+## Acerto individual
 
-### Acertos Simples vs. Despesas em Grupo
+O fluxo começa em `/settlements`, segue para o contato e abre `/settlements/contact/{contact}/create`. Um lançamento individual possui:
 
-O módulo suporta dois fluxos de trabalho distintos:
-- **Acertos Individuais:** Você e uma outra pessoa (ex: "Emprestei 50 pro meu irmão"). Salvo diretamente na tabela `settlements`.
-- **Despesas em Grupo:** Quando você paga uma conta que envolve múltiplas pessoas (ex: "Paguei o jantar, João me deve 30 e Maria me deve 40"). Cria-se um `settlement_group` pai e múltiplos filhos (`settlements`), facilitando a gestão do valor global.
+| Campo | Regra |
+| --- | --- |
+| Contato | Obrigatório e escolhido no cadastro de [Contatos](doc:contatos). |
+| Tipo | Um dos quatro tipos de movimento abaixo. |
+| Valor | Obrigatório e maior que zero. Valores com vírgula são normalizados. |
+| Descrição | Obrigatória, com até 255 caracteres. |
+| Data | Data do fato ou do pagamento. |
+| Anexos | Até 5 imagens ou PDFs, com até 10 MB por arquivo. |
 
-### Integração com o Módulo Financeiro
+### Tipos de movimento
 
-Apesar de funcionarem em regime de competência (promessas de pagamento), a integração com o Regime de Caixa (Módulo Financeiro) é transparente e opcional:
-- Ao criar um acerto (ou grupo de acertos), o usuário tem um *toggle* na interface (`Criar transação no módulo financeiro`).
-- Se ativo, o sistema criará simultaneamente uma transação financeira (`financial_transactions`) atrelada à conta bancária ou cartão de crédito especificado.
-- A Foreign Key `financial_transaction_id` nas tabelas de Acertos vincula permanentemente essas entidades.
-- Quando o Acerto ou Grupo é apagado, as transações financeiras correspondentes são varridas do banco permanentemente via `forceDelete`, mantendo as finanças blindadas contra lixo residual de dívidas canceladas.
+| Tipo no código | Rótulo na interface | Efeito no saldo |
+| --- | --- | --- |
+| `they_owe` | Me deve | Aumenta o valor que o usuário tem a receber. |
+| `they_paid` | Recebi pgto. | Reduz o valor que o usuário tem a receber. |
+| `i_owe` | Eu devo | Aumenta o valor que o usuário tem a pagar. |
+| `i_paid` | Realizei pgto. | Reduz o valor que o usuário tem a pagar. |
 
-### Arquivamento (Zerar Dívidas)
+Os tipos de pagamento não apagam o lançamento original. Eles registram a quitação como um novo movimento, mantendo a sequência que explica como o saldo chegou ao valor atual.
 
-Quando você atinge o ponto de equilíbrio de débitos com um contato, em vez de excluir todo o histórico, você clica em "Zerar". 
-Isso cria um registro na tabela `contact_settlement_archives` com a data/hora atual. 
-Nas listagens (dashboards e ledger do contato), o Laravel usa um Local Scope para filtrar apenas os acertos criados *depois* do último arquivamento. 
-Ainda é possível visualizar o histórico completo através do toggle "Visualizar Arquivados".
+## Como o saldo é calculado
+
+O `SettlementBalanceCalculator` percorre os lançamentos em ordem de data e, dentro do mesmo dia, por ID. Ele acumula dois contadores em centavos:
+
+- **A receber**: `they_owe` soma e `they_paid` subtrai.
+- **A pagar**: `i_owe` soma e `i_paid` subtrai.
+
+Depois de cada dia, cada contador é limitado a zero para impedir que um pagamento de um regime produza saldo negativo no outro. O resultado exibido para cada contato é:
+
+```text
+toReceive = saldo acumulado a receber
+toPay     = saldo acumulado a pagar
+netBalance = toReceive - toPay
+```
+
+Na prática:
+
+- `netBalance > 0`: o contato deve ao usuário;
+- `netBalance < 0`: o usuário deve ao contato;
+- `netBalance = 0`: não há saldo pendente no recorte exibido.
+
+O índice geral soma os saldos líquidos positivos e negativos de todos os contatos ativos. Contatos arquivados ficam fora da lista principal até o usuário escolher visualizar os arquivados.
+
+## Quitar um saldo
+
+Na tela do contato, o botão **Quitar dívida** prepara um novo lançamento com o saldo líquido atual:
+
+- se o contato devia, o tipo sugerido é `they_paid`;
+- se o usuário devia, o tipo sugerido é `i_paid`;
+- o valor sugerido é o valor absoluto do saldo;
+- a descrição padrão é `Quitação de saldo`.
+
+A tela também oferece **Compartilhar**, que gera uma mensagem com o estado do saldo. Quando existem chaves PIX cadastradas nas contas financeiras, uma chave pode ser incluída na mensagem. O texto pode ser copiado ou aberto em uma conversa do WhatsApp; isso não envia a mensagem pelo James.
+
+## Divisão de conta em grupo
+
+Uma divisão de conta cria um `SettlementGroup` para a despesa e um `Settlement` filho para cada contato participante. O grupo guarda a descrição, o valor total, a data, o modo de rateio e, opcionalmente, a transação financeira vinculada.
+
+O fluxo exige ao menos um contato, não permite o mesmo contato duas vezes e oferece dois modos:
+
+- **Igual (`equal`)**: cada contato recebe a mesma parcela em centavos; a parte do usuário absorve eventual sobra do arredondamento.
+- **Exato (`exact`)**: cada participante e o usuário informam suas próprias partes.
+
+Em ambos os modos, a soma da parte do usuário com as partes dos contatos precisa ser exatamente igual ao total da despesa. Valores dos contatos precisam ser positivos; a parte do usuário pode ser zero.
+
+Ao editar um grupo, o serviço atualiza os metadados e substitui os lançamentos filhos pelo novo rateio dentro de uma transação de banco. Um lançamento pertencente a grupo não pode ser editado ou excluído isoladamente; a edição deve ser feita no grupo.
+
+## Integração com Finanças
+
+O formulário oferece **Criar transação no módulo financeiro**. Quando habilitado:
+
+1. o acerto individual cria ou atualiza uma `FinancialTransaction` ligada à conta ou à fatura do cartão escolhida;
+2. `they_paid` vira uma receita financeira; os demais tipos usam uma despesa financeira;
+3. um cartão resolve a fatura correspondente à data do lançamento;
+4. tags podem ser escolhidas para uma transação criada a partir de `i_paid`, com uma tag principal entre as selecionadas;
+5. uma divisão de conta cria uma despesa com um item `Minha Parte` e um item para cada contato, usando a tag protegida `Reembolso` nos itens dos participantes.
+
+A relação é mantida por `financial_transaction_id`. O acerto continua sendo o registro da relação pessoal; a transação é a representação no caixa.
+
+## Anexos
+
+Acertos individuais e grupos aceitam anexos de imagem JPEG/PNG/JPG ou PDF. Cada operação aceita até cinco arquivos de no máximo 10 MB. Os arquivos ficam na coleção `attachments`, em disco privado, e aparecem no histórico com um indicador de anexos.
+
+## Arquivamento, lixeira e histórico
+
+Arquivar um contato em `/settlements/contact/{contact}` cria um registro em `contact_settlement_archives`. Isso não remove lançamentos: apenas tira o contato da visão principal dos acertos. A visão de arquivados e o histórico completo continuam disponíveis.
+
+O módulo também possui:
+
+- `/settlements/history`: histórico global paginado de lançamentos;
+- `/settlements/groups`: lista de divisões de conta;
+- `/settlements/trashed`: lixeira de acertos individuais;
+- `/settlements/groups/trashed`: lixeira de grupos;
+- restauração de grupos com seus filhos e sua transação financeira;
+- soft delete nos lançamentos e grupos, com exclusão permanente nas operações específicas da lixeira.
+
+Excluir um grupo trata seus lançamentos filhos como parte da mesma operação. A exclusão e a criação da transação vinculada são encapsuladas em transações de banco para evitar um grupo sem seus filhos ou uma integração financeira incompleta.
+
+## Auditoria
+
+`Settlement`, `SettlementGroup` e `ContactSettlementArchive` participam do activity log. Criação, alteração, exclusão e restauração são visíveis conforme o ciclo de vida de cada modelo. Consulte [Auditoria e logs](doc:auditoria) para investigar um lançamento ou uma divisão depois da operação.
 
 ### Referências
-- [Roadmap — Módulo de Acertos](doc:roadmap)
-- [Inspiração Original — BalanceFlow](https://github.com/ArthurWillers/BalanceFlow)
+
+- [Contatos](doc:contatos) — cadastro dos participantes.
+- [Finanças](doc:financas) — contas, cartões, transações e tags vinculadas.
+- [Dashboard](doc:dashboard) — resumo dos saldos pendentes e notificações.
