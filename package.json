@@ -1,5 +1,5 @@
 {
   "devDependencies": {
-    "@avw/aurelius": "github:ArthurWillers/Aurelius#v0.4.19"
+    "@avw/aurelius": "github:ArthurWillers/Aurelius#v0.5.1"
   }
 }
