@@ -22,6 +22,7 @@ O James é um ERP pessoal e auto-hospedado. A aplicação reúne autenticação,
 - Para instalar o ambiente local, siga [Primeiros passos](doc:primeiros-passos).
 - Para entender o produto e os módulos, leia a [Visão geral](doc:visao-geral) e [Funcionalidades](doc:funcionalidades).
 - Para consultar regras específicas, use a seção [Finanças](doc:financas) ou [Arquitetura e desenvolvimento](doc:arquitetura).
+- O planejamento dos módulos e da arquitetura fica na [documentação principal do James](../../index.html).
 - Para contribuir, consulte [Contribuição](doc:contribuicao).
 
 ## Repositórios e referências

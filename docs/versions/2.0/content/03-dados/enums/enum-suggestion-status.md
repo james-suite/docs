@@ -1,0 +1,38 @@
+---
+id: enum-suggestion-status
+title: Enum — SuggestionStatus
+description: Valores e invariantes propostos de SuggestionStatus.
+type: enum-reference
+status: proposed
+visibility: public
+tags: james/2.0, planejamento, dados
+related: planejamento-2-0, enums, migrations, ia-e-memoria
+source_refs:
+updated: 2026-10-25
+---
+
+## Contrato proposto
+
+Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases usam TitleCase e valores persistidos estáveis. A implementação e as versões dos pacotes serão escolhidas em 2027.
+
+| Case | Valor persistido | Significado |
+| --- | --- | --- |
+| `Proposed` | `proposed` | Aguardando revisão |
+| `Accepted` | `accepted` | Aceita |
+| `Rejected` | `rejected` | Recusada |
+| `Stale` | `stale` | Fonte ou catálogo mudou |
+
+## Regras e transições
+
+proposed → accepted/rejected/stale. Aceite revalida IDs, contexto e revisão da fonte; respostas antigas não são aplicadas automaticamente.
+
+## Persistência
+
+Aplicar em `classification_suggestions` conforme [migrations](doc:migrations). Persistir string com cast Eloquent e restrição de valores quando apropriado. Não usar texto traduzido como valor de banco. Valores derivados ou exibidos como filtro não devem ser persistidos novamente sem necessidade.
+
+## Checklist
+
+- [ ] Revisar os cases no fluxo de [domínio](doc:ia-e-memoria) e remover capacidades ainda não implementadas da UI.
+- [ ] Criar enum, rótulos e cast no Model correspondente.
+- [ ] Proteger transições na operação de domínio e no banco quando houver invariante local.
+- [ ] Validar autorização, valores desconhecidos, concorrência e conversão de dados legados quando aplicável.

@@ -1,0 +1,10 @@
+flowchart LR
+    A[James 1.x] --> B[Exportar pacote versionado]
+    B --> C{Validar manifesto, arquivos e relações}
+    C -->|Problemas| D[Mostrar relatório sem gravar]
+    C -->|Válido| E[Prévia de contagens, conflitos e mapeamentos]
+    E --> F{Confirmação do usuário}
+    F -->|Cancelar| G[Manter James 1.x intacto]
+    F -->|Importar| H[Gravar no workspace inicial]
+    H --> I[Conferir totais, anexos e permissões]
+    I --> J[Manter versão antiga e backup até o aceite]

@@ -1,5 +1,9 @@
 {
+  "scripts": {
+    "check": "aurelius check --site docs",
+    "build": "aurelius build --site docs"
+  },
   "devDependencies": {
-    "@avw/aurelius": "github:ArthurWillers/Aurelius#v0.5.1"
+    "@avw/aurelius": "git+https://github.com/ArthurWillers/Aurelius.git#v0.6.0"
   }
 }

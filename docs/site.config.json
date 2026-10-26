@@ -1,103 +1,37 @@
 {
   "siteTitle": "James",
-  "siteDescription": "Documentação funcional e técnica do James, um ERP pessoal e auto-hospedado.",
+  "siteDescription": "Documentação funcional, técnica e planejamento dos módulos do James.",
   "language": "pt-BR",
   "outputDirectory": "dist",
   "framework": {
     "name": "Aurelius",
-    "version": "0.5.1"
+    "version": "0.6.0"
   },
   "brand": {
     "title": "James",
-    "kicker": "Produto · Funcionalidades · Desenvolvimento",
+    "kicker": "Produto · Módulos · Desenvolvimento",
     "name": "James",
-    "logoSource": "assets/logo.svg",
+    "logoSource": "versions/2.0/assets/logo.svg",
     "logoAlt": "Logo do James"
   },
   "repository": {
-    "url": "https://github.com/james-suite/james"
+    "url": "https://github.com/james-suite/docs"
   },
-  "navigation": {
-    "primary": [
-      "home",
-      "primeiros-passos",
-      "visao-geral",
-      "funcionalidades",
-      "contribuicao"
-    ],
-    "sections": [
+  "versioning": {
+    "current": "2.0",
+    "versions": [
       {
-        "label": "Visão geral",
-        "items": [
-          "home",
-          "visao-geral",
-          "roadmap"
-        ]
+        "id": "2.0",
+        "label": "2.0 · Planejamento",
+        "site": "versions/2.0",
+        "path": ""
       },
       {
-        "label": "Primeiros passos",
-        "items": [
-          "primeiros-passos",
-          "autenticacao",
-          "deploy"
-        ]
-      },
-      {
-        "label": "Funcionalidades",
-        "items": [
-          "funcionalidades",
-          "dashboard",
-          "contatos",
-          "financas",
-          "acertos",
-          "notificacoes",
-          "auditoria"
-        ]
-      },
-      {
-        "label": "Finanças",
-        "items": [
-          "contas-financeiras",
-          "cartoes",
-          "transacoes",
-          "recorrencias",
-          "tags-financeiras",
-          "automacoes",
-          "painel-financeiro",
-          "relatorios",
-          "nfce"
-        ]
-      },
-      {
-        "label": "Arquitetura e desenvolvimento",
-        "items": [
-          "arquitetura",
-          "tecnologias",
-          "decisoes",
-          "traits-e-helpers"
-        ]
-      },
-      {
-        "label": "Contribuição",
-        "items": [
-          "contribuicao"
-        ]
+        "id": "1.x",
+        "label": "1.x · Documentação atual",
+        "site": "versions/1.x",
+        "path": "versions/1.x"
       }
     ]
-  },
-  "colors": {
-    "paper": "#faf8f8",
-    "paper2": "#f1eeee",
-    "ink": "#2b2b2b",
-    "muted": "#4e4e4e",
-    "soft": "#777777",
-    "rule": "rgba(43, 43, 43, 0.14)",
-    "accent": "#84a59d",
-    "accentTint": "rgba(132, 165, 157, 0.16)",
-    "link": "#284b63"
-  },
-  "footer": {
-    "left": "James · documentação funcional e técnica",
-    "right": "Fonte para pessoas e agentes · Aurelius"
   }
 }

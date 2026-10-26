@@ -1,0 +1,171 @@
+{
+  "siteTitle": "James",
+  "siteDescription": "Planejamento de produto, módulos, arquitetura e desenvolvimento do James.",
+  "language": "pt-BR",
+  "outputDirectory": "dist",
+  "framework": {
+    "name": "Aurelius",
+    "version": "0.6.0"
+  },
+  "brand": {
+    "title": "James",
+    "kicker": "Produto · Módulos · Arquitetura",
+    "name": "James",
+    "logoSource": "assets/logo.svg",
+    "logoAlt": "Logo do James"
+  },
+  "repository": {
+    "url": "https://github.com/james-suite/docs"
+  },
+  "navigation": {
+    "primary": [
+      "home",
+      "planejamento-2-0",
+      "modelo-de-dados",
+      "fases-2-0"
+    ],
+    "sections": [
+      {
+        "label": "Planejamento",
+        "items": [
+          "home",
+          "planejamento-2-0",
+          "escopo-2-0",
+          "decisoes-e-pendencias",
+          "fases-2-0"
+        ]
+      },
+      {
+        "label": "Arquitetura e experiência",
+        "items": [
+          "arquitetura-2-0",
+          "modelo-de-dados",
+          "componentes-tecnicos",
+          "ui-ux-2-0",
+          "auditoria-2-0",
+          "cenarios-de-validacao"
+        ]
+      },
+      {
+        "label": "Módulos",
+        "items": [
+          {
+            "label": "Finanças",
+            "items": ["financas", "cartoes", "acertos"]
+          },
+          {
+            "label": "Organização pessoal",
+            "items": ["tags", "pessoas-empresas", "notificacoes", "agenda-tarefas"]
+          },
+          {
+            "label": "Memória e contexto",
+            "items": ["diario", "lugares-checkins", "ia-e-memoria"]
+          },
+          {
+            "label": "Bens e saúde",
+            "items": ["veiculos", "patrimonio", "saude-treinos"]
+          }
+        ]
+      },
+      {
+        "label": "Banco de dados",
+        "items": [
+          "enums",
+          {
+            "label": "Enums detalhados",
+            "items": [
+              "enum-ai-connection-scope",
+              "enum-ai-run-status",
+              "enum-ai-task",
+              "enum-calendar-event-state",
+              "enum-capture-source",
+              "enum-card-debt-direction",
+              "enum-checklist-item-status",
+              "enum-classification-mode",
+              "enum-delivery-status",
+              "enum-entry-side",
+              "enum-financial-account-type",
+              "enum-fiscal-capture-method",
+              "enum-fiscal-extraction-status",
+              "enum-import-item-status",
+              "enum-import-status",
+              "enum-invoice-cycle-state",
+              "enum-item-ownership",
+              "enum-journal-state",
+              "enum-ledger-account-kind",
+              "enum-notification-channel",
+              "enum-notification-level",
+              "enum-obligation-direction",
+              "enum-party-kind",
+              "enum-payment-kind",
+              "enum-payment-method-family",
+              "enum-payment-payer-type",
+              "enum-payment-status",
+              "enum-record-kind",
+              "enum-recurrence-frequency",
+              "enum-split-mode",
+              "enum-suggestion-status",
+              "enum-tag-assignment-origin",
+              "enum-task-status",
+              "enum-time-precision",
+              "enum-transaction-kind",
+              "enum-transaction-purpose",
+              "enum-transaction-state",
+              "enum-vehicle-event-type",
+              "enum-vehicle-financial-link-purpose"
+            ]
+          },
+          "migrations",
+          {
+            "label": "Pacotes de migration",
+            "items": [
+              "migration-00-base",
+              "migration-01-spaces",
+              "migration-02-records",
+              "migration-03-parties",
+              "migration-04-tags",
+              "migration-05-accounts",
+              "migration-06-transactions",
+              "migration-07-payments",
+              "migration-08-cards",
+              "migration-09-recurrences",
+              "migration-10-settlements",
+              "migration-11-notifications",
+              "migration-12-ai",
+              "migration-13-places",
+              "migration-14-journal",
+              "migration-15-vehicles",
+              "migration-16-tasks",
+              "migration-17-calendar",
+              "migration-18-assets",
+              "migration-19-health",
+              "migration-20-imports"
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Migração do James atual",
+        "items": [
+          "migracao-2-0",
+          "compatibilidade-legado"
+        ]
+      }
+    ]
+  },
+  "colors": {
+    "paper": "#faf8f8",
+    "paper2": "#f1eeee",
+    "ink": "#2b2b2b",
+    "muted": "#4e4e4e",
+    "soft": "#777777",
+    "rule": "rgba(43, 43, 43, 0.14)",
+    "accent": "#84a59d",
+    "accentTint": "rgba(132, 165, 157, 0.16)",
+    "link": "#284b63"
+  },
+  "footer": {
+    "left": "James · planejamento dos módulos",
+    "right": "Fonte para pessoas e agentes · Aurelius"
+  }
+}
