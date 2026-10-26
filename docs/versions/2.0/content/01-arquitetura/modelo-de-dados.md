@@ -58,7 +58,6 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Documento fiscal pode apontar à empresa emitente e à filial/lugar separadamente; identificadores da unidade ajudam a reconhecer posto e mercado sem inferir check-in.
 - Leitura de odômetro é observação independente e pode existir sem abastecimento, serviço ou transação.
 - Produto pessoal 1:N identificadores e observações de preço; cada observação liga uma linha financeira, produto e lugar opcional. Cestas calculam comparação usando quantidades fixas e observações reais, com cobertura explícita.
-- StockItem tem Product opcional e ledger independente. Uma linha financeira pode originar entradas de estoque revisadas, mas saldo não cria fato financeiro; item, lote, local e unidade podem existir sem transação.
 - Party 1:N referências externas versionadas; vínculos empresariais guardam origem e revisão. Catálogos auxiliares não recebem dados fiscais privados de outras contas.
 
 ## Exclusão e histórico

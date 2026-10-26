@@ -41,8 +41,6 @@ Números são identificadores editoriais. Dependências adicionais devem ser res
 - [Migration 19 — Saúde e treinos](doc:migration-19-health) — saúde e treinos.
 - [Migration 20 — Exportação, importação e mapeamento legado](doc:migration-20-imports) — portabilidade.
 - [Migration 21 — Catálogo de produtos e preços observados](doc:migration-21-products) — catálogo pessoal, preços comparáveis e cestas.
-- [Migration 22 — Estoque, despensa e movimentações](doc:migration-22-stock) — locais, itens, lotes, ledger de saldo e inventário físico.
-- [Migration 23 — Reposição, reservas e itens individuais](doc:migration-23-stock-operations) — lista de compras, saldo reservado, custódia e unidades identificadas.
 
 ## Evolução sem tabelas prematuras
 

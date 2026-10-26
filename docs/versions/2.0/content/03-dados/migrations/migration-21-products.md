@@ -24,7 +24,7 @@ Adicionar as FKs de produto ao item financeiro e ao catálogo de preços após a
 | code, label, unit_family, base_unit_code | Chave estável e família física; tabela de catálogo do sistema, somente leitura por espaço. |
 | conversion_numerator, conversion_denominator | Fator racional positivo da unidade para a base da família. |
 
-Registrar códigos estáveis, família física, unidade-base e fator racional de conversão. Seeds do sistema incluem ao menos massa (g/kg), volume (mL/L), contagem (unidade) e comprimento (mm/cm/m) para suportar consumo e estoque doméstico; não permitir conversão entre famílias. Numerador/denominador inteiros evitam arredondamentos intermediários. Não oferecer unidades criadas livremente enquanto conversão e comparação não tiverem semântica validada.
+Registrar códigos estáveis, família física, unidade-base e fator racional de conversão. Seeds do sistema incluem ao menos massa (g/kg), volume (mL/L) e contagem (unidade); não permitir conversão entre famílias. Numerador/denominador inteiros evitam arredondamentos intermediários. Não oferecer unidades criadas livremente enquanto conversão e comparação não tiverem semântica validada.
 
 ## Tabela products
 

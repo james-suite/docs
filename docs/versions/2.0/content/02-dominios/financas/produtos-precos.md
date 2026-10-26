@@ -6,7 +6,7 @@ type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, financas, pessoas-empresas, lugares-checkins, veiculos, estoque-despensa, migration-21-products, migration-22-stock, migration-06-transactions
+related: planejamento-2-0, financas, pessoas-empresas, lugares-checkins, veiculos, migration-21-products, migration-06-transactions
 source_refs:
 updated: 2026-10-26
 ---
@@ -24,10 +24,6 @@ Guardar a quantidade comprada e sua unidade de medida, além do valor bruto, des
 O histórico registra a data fiscal da compra, o preço observado, o produto, a filial/local quando conhecido e a origem da informação. Uma alteração posterior no nome do catálogo não modifica o texto e os valores originais da nota. Correções criam uma revisão rastreável da observação.
 
 Desconto de cabeçalho só entra no preço do produto quando estiver atribuído explicitamente a uma linha ou quando uma regra segura já o reconciliar. Não distribuir automaticamente desconto geral entre vários produtos. Promoções, quantidade, peso e preço por embalagem precisam continuar distinguíveis.
-
-## Vínculo opcional com estoque
-
-Uma compra confirmada pode sugerir a entrada de uma linha no [estoque e despensa](doc:estoque-despensa), mas a pessoa decide quais itens controlar e em qual quantidade/local/lote. O produto do catálogo pode ser associado ao StockItem; isso não acontece só por a linha ter sido comprada. Entrada de estoque não duplica preço nem despesa, e itens no estoque também podem existir sem linha financeira.
 
 ## Filial, empresa e lugar
 

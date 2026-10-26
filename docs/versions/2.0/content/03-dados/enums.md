@@ -59,18 +59,6 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — PaymentMethodFamily](doc:enum-payment-method-family) — `payment_methods`.
 - [Enum — PriceObservationSource](doc:enum-price-observation-source) — `product_price_observations`.
 
-### Estoque e despensa
-
-- [Enum — StockTrackingMode](doc:enum-stock-tracking-mode) — `stock_items`.
-- [Enum — StockMovementType](doc:enum-stock-movement-type) — `stock_movements`.
-- [Enum — StockMovementSource](doc:enum-stock-movement-source) — `stock_movements`.
-- [Enum — StockLocationKind](doc:enum-stock-location-kind) — `stock_locations`.
-- [Enum — StorageEnvironment](doc:enum-storage-environment) — `stock_locations`.
-- [Enum — StocktakeStatus](doc:enum-stocktake-status) — `stocktake_sessions`.
-- [Enum — StockUnitCondition](doc:enum-stock-unit-condition) — `stock_units`.
-- [Enum — StockReservationStatus](doc:enum-stock-reservation-status) — `stock_reservations`.
-- [Enum — RestockListStatus](doc:enum-restock-list-status) — `stock_restock_lists`.
-
 - [Enum — TimePrecision](doc:enum-time-precision) — `financial_payments, journal_entries, vehicle_events`.
 
 - [Enum — CalendarEventState](doc:enum-calendar-event-state) — `calendar_events`.

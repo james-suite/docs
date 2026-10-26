@@ -6,7 +6,7 @@ type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, migrations, enums, veiculos, estoque-despensa, migration-06-transactions, migration-07-payments, enum-payment-payer-type
+related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php
 updated: 2026-10-26
 ---
@@ -36,8 +36,6 @@ Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o u
 Para abastecimento, a linha fiscal de combustível pode alimentar o histórico do [veículo](doc:veiculos) pelo seu vínculo de item. Se houver apenas um item de combustível e desconto identificável, o valor líquido pode determinar o preço por litro. Um desconto geral numa nota com vários produtos exige alocação revisada, sem rateio automático presumido.
 
 As linhas de mercado também podem ser relacionadas a um produto do catálogo pessoal para guardar código, marca, apresentação e unidade normalizada. A partir de compras confirmadas, [produtos e preços](doc:produtos-precos) mostram evolução do preço, comparação entre lugares e uma cesta pessoal “Minha inflação”. Isso consulta observações ligadas às linhas financeiras; não cria despesas duplicadas e não confunde o indicador pessoal com um índice oficial.
-
-Uma linha confirmada pode também oferecer “Adicionar ao estoque”, após a pessoa escolher item, quantidade, lote e local. Essa ação é opcional por linha e aceita recebimento parcial. O [estoque e despensa](doc:estoque-despensa) também recebe entradas manuais, presentes e saldo inicial sem criar transação; movimentos de estoque nunca lançam despesa ou pagamento.
 
 ## Estratégia de leitura fiscal por estado
 
