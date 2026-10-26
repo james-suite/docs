@@ -13,7 +13,7 @@ updated: 2026-10-26
 
 ## Comece pelo plano
 
-O planejamento preserva a experiência dos módulos atuais e os conecta melhor: finanças com vários pagamentos, cartões, tags assistidas, empresas, veículos, diário e histórico de lugares.
+O planejamento preserva a experiência dos módulos atuais e os conecta melhor: finanças com vários pagamentos, cartões, tags assistidas, empresas, veículos, estoque doméstico, diário e histórico de lugares.
 
 - [Planejamento completo](doc:planejamento-2-0), [escopo](doc:escopo-2-0) e [decisões](doc:decisoes-e-pendencias).
 - [Modelo de dados](doc:modelo-de-dados), [migrations](doc:migrations), [enums](doc:enums) e [componentes técnicos](doc:componentes-tecnicos).
@@ -31,7 +31,7 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 | `00-planejamento/` | Visão geral, escopo, fases e decisões abertas. |
 | `01-arquitetura/` | Arquitetura, modelo de dados, UI/UX, auditoria e componentes técnicos. |
 | `02-dominios/financas/` | Finanças, cartões e acertos. |
-| `02-dominios/organizacao/` | Tags, pessoas/empresas, notificações, agenda e tarefas. |
+| `02-dominios/organizacao/` | Tags, pessoas/empresas, notificações, agenda/tarefas e estoque/despensa. |
 | `02-dominios/memoria-e-contexto/` | Diário, lugares/check-ins e IA/memória. |
 | `02-dominios/bens-e-saude/` | Veículos, patrimônio e saúde/treinos. |
 | `03-dados/` | Catálogos e especificações detalhadas de enums e migrations. |
@@ -43,7 +43,7 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 
 ### Organização pessoal
 
-[Tags](doc:tags) · [Pessoas/empresas](doc:pessoas-empresas) · [Notificações](doc:notificacoes) · [Agenda/tarefas](doc:agenda-tarefas).
+[Tags](doc:tags) · [Pessoas/empresas](doc:pessoas-empresas) · [Notificações](doc:notificacoes) · [Agenda/tarefas](doc:agenda-tarefas) · [Estoque e despensa](doc:estoque-despensa).
 
 ### Memória e contexto
 

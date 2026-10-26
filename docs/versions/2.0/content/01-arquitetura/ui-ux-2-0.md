@@ -33,6 +33,9 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 | Registrar odômetro | Ação curta na ficha do veículo, com valor, data/unidade e origem; não obriga criar abastecimento, serviço ou lançamento financeiro. |
 | Ler nota em mercado/posto | Mostrar empresa, possível filial/endereço, itens, produtos sugeridos e confiança; pedir confirmação do lugar/produto quando houver homônimos ou campos incompletos. |
 | Conferir preços | No detalhe do produto, mostrar preço por embalagem e por unidade-base, data e lugar; permitir montar uma cesta pessoal e explicar sua cobertura. |
+| Consultar estoque | Buscar item/código e ver saldo físico, reservado e disponível por local, lote, validade e condição; mostrar itens sem local atribuído. |
+| Movimentar estoque | Receber, consumir/usar, transferir, contar, ajustar ou descartar; pedir só os dados relevantes à modalidade do item. Vínculo com finanças é opcional. |
+| Repor | Sugerir quantidade entre saldo disponível, ponto mínimo e quantidade-alvo; editar lista e registrar recebimento em separado da compra financeira. |
 | Diário/check-in | Formulário responsivo no próprio site, com seleção de lugar e botão opcional para usar a localização atual após permissão do navegador. |
 
 ## Componentes próprios

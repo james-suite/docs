@@ -81,6 +81,24 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Negar a permissão ou não obter posição no navegador. | Mostrar uma explicação breve e permitir salvar o check-in com lugar selecionado ou preenchido manualmente. |
 | Editar texto íntimo do diário. | Revisão protegida no diário; Activity Log registra autoria/evento sem copiar todo o texto para diffs comuns. |
 
+## Estoque e despensa
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Compra financeira contém 6 latas; a pessoa decide guardar 4 no estoque e deixar 2 fora do controle. | Uma única despesa de 6 latas; entrada de 4 no estoque ligada à linha; nenhuma transação nova e nenhum saldo de 2 inventado. |
+| Presente recebido e adicionado ao estoque sem lançamento financeiro. | Registrar entrada, origem Gift e local; nenhuma despesa ou pagamento é criado. |
+| Uma linha financeira com 12 unidades é guardada em dois locais e dois lotes. | Entradas podem ser divididas; soma registrada não supera 12 e cada saldo preserva local/lote. |
+| Comprar dois pacotes de arroz de 500 g e consumir 250 g de um pacote aberto. | Saldo-base começa em 1 kg e passa a 750 g, com apresentação legível e aritmética exata. |
+| Mover 4 unidades de um armário para uma caixa na garagem. | Saída e entrada são gravadas juntas; o total não muda e a busca mostra o novo caminho físico. |
+| Mesmo produto tem lote A que vence antes do lote B. | Consumo sugere A primeiro; escolha manual é possível. Nenhum lote é descartado ou consumido automaticamente. |
+| Produto sem data impressa conhecida. | Validade fica vazia/desconhecida; não inferir uma data a partir do cadastro ou de outro lote. |
+| Contagem está aberta enquanto outro movimento é registrado no mesmo local. | Ao concluir, considerar o movimento concorrente no saldo esperado; divergência aprovada vira ajuste rastreável. |
+| Ajustar quantidade por perda ou erro de cadastro. | Exigir motivo e criar novo movimento; histórico anterior continua intacto e não se cria efeito financeiro. |
+| Item tem saldo físico 8, reserva ativa de 3, mínimo 6 e alvo 12. | Saldo disponível é 5 e a lista sugere até 7 para atingir o alvo; criar lista não compra nem recebe item. |
+| Ferramenta individual é emprestada e depois devolvida em condição diferente. | Unidade, pessoa responsável, datas, condição e locais ficam no histórico; checkout não é consumo nem patrimônio automático. |
+| Tentar arquivar um armário que ainda tem itens. | Bloquear ou pedir transferência/contagem para outro local antes de arquivar, preservando todos os movimentos. |
+| Usuário A tenta associar seu StockItem ao produto/linha financeira do espaço B. | Rejeitar a referência; produtos, transações, estoque e lugares permanecem isolados por espaço. |
+
 ## Produtos, preços e captura fiscal
 
 | Caso | Resultado esperado |

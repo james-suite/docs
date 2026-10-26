@@ -24,6 +24,7 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 | Classificação | Tag, TagName, TagAssignment, FinancialCategory, ClassificationRule | SaveTagsForRecord, MergeTags, ApplyClassificationRules, classificação por item. |
 | Financeiro | FinancialAccount, FinancialTransaction, FinancialTransactionItem, FiscalDocument, FiscalDocumentExtraction, FinancialPayment, PaymentAllocation | Captura com adaptador fiscal por UF e fallback FiscalExtraction revisável, vínculo de emitente/filial, SaveTransaction, PostPayment por pagador, ReversePayment, TransferFunds, consultas de caixa e consumo. |
 | Produtos e preços | Product, ProductIdentifier, MeasurementUnit, ProductPriceObservation, PriceBasket, PriceBasketItem | Associar código/descrição fiscal a produto revisável; registrar observação da linha confirmada; normalizar unidade; consultar histórico, lugar e cesta pessoal com cobertura. |
+| Estoque e despensa | StockCategory, StockLocation, StockItem, StockLot, StockMovement, StockMovementLine, StocktakeSession, StocktakeLine | Catálogo opcional de estoque, árvore física, lote/validade, ledger de quantidades, inventário e ligação opcional à linha financeira. |
 | Livro interno proposto | LedgerAccount, LedgerJournal, LedgerPosting | JournalBuilder e BalanceQuery; gate de protótipo antes da aprovação. |
 | Cartões | CreditCard, CardRuleVersion, CreditCardInvoice, CardCharge, CardInstallment, InvoicePaymentAllocation | Resolver/fechar ciclo, gerar parcelas, pagar/estornar fatura e calcular limite. |
 | Recorrências | FinancialRecurrence, RecurrenceTemplate, RecurrenceOccurrence | Prévia de datas, materialização idempotente, pausa e exceções. |
@@ -56,7 +57,7 @@ Gerar exportação, validar/importar pacote, enviar notificações, materializar
 
 TagPicker com criação inline a partir de `select-create` do SGE; FiscalDocumentCapture com revisão campo a campo; PaymentEditor para vários meios/datas e pagadores; SplitEditor com lista explícita de consumidores/pagadores; InvoicePaymentsHistory; NotificationInbox; ImportWizard; VehicleServiceEditor com vários itens e data real; VehicleDiaryEditor; PrivateFileUpload; AuditHistory.
 
-Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture e OdometerQuickEntry independente do abastecimento. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
+Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture, StockLocationTree, StockItemPicker, StockQuickMovement, StocktakeWizard, StockExpiryPanel, RestockListEditor e OdometerQuickEntry independente do abastecimento. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
 
 ## Qualidade
 

@@ -23,6 +23,7 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | --- | --- |
 | [Veículos](doc:veiculos) | Cadastro independente de patrimônio, abastecimento preenchido por nota fiscal, custos ligados a itens financeiros, serviço com data real, diário genérico, odômetro e checklist. |
 | [Produtos e preços](doc:produtos-precos) | Catálogo pessoal por código/apresentação, preços normalizados vindos de compras e comparação por lugar; cesta “Minha inflação” como evolução posterior. |
+| [Estoque e despensa](doc:estoque-despensa) | Itens alimentares e gerais, quantidades e lotes, mapa de locais, validade, contagem e reposição; compras financeiras podem abastecer o estoque, mas não são obrigatórias. |
 | [Agenda e tarefas](doc:agenda-tarefas) | Compromissos, checklists, pendências e lembretes; não duplica fatos financeiros. |
 | [Diário](doc:diario) | Texto, revisões, anexos e contexto da vida; conecta fatos reais e preserva narrativa original. |
 | [Lugares e check-ins](doc:lugares-checkins) | Check-in manual no site, com posição opcional obtida pelo navegador após ação e permissão. |

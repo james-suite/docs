@@ -24,6 +24,7 @@ updated: 2026-10-26
 - Fazer check-ins pelo próprio site; não criar API ou automação externa para iOS/Android. A posição atual pode ser preenchida pelo navegador mediante ação e permissão da pessoa.
 - Registrar odômetro sem exigir abastecimento; usar o QR/XML da nota para identificar, quando os dados permitirem, o posto/filial e associá-lo ao abastecimento.
 - Guardar produtos com códigos e histórico de preços de compras em lugares/datas diferentes, com possibilidade de uma cesta pessoal “Minha inflação”.
+- Planejar um módulo amplo de estoque/despensa para alimentos e itens gerais, com mapa de locais, quantidades, lotes e reposição. A entrada pode vir de uma linha financeira, mas o vínculo e o próprio uso do módulo são opcionais.
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
 - Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
 - IA inicial simples para classificação; visão futura de assistente pessoal com dados rastreáveis.

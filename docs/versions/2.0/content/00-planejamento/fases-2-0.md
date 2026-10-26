@@ -27,7 +27,8 @@ updated: 2026-10-26
 - [ ] **11 — Diário e lugares:** notas/revisões, cadastro de lugares e check-in responsivo no próprio site, com localização opcional solicitada pela pessoa. [Diário](doc:diario) e [lugares](doc:lugares-checkins).
 - [ ] **12 — Patrimônio e saúde/treinos:** valores e unidades reproduzíveis, sem duplicação financeira; módulos podem ter releases próprios. [Patrimônio](doc:patrimonio) e [saúde](doc:saude-treinos).
 - [ ] **13 — Produtos e preços:** códigos, catálogo pessoal, unidade normalizada, lugares de compra, histórico e cesta pessoal quando houver cobertura suficiente. [Produtos e preços](doc:produtos-precos).
-- [ ] **14 — Preparação de produção:** revisão de segurança, performance, acessibilidade, backup/restore, exclusão, atualização, documentação e plano de suporte. Aprovar quais módulos compõem o primeiro lançamento.
+- [ ] **14 — Estoque e despensa:** árvore de locais, categorias, saldo por movimentos, contagem, lotes/validade, reposição e vínculos financeiros opcionais, em etapas conforme [o plano do módulo](doc:estoque-despensa). [Migrations 22–23](doc:migrations).
+- [ ] **15 — Preparação de produção:** revisão de segurança, performance, acessibilidade, backup/restore, exclusão, atualização, documentação e plano de suporte. Aprovar quais módulos compõem o primeiro lançamento.
 
 ## Checklist por funcionalidade, inspirado no SGE
 
