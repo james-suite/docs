@@ -18,7 +18,7 @@ updated: 2026-10-25
 | `Suggest` | `suggest` | Sugestões aguardam revisão humana; padrão. |
 | `AutomaticExistingTags` | `automatic_existing_tags` | Aplicação opcional de tags existentes, com validação de IDs/revisão e política autorizada pelo usuário. |
 
-Categorias e nomes novos continuam exigindo revisão. Modo automático não substitui tags manuais, não aplica resultados antigos e não modifica dinheiro ou outros campos. A preferência guarda sua versão para explicar qual política autorizou a atribuição.
+O modo automático só pode aplicar tags existentes. Criar tags novas exige confirmação; categorias financeiras ficam fora da classificação por IA. Modo automático não substitui tags manuais, não aplica resultados antigos e não modifica dinheiro ou outros campos. A preferência guarda sua versão para explicar qual política autorizou a atribuição.
 
 Não usar a confiança autodeclarada do modelo como garantia. O modo automático só avança após avaliação com exemplos representativos e comportamento de desfazer. Falha ou resultado inválido vira sugestão/erro controlado, nunca criação arbitrária de tags.
 

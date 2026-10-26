@@ -1,7 +1,7 @@
 ---
 id: ia-e-memoria
-title: IA e memória pessoal do James
-description: Assistência simples com tags agora e uma base rastreável para o assistente pessoal futuro.
+title: IA para classificação e documentos fiscais
+description: Sugestões de tags para transações e itens, com leitura fiscal por IA somente como fallback.
 type: domain-plan
 status: proposed
 visibility: public
@@ -13,9 +13,9 @@ updated: 2026-10-26
 
 ## Direção de produto
 
-Evoluir o James para um assistente que encontre relações e responda sobre a vida do próprio usuário. A fundação é guardar dados corretos, datas, fontes, vínculos e permissões. A primeira entrega prioriza classificação, com sugestões por padrão e aplicação opcional de tags existentes. A extração fiscal por IA é um uso separado e restrito, somente como fallback autorizado quando os leitores determinísticos não atenderem. Interface de conversa, memória vetorial e ações autônomas pertencem a fases futuras.
+No escopo planejado para o James 2.0, a IA tem duas funções: sugerir tags para transações e seus itens, podendo propor uma tag nova quando o catálogo não atender; e atuar como fallback na leitura de notas fiscais quando o XML, o QR ou um leitor determinístico disponível para a UF não resolver o documento. Uma tag nova só é criada após confirmação da pessoa. A IA não cria nem altera categorias financeiras.
 
-Registrar mais dados só ajuda quando cada dado tem significado e pode ser corrigido, exportado e apagado. O registro de uma compra não prova uma visita; uma sugestão de IA não prova um fato biográfico; ausência de dados não significa que um evento não aconteceu.
+O modelo não confirma fatos financeiros. Valores, estabelecimento, produtos e outros campos extraídos da nota permanecem como candidatos para revisão. Assistente conversacional, memória vetorial e ações autônomas são possibilidades futuras e não fazem parte dessas funções planejadas para o 2.0.
 
 ## Chaves e provedores: recomendação inicial
 
@@ -25,15 +25,15 @@ Credenciais pessoais ficam criptografadas no servidor, mascaradas na UI e fora d
 
 Não alternar silenciosamente de provedor, chave ou modelo quando houver falha ou quota excedida. Uma conexão local pode ser suportada futuramente, mas endpoints arbitrários fornecidos por usuários exigem controle próprio de rede e não entram no primeiro formulário.
 
-## Pipeline inicial de classificação
+## Sugestão de tags para transações e itens
 
 1. Aplicar regra local explícita por empresa/texto e opções já confirmadas.
-2. Se solicitado, enviar só a descrição e o contexto mínimo necessário, com lista limitada de tags/categorias daquele espaço.
-3. Exigir resposta estruturada e validar novamente cada ID, limite de tamanho e pertença ao espaço.
+2. Se solicitado, enviar só a descrição, o tipo de registro e o contexto mínimo necessário, com a lista limitada de tags daquele espaço.
+3. Exigir resposta estruturada e validar novamente cada ID, limite de tamanho e pertença ao espaço. Nomes novos ficam separados das tags existentes e passam por verificação de duplicidade.
 4. Registrar execução, provedor/modelo, versão do prompt, revisão do registro, uso e resultado sanitizado.
-5. Mostrar sugestão para aceitar ou recusar. Após validação do modo automático, o usuário pode autorizar aplicação de tags existentes, com revisão/escopo rechecados e possibilidade de desfazer. Categoria e nome novo exigem revisão; escolhas manuais não são substituídas.
+5. Mostrar sugestões para aceitar ou recusar. Após validação do modo automático, o usuário pode autorizar aplicação de tags existentes, com revisão/escopo rechecados e possibilidade de desfazer. Criar uma tag nova exige confirmação explícita; escolhas manuais não são substituídas.
 
-O resultado do modelo não pode definir `space_id`, executar SQL, chamar ferramentas financeiras nem disparar pagamentos. Descrições e comprovantes são conteúdo não confiável, inclusive se contiverem instruções para a IA.
+O resultado do modelo não pode definir `space_id`, categoria financeira, executar SQL, chamar ferramentas financeiras nem disparar pagamentos. Descrições e comprovantes são conteúdo não confiável, inclusive se contiverem instruções para a IA.
 
 ## Fallback para documentos fiscais
 
@@ -51,11 +51,11 @@ Reservar orçamento antes da chamada; registrar consumo por usuário e conexão;
 
 Ao mudar a transação ou seu catálogo, sugestões antigas passam a desatualizadas. Falha de IA não impede salvar dados nem escolher tags manualmente. Não guardar prompts e respostas completos por padrão quando bastarem hash, versão e resultado estruturado; definir retenção curta para diagnóstico opcional.
 
-## Base para o futuro “JARVIS”
+## Possibilidade futura: “JARVIS”
 
-A proposta de `records` e vínculos tipados organiza fontes reais: pessoa, empresa, compra, evento de veículo, diário, lugar e compromisso. A busca começa textual e por filtros. Embeddings, conversas e memória derivada só entram quando houver uma jornada validada, com índices que preservem o mesmo escopo e exclusão dos dados originais.
+Uma evolução para assistente pessoal exigiria uma jornada e planejamento próprios. Não está incluída nas funções de IA previstas para o 2.0. A proposta de `records` e vínculos tipados pode organizar fontes reais, mas não autoriza por si só busca conversacional, embeddings ou memória derivada.
 
-Uma resposta futura precisa apontar fontes e período. Fatos extraídos guardam referência, revisão e estado de confirmação; não substituir o registro original por um resumo. Diário, saúde e localização ficam fora da IA por padrão. Apagar/revogar uma fonte deve invalidar resumos, caches e índices derivados.
+Se essa evolução for retomada, respostas precisarão apontar fontes e período; fatos extraídos guardarão referência, revisão e estado de confirmação. Apagar ou revogar uma fonte deverá invalidar resumos, caches e índices derivados.
 
 ## Tecnologia a avaliar em 2027
 

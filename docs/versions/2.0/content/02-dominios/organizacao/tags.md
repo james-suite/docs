@@ -1,7 +1,7 @@
 ---
 id: tags
 title: Tags, categorias e criação no combobox
-description: Classificação financeira, etiquetas transversais e sugestões assistidas por IA.
+description: Categorias e tags transversais, com sugestões de tags assistidas por IA.
 type: domain-plan
 status: proposed
 visibility: public
@@ -36,9 +36,9 @@ A atribuição guarda origem (`manual`, `rule`, `ai`, `import`), responsável e,
 
 ## Automação inicial
 
-Priorizar regras locais explicáveis por empresa, texto, histórico e tipo de operação. A IA entra como sugestão de tags/categoria quando essas regras não bastarem, com retorno estruturado limitado aos IDs autorizados. Nova tag sugerida pela IA exige confirmação; não criar um catálogo interminável automaticamente.
+Priorizar regras locais explicáveis por empresa, texto, histórico e tipo de operação. Quando as regras não bastarem, a IA pode sugerir tags para transações e itens de transação, com retorno estruturado limitado aos IDs autorizados. Pode propor um nome novo se nenhuma tag servir, mas criar essa tag exige confirmação. A IA não sugere nem altera categorias financeiras; não criar um catálogo interminável automaticamente.
 
-Sugestões pendentes mostram motivo resumido, origem e opções aceitar/recusar. Uma opção pessoal pode automatizar somente tags existentes após validação do modo, com desfazer e sem sobrepor escolhas humanas; categorias e novos nomes continuam sujeitos à revisão. Não tratar a “confiança” declarada pelo modelo como probabilidade calibrada. Se o registro mudou depois da solicitação, a sugestão fica desatualizada e não é aplicada. Correções podem alimentar regras do próprio usuário sem treinar um modelo nem compartilhar dados entre pessoas.
+Sugestões pendentes mostram motivo resumido, origem e opções aceitar/recusar. Uma opção pessoal pode automatizar somente a aplicação de tags existentes após validação do modo, com desfazer e sem sobrepor escolhas humanas; tags novas sempre exigem confirmação. Categorias financeiras podem ser atribuídas manualmente ou por regras locais, sem classificação por IA. Não tratar a “confiança” declarada pelo modelo como probabilidade calibrada. Se o registro mudou depois da solicitação, a sugestão fica desatualizada e não é aplicada. Correções podem alimentar regras do próprio usuário sem treinar um modelo nem compartilhar dados entre pessoas.
 
 ## Migração
 

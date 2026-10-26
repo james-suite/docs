@@ -17,13 +17,12 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 
 | Case | Valor persistido | Significado |
 | --- | --- | --- |
-| `TagSuggestion` | `tag_suggestion` | Sugerir tags |
-| `CategorySuggestion` | `category_suggestion` | Sugerir categoria |
+| `TagSuggestion` | `tag_suggestion` | Sugerir tags para uma transação ou um item de transação; pode propor nome novo, sempre sujeito à confirmação antes de criar a tag. |
 | `FiscalExtraction` | `fiscal_extraction` | Extrair candidatos estruturados de documento fiscal quando um leitor determinístico não atender e o usuário permitir o envio |
 
 ## Regras e transições
 
-Conjunto inicial restrito. Resumo de diário, chat, extração de fatos pessoais e ações autônomas precisam de contrato próprio antes de novos cases. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
+Conjunto inicial restrito às duas funções descritas no domínio de [IA](doc:ia-e-memoria). Sugestões de tags não criam nem alteram categorias financeiras. Chat, extração de fatos pessoais e ações autônomas não fazem parte do escopo atual. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
 
 ## Persistência
 

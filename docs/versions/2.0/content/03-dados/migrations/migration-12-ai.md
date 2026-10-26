@@ -32,7 +32,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, connection_id, enabled, classification_mode, policy_revision` | Seleção explícita de conexão; ClassificationMode com padrão Suggest e revisão da preferência para autoria da automação. |
-| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos por função e orçamento. Diário/saúde/localização e envio de documento fiscal à IA desligados até autorização explícita. |
+| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos por função e orçamento. Permitir somente classificação de tags e fallback fiscal; cada função começa desativada até autorização explícita. |
 
 ## `ai_runs`
 
@@ -46,8 +46,9 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `run_id, record_id, status, proposed_category_id` | SuggestionStatus e referências autorizadas. |
+| `run_id, record_id, status` | SuggestionStatus e referência ao registro cuja transação ou item receberá sugestões de tags. |
 | `proposed_tags` | Tabela filha classification_suggestion_tags com tag_id; novo nome sugerido fica separado e exige confirmação. |
+| `proposed_new_tag_names` | Tabela filha `classification_suggestion_new_tags` com `proposed_name` e `normalized_name`, sem FK de tag até a aceitação. Confirmar explicitamente; então criar a tag e sua atribuição ao registro na mesma transação, verificando duplicidade. |
 | `reviewed_by_user_id, reviewed_at, accepted_policy_revision, reason` | Revisão humana ou aceite automático sob política autorizada; actor de sistema não finge revisão humana. Sem cadeia de pensamento do modelo. |
 
 ## `ai_usage_entries`

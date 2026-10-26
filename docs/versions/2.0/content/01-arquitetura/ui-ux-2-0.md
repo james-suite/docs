@@ -23,7 +23,7 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 | --- | --- |
 | Registrar compra | Descrição e valor primeiro; itens e vários pagamentos em painéis progressivos; mostrar valor pago e restante. |
 | Escolher tags | Busca + múltiplas seleções + Criar no próprio formulário; salvar nomes pendentes transacionalmente. |
-| Aceitar IA | Sugestões identificadas com aceitar/recusar; escolhas manuais preservadas e falha da IA não bloqueia formulário. |
+| Aceitar IA | Sugestões de tags em transações/itens com aceitar/recusar; tag nova exige confirmação, escolhas manuais são preservadas e falha da IA não bloqueia o formulário. Fallback fiscal também exige revisão dos campos extraídos. |
 | Pagar fatura | Histórico de pagamentos e contas de origem; distinguir fechamento, dívida, atraso e quitação. |
 | Dividir despesa | Perguntar quem consumiu e quem pagou; “eu” opcional, parcela zero permitida. |
 | Arquivar instrumento | Mostrar saldo, faturas e recorrências afetadas; ocultar seletores usuais, manter histórico e quitações antigas. |

@@ -32,7 +32,7 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 | `01-arquitetura/` | Arquitetura, modelo de dados, UI/UX, auditoria e componentes técnicos. |
 | `02-dominios/financas/` | Finanças, cartões e acertos. |
 | `02-dominios/organizacao/` | Tags, pessoas/empresas, notificações, agenda e tarefas. |
-| `02-dominios/memoria-e-contexto/` | Diário, lugares/check-ins e IA/memória. |
+| `02-dominios/memoria-e-contexto/` | Diário, lugares/check-ins e IA. |
 | `02-dominios/bens-e-saude/` | Veículos, patrimônio e saúde/treinos. |
 | `03-dados/` | Catálogos e especificações detalhadas de enums e migrations. |
 | `04-migracao/` | Importação do arquivo e compatibilidade com o James 1.x. |
@@ -47,7 +47,7 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 
 ### Memória e contexto
 
-[Diário](doc:diario) · [Lugares/check-ins](doc:lugares-checkins) · [IA e memória](doc:ia-e-memoria).
+[Diário](doc:diario) · [Lugares/check-ins](doc:lugares-checkins) · [IA](doc:ia-e-memoria).
 
 ### Bens e saúde
 

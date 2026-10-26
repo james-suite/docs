@@ -36,7 +36,7 @@ Fundação comum: identidade/escopo, arquivos privados, auditoria, tags, unidade
 - Rateio distingue consumidores e pagadores; nenhum acesso a outra conta é necessário.
 - Catálogo de pessoas e organizações oferece identidade reutilizável para fornecedor, prestador, contato e lugar.
 - Notificações têm outbox e tentativas; leitura interna não se mistura com transporte externo.
-- IA é opcional, executada em contexto autorizado e inicialmente produz sugestões de classificação.
+- IA é opcional e restrita a sugestões de tags para transações/itens e fallback fiscal autorizado; tags novas exigem confirmação e categorias financeiras não são classificadas por IA.
 - Diário/check-ins enriquecem a memória pessoal por registros manuais e automações pontuais autorizadas.
 
 ## Gates de modelagem

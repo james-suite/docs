@@ -26,7 +26,7 @@ updated: 2026-10-26
 - Guardar produtos com códigos e histórico de preços de compras em lugares/datas diferentes, com possibilidade de uma cesta pessoal “Minha inflação”.
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
 - Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
-- IA inicial simples para classificação; visão futura de assistente pessoal com dados rastreáveis.
+- IA no 2.0 limitada a sugerir tags para transações/itens e usar extração fiscal como fallback; tag nova requer confirmação. Assistente pessoal amplo fica fora do escopo atual.
 
 ## Propostas técnicas para revisar
 

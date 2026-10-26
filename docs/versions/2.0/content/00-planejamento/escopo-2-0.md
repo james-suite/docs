@@ -28,7 +28,7 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | [Lugares e check-ins](doc:lugares-checkins) | Check-in manual no site, com posição opcional obtida pelo navegador após ação e permissão. |
 | [Patrimônio](doc:patrimonio) | Bens, avaliações e documentos sem duplicar ativos financeiros ou veículos. |
 | [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas, privadas e independentes de IA. |
-| [IA e memória](doc:ia-e-memoria) | Sugestão de classificação no início; busca/assistente com fontes em etapa posterior. |
+| [IA](doc:ia-e-memoria) | Sugestões de tags para transações e itens, com criação de tag nova mediante confirmação; fallback para leitura fiscal quando os leitores disponíveis não atenderem. |
 
 ## Corte do primeiro lançamento
 
@@ -38,4 +38,4 @@ Cada módulo só avança para implementação com campos, estados, ações, auto
 
 ## Evoluções posteriores
 
-Colaboração entre usuários, conta bancária conjunta, integração Apple Health, sincronização bancária, chat com acesso amplo, embeddings e ações autônomas não são pré-requisitos do núcleo 2.0. Precisam de jornadas e decisões próprias, mantendo os dados pessoais isolados.
+Colaboração entre usuários, conta bancária conjunta, integração Apple Health, sincronização bancária, assistente conversacional, embeddings e ações autônomas não são pré-requisitos do núcleo 2.0. A visão de um assistente pessoal mais amplo fica fora do escopo atual de IA e exige jornada e decisões próprias, mantendo os dados pessoais isolados.
