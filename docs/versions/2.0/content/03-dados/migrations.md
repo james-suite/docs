@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, modelo-de-dados, enums, componentes-tecnicos, fases-2-0, compatibilidade-legado
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Como usar este catálogo
@@ -40,6 +40,7 @@ Números são identificadores editoriais. Dependências adicionais devem ser res
 - [Migration 18 — Bens e avaliações](doc:migration-18-assets) — patrimônio.
 - [Migration 19 — Saúde e treinos](doc:migration-19-health) — saúde e treinos.
 - [Migration 20 — Exportação, importação e mapeamento legado](doc:migration-20-imports) — portabilidade.
+- [Migration 21 — Catálogo de produtos e preços observados](doc:migration-21-products) — catálogo pessoal, preços comparáveis e cestas.
 
 ## Evolução sem tabelas prematuras
 

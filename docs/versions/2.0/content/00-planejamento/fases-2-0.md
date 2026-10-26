@@ -17,16 +17,17 @@ updated: 2026-10-26
 - [ ] **01 — Provas de modelagem:** validar documento/pagamento/alocação, livro interno e records com compra mista, fatura parcial, reembolso e rateio sem parcela própria. Definir fonte única dos saldos antes de escrever todas as migrations.
 - [ ] **02 — Fundação:** starter kit de 2027, Flux 2 gratuito, identidade, espaço pessoal, Policies, tipos monetários, mídia privada e auditoria. [Pacotes 00–02](doc:migrations).
 - [ ] **03 — Pessoas e classificação:** contatos/empresas/grupos, tags/categorias, aliases, combobox com criação e regras locais. [Pessoas](doc:pessoas-empresas) e [tags](doc:tags).
-- [ ] **04 — Financeiro:** documentos e itens, leitura revisável de XML/QR/imagem, pagador explícito, múltiplos pagamentos, transferências, estornos, relatórios e arquivamento. Provar idempotência e somas sob concorrência. [Finanças](doc:financas).
+- [ ] **04 — Financeiro:** documentos e itens, leitura revisável de XML/QR/imagem, adaptadores fiscais por UF (avaliar o scraper existente do RS), pagador explícito, múltiplos pagamentos, transferências, estornos, relatórios e arquivamento. Provar idempotência e somas sob concorrência. [Finanças](doc:financas).
 - [ ] **05 — Cartões e recorrências:** ciclos congelados, parcelas, várias contas por fatura, limite e ocorrências sem duplicatas. [Cartões](doc:cartoes).
 - [ ] **06 — Acertos:** participantes/pagadores distintos, parcela própria zero, obrigações e liquidações com integração financeira. [Acertos](doc:acertos).
 - [ ] **07 — Comunicação:** central de atenção, preferências individuais, outbox e tentativas, resumos e lembretes que acompanham o domínio. [Notificações](doc:notificacoes).
 - [ ] **08 — Migração real:** backport do exportador por navegador no 1.x, pacote consistente, upload no 2.0, prévia para a própria conta e reconciliação. Automatizar os cenários de [compatibilidade](doc:compatibilidade-legado).
-- [ ] **09 — IA inicial:** conexões pessoais/instalação explícitas, orçamento e sugestões de tags/categorias. Sem chat amplo nem ferramentas de pagamento. [IA](doc:ia-e-memoria).
+- [ ] **09 — IA inicial:** conexões pessoais/instalação explícitas, orçamento e sugestões de tags/categorias. Fallback FiscalExtraction só após leitor estruturado/UF indisponível, com permissão por documento e revisão obrigatória. Sem chat amplo nem ferramentas de pagamento. [IA](doc:ia-e-memoria).
 - [ ] **10 — Veículos e organização:** cadastro que não exige bem patrimonial, abastecimento preenchido pela nota e ligado ao item financeiro, pagador explícito, serviços com datas reais, diário genérico, odômetro, checklists, tarefas e manutenção. [Veículos](doc:veiculos) e [agenda](doc:agenda-tarefas).
 - [ ] **11 — Diário e lugares:** notas/revisões, lugares/check-ins e piloto com Atalhos iOS. [Diário](doc:diario) e [lugares](doc:lugares-checkins).
 - [ ] **12 — Patrimônio e saúde/treinos:** valores e unidades reproduzíveis, sem duplicação financeira; módulos podem ter releases próprios. [Patrimônio](doc:patrimonio) e [saúde](doc:saude-treinos).
-- [ ] **13 — Preparação de produção:** revisão de segurança, performance, acessibilidade, backup/restore, exclusão, atualização, documentação e plano de suporte. Aprovar quais módulos compõem o primeiro lançamento.
+- [ ] **13 — Produtos e preços:** códigos, catálogo pessoal, unidade normalizada, lugares de compra, histórico e cesta pessoal quando houver cobertura suficiente. [Produtos e preços](doc:produtos-precos).
+- [ ] **14 — Preparação de produção:** revisão de segurança, performance, acessibilidade, backup/restore, exclusão, atualização, documentação e plano de suporte. Aprovar quais módulos compõem o primeiro lançamento.
 
 ## Checklist por funcionalidade, inspirado no SGE
 

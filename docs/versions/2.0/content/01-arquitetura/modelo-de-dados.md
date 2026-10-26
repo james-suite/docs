@@ -6,7 +6,7 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: migrations, enums, financas, veiculos, arquitetura-2-0, compatibilidade-legado
+related: migrations, enums, financas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado
 source_refs:
 updated: 2026-10-26
 ---
@@ -55,6 +55,10 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Conexão de IA 1:N execuções; execução gera sugestões sujeitas à revisão da fonte.
 - Veículo 1:N leituras, abastecimentos e eventos; finanças N:N veículo/itens por `vehicle_financial_links`; evento real, despesa e compra destinada ao veículo não são o mesmo fato.
 - Asset pode apontar para no máximo um veículo, mas veículo não depende de Asset; tarefa/checklist acompanha e não comprova serviço.
+- Documento fiscal pode apontar à empresa emitente e à filial/lugar separadamente; identificadores da unidade ajudam a reconhecer posto e mercado sem inferir check-in.
+- Leitura de odômetro é observação independente e pode existir sem abastecimento, serviço ou transação.
+- Produto pessoal 1:N identificadores e observações de preço; cada observação liga uma linha financeira, produto e lugar opcional. Cestas calculam comparação usando quantidades fixas e observações reais, com cobertura explícita.
+- Party 1:N referências externas versionadas; vínculos empresariais guardam origem e revisão. Catálogos auxiliares não recebem dados fiscais privados de outras contas.
 
 ## Exclusão e histórico
 

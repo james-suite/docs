@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, pessoas-empresas, diario, ia-e-memoria, migrations
 source_refs: https://support.apple.com/guide/shortcuts/apd8ebfc4e8e/ios, https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Começar por eventos compreensíveis
@@ -16,6 +16,8 @@ updated: 2026-10-25
 Separar lugar (`places`), visita/check-in (`visits`) e amostra bruta de coordenada. Um lugar pode ser uma empresa/filial, casa ou local livre. A visita registra quando e como a presença foi informada. Coordenadas podem ser opcionais; registrar “estive na oficina” já tem valor mesmo sem GPS.
 
 Guardar início/fim, fuso observado, precisão quando houver, origem da captura e data de recebimento. Uma compra ou descrição de cartão pode sugerir o local, mas não prova que a pessoa esteve lá. Inferências ficam pendentes de confirmação.
+
+Um lugar também pode representar um estabelecimento de uma empresa, com identificador de filial e endereço fiscal. Uma nota pode sugerir o posto/mercado exato, mas isso só atualiza a relação da compra com o lugar após correspondência confiável ou revisão. Registrar o endereço do estabelecimento não exige inventar latitude/longitude nem criar uma visita.
 
 ## Entrega inicial
 

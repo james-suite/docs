@@ -30,7 +30,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `vehicle_id, observed_at, value, unit, source` | Valor exato com unidade e procedência. |
+| `vehicle_id, observed_at, value, unit, source` | Valor exato com unidade e procedência; pode ser salvo sem abastecimento, serviço ou transação. |
 | `correction_of_id, notes` | Correção explícita para erro/troca de instrumento. |
 
 ## `vehicle_events`
@@ -61,7 +61,7 @@ Links não criam transações, pagamentos ou lançamentos. Um item comprado pode
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `vehicle_event_id, fuel_type, quantity, quantity_unit, full_tank` | Dados específicos de abastecimento, ligados a evento com tipo Fueling; valor não se duplica aqui. |
-| `odometer_reading_id, place_id` | Leitura e posto; FKs adicionadas após places quando a ordem física exigir. |
+| `odometer_reading_id, place_id` | Leitura opcional e lugar/filial do posto; FKs adicionadas após places quando a ordem física exigir. |
 
 Preço líquido e preço por litro são calculados a partir do item fiscal ligado com purpose `fuel`; não guardar uma cópia que possa divergir do financeiro. Sem comprovante, o preço pode ficar desconhecido.
 
@@ -75,6 +75,7 @@ Preço líquido e preço por litro são calculados a partir do item fiscal ligad
 ## Integridade, índices e comportamento
 
 - Nenhum cálculo de consumo com float ou intervalo incompleto rotulado como média confiável.
+- Oferecer ação de registrar odômetro fora do formulário de abastecimento; aceitar leituras manuais e datadas sem evento financeiro.
 - Permitir correção de odômetro com justificativa; regras dependem da unidade e sequência temporal, não só de MAX(valor).
 - `vehicle_financial_links` é a única ponte entre módulos; não gerar segunda despesa ao consultar veículo e finanças.
 - Todos os FKs de vehicle, transaction, item e event compartilham `space_id`; se houver `financial_transaction_item_id`, o item pertence à transação indicada. Indexar linha do tempo por veículo/data e links nos dois sentidos.
@@ -82,7 +83,7 @@ Preço líquido e preço por litro são calculados a partir do item fiscal ligad
 - O pagador está no pagamento financeiro, não no veículo. Pagamento por contato ou desconhecido não movimenta uma conta pessoal nem gera acerto automaticamente.
 - `vehicle_events` registra fato ocorrido. Uma compra para o veículo sem `vehicle_event_id` não afirma que a peça foi instalada ou o serviço executado; `Note` guarda diário livre sem efeito financeiro automático.
 - O link patrimonial é opcional e fica em `assets.vehicle_id`, único quando presente. Avaliação do bem não é custo de oficina e não cria caixa.
-- Migrations físicas de fuel_events/place_id respeitam a dependência do pacote 13; manter DDL e backfill separados.
+- Migrations físicas de fuel_events/place_id respeitam a dependência do pacote 13; manter DDL e backfill separados. Um registro de abastecimento pode sugerir leitura nova, mas não exige que ela exista.
 
 ## Conversão do James 1.x
 

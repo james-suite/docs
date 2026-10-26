@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, ia-e-memoria
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Contrato proposto
@@ -19,10 +19,11 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 | --- | --- | --- |
 | `TagSuggestion` | `tag_suggestion` | Sugerir tags |
 | `CategorySuggestion` | `category_suggestion` | Sugerir categoria |
+| `FiscalExtraction` | `fiscal_extraction` | Extrair candidatos estruturados de documento fiscal quando um leitor determinístico não atender e o usuário permitir o envio |
 
 ## Regras e transições
 
-Conjunto inicial restrito. Resumo de diário, chat, extração de fatos e ações autônomas precisam de contrato próprio antes de novos cases.
+Conjunto inicial restrito. Resumo de diário, chat, extração de fatos pessoais e ações autônomas precisam de contrato próprio antes de novos cases. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
 
 ## Persistência
 

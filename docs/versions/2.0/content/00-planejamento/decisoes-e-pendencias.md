@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Confirmado pelo usuário
@@ -21,6 +21,10 @@ updated: 2026-10-25
 - Rateios podem não ter parcela própria; o usuário pode pagar/organizar sem consumir. Isso não significa conta bancária conjunta.
 - Não há relação entre contas de usuários prevista inicialmente. Contatos e participantes de rateio não precisam ser usuários.
 - Planejar módulos existentes no roadmap, empresas/relacionamentos, check-ins, diário e veículos com vários itens de serviço/checklist.
+- Registrar odômetro sem exigir abastecimento; usar o QR/XML da nota para identificar, quando os dados permitirem, o posto/filial e associá-lo ao abastecimento.
+- Guardar produtos com códigos e histórico de preços de compras em lugares/datas diferentes, com possibilidade de uma cesta pessoal “Minha inflação”.
+- Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
+- Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
 - IA inicial simples para classificação; visão futura de assistente pessoal com dados rastreáveis.
 
 ## Propostas técnicas para revisar
@@ -48,6 +52,9 @@ updated: 2026-10-25
 7. Definir limite do pacote e comportamento ao importar numa conta já preenchida; primeira proposta bloqueia mesclagem automática.
 8. Definir exclusão definitiva de conta/dados e compatibilidade com auditoria funcional vitalícia.
 9. Validar piloto de Atalhos no iPhone para check-ins em lugares escolhidos; GPS contínuo fica para projeto móvel.
+10. Conseguir notas de exemplo e escolher a ordem de cobertura das UFs sem scraper; definir que campos da nota podem ir ao LLM, conexão autorizada, orçamento e retenção.
+11. Escolher fonte, licença e política de atualização da base auxiliar de empresas; decidir quando a cobertura e qualidade permitem sugerir relações externas.
+12. Aprovar a fórmula e o limite de cobertura para o índice “Minha inflação”, mantendo cesta e período-base explícitos.
 
 ## Regra editorial
 

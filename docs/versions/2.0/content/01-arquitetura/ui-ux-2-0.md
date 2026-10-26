@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: tags, cartoes, acertos, notificacoes, veiculos, migracao-2-0, componentes-tecnicos
+related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Linguagem do produto
@@ -30,6 +30,9 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 | Notificações | Pendências acionáveis e resumos; ler, arquivar ou adiar sem confundir com status de transporte. |
 | Importar arquivo | Upload no navegador, progresso, prévia e confirmação para a própria conta, sem seletor de proprietário. |
 | Serviço de veículo | Vários itens feitos, peças e mão de obra; tarefa pendente/checklist separado do serviço realizado. |
+| Registrar odômetro | Ação curta na ficha do veículo, com valor, data/unidade e origem; não obriga criar abastecimento, serviço ou lançamento financeiro. |
+| Ler nota em mercado/posto | Mostrar empresa, possível filial/endereço, itens, produtos sugeridos e confiança; pedir confirmação do lugar/produto quando houver homônimos ou campos incompletos. |
+| Conferir preços | No detalhe do produto, mostrar preço por embalagem e por unidade-base, data e lugar; permitir montar uma cesta pessoal e explicar sua cobertura. |
 | Diário/check-in | Captura curta e revisão posterior; coordenada e texto não obrigatórios para todos os eventos. |
 
 ## Componentes próprios

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, componentes-tecnicos
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Estado e ordem
@@ -32,7 +32,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, connection_id, enabled, classification_mode, policy_revision` | Seleção explícita de conexão; ClassificationMode com padrão Suggest e revisão da preferência para autoria da automação. |
-| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos por função e orçamento. Diário/saúde/localização desligados no início. |
+| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos por função e orçamento. Diário/saúde/localização e envio de documento fiscal à IA desligados até autorização explícita. |
 
 ## `ai_runs`
 
@@ -67,9 +67,11 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 ## Integridade, índices e comportamento
 
 - Adicionar ai_run_id nullable a tag_assignments após criar ai_runs. Comparar revisão e validar IDs na Action de aceite.
+- Adicionar ai_run_id nullable a fiscal_document_extractions e uma FK composta após criar ai_runs. O job fiscal só anexa sua tentativa à execução do mesmo espaço e documento.
 - User secret não entra em payload serializado de Job; o worker carrega conexão autorizada por ID. Não alterar config global mutável para trocar chaves entre usuários.
 - Orçamento é reservado sob bloqueio antes da chamada; manter histórico de tentativas, sem cobrança dupla invisível.
 - Uma execução libera/acerta sua reserva uma única vez. Contadores do período são reconciliáveis pelas entradas de uso; verificar limites da instalação e do usuário quando ambos existirem.
+- Usar a tarefa FiscalExtraction somente como fallback permitido após o leitor estruturado/UF aplicável. Salvar processador, versão, custo e estado no histórico de extração fiscal; não guardar prompt/imagem integral em logs de IA.
 - Chave geral é opcional, habilitada por administrador e escolhida pelo usuário; sem fallback silencioso. Não incluir segredos em auditoria/exportação.
 
 ## Conversão do James 1.x

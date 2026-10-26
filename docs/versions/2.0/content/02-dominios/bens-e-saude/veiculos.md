@@ -25,6 +25,10 @@ Quando a nota contém um único item de combustível com quantidade identificáv
 
 Após selecionar ou confirmar o veículo, a leitura pode criar juntos o rascunho financeiro com itens fiscais e o evento de abastecimento, ligados à mesma linha de item. A data da nota é a data da compra; a data em que a imagem foi lida fica como metadado de captura. Dados incertos devem ser revisados antes da confirmação.
 
+O QR code pode identificar o emitente e, conforme os dados retornados pela consulta fiscal, o endereço do estabelecimento. Resolver o posto exato usa primeiro o CNPJ/identificador de filial e o endereço; coordenadas não são presumidas a partir de um nome ou endereço incompleto. Se houver mais de uma unidade possível, apresentar a escolha para revisão. A relação salva aponta para a empresa e o lugar da filial, permitindo consultar abastecimentos por posto sem criar um check-in.
+
+Para leitura, tentar XML/dados estruturados e adaptadores determinísticos por UF antes de qualquer modelo. Há um scraper de notas do RS que deve ser avaliado para reaproveitamento; cobertura de outras UFs precisa de exemplos reais e adaptadores próprios. Se nenhum leitor suportado conseguir extrair os campos, um LLM pode ser oferecido como fallback explícito, sujeito à configuração e permissão de envio daquela nota. O resultado sempre fica como candidato para revisão; falha ou recusa da IA deixa o formulário manual disponível.
+
 ## Quem pagou
 
 A nota fiscal comprova a compra, mas não necessariamente quem entregou o dinheiro nem de qual conta saiu. A confirmação registra se pagou o usuário, um contato ou se o pagador ainda é desconhecido. Só o pagamento feito com uma conta pessoal movimenta o saldo dessa conta. Pagamento por contato não cria débito bancário pessoal e também não cria automaticamente uma dívida: eventual acerto/reembolso exige vínculo explícito no módulo de [finanças e acertos](doc:acertos).
@@ -41,7 +45,7 @@ Uma visita à oficina pode ter várias operações realizadas, peças, mão de o
 
 Guardar tipo de combustível, quantidade decimal, tanque cheio/parcial, posto, veículo e leitura do odômetro. O valor líquido vem da linha financeira vinculada quando disponível; sem comprovante, o evento pode ficar sem valor. Cálculo de consumo declara o intervalo e usa abastecimentos parciais entre dois tanques cheios; leitura ou volume ausente não produz média confiável.
 
-Leituras são observações datadas com unidade e origem. Regressão do odômetro exige correção justificada ou troca do instrumento; não bloquear permanentemente um histórico real nem corrigir silenciosamente leituras passadas.
+O registro de odômetro também é uma ação independente, disponível na ficha/linha do tempo do veículo, sem abastecimento, serviço ou valor financeiro associado. Uma leitura pode ser feita ao conferir o painel, antes de uma viagem ou numa manutenção. Leituras são observações datadas com unidade, origem e nota opcional; abastecimentos e serviços podem reutilizar uma leitura existente ou criar uma nova junto do evento. Regressão do odômetro exige correção justificada ou troca do instrumento; não bloquear permanentemente um histórico real nem corrigir silenciosamente leituras passadas.
 
 ## Serviços e diário genérico
 
@@ -57,4 +61,4 @@ Modelos de checklist geram cópias para a execução. Alterar o modelo não muda
 
 ## Etapas
 
-Primeiro: cadastro independente de patrimônio, leitura de nota com revisão, vínculo financeiro, abastecimento, odômetro, eventos com vários itens e notas genéricas. Depois: recorrências por distância, alertas consolidados, pneus/componentes e análise de custo por km. Telemetria, localização automática e conexão com fabricante exigem integrações próprias.
+Primeiro: cadastro independente de patrimônio, leitura de nota com revisão, vínculo financeiro, abastecimento, odômetro manual independente, eventos com vários itens e notas genéricas. Depois: recorrências por distância, alertas consolidados, pneus/componentes e análise de custo por km. Telemetria, localização automática e conexão com fabricante exigem integrações próprias.

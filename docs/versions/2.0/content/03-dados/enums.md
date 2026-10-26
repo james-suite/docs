@@ -57,6 +57,7 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — ImportItemStatus](doc:enum-import-item-status) — `import_items`.
 
 - [Enum — PaymentMethodFamily](doc:enum-payment-method-family) — `payment_methods`.
+- [Enum — PriceObservationSource](doc:enum-price-observation-source) — `product_price_observations`.
 
 - [Enum — TimePrecision](doc:enum-time-precision) — `financial_payments, journal_entries, vehicle_events`.
 

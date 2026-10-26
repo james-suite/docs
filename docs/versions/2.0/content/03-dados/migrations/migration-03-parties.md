@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, pessoas-empresas, componentes-tecnicos
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Estado e ordem
@@ -57,10 +57,23 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | --- | --- |
 | `from_party_id, to_party_id, type_id` | Relação dirigida dentro do espaço. |
 | `valid_from, valid_until, notes` | Vigência opcional, fim não anterior ao início. |
+| `origin, source_reference_id, confidence` | Origem manual/externa, referência opcional e grau de confiança; uma sugestão externa não equivale a relação confirmada. |
+| `verified_by_user_id, verified_at` | Revisão e autoria da confirmação quando existente. |
+
+## party_external_references
+
+| Campo ou grupo | Contrato |
+| --- | --- |
+| party_id, source_code, external_id, country | Identidade da parte nesta fonte auxiliar, sem usar o identificador externo como PK local. |
+| entity_type, observed_at, source_version | Tipo da entidade, instante de consulta e versão da base/processador. |
+| field_snapshot, snapshot_schema_version | Campos externos selecionados para revisão, com payload permitido e versão explícita; não armazenar raspagem arbitrária sem limite. |
+| verified_at, verified_by_user_id | Confirmação explícita das informações aplicadas ao cadastro. |
 
 ## Integridade, índices e comportamento
 
 - Nome semelhante ou documento igual gera sugestão de duplicidade, nunca fusão automática.
+- Uma relação externa aponta para sua referência de origem e continua pendente até revisão. Atualização da fonte não substitui silenciosamente os dados locais nem altera vínculos financeiros.
+- source_reference_id em party_relationships é FK composta opcional para party_external_references do mesmo espaço.
 - Índices por espaço/nome normalizado e por documento pesquisável. Máscaras são apresentação, não persistência.
 - Preservar grupos e relações após arquivar partes. Exclusão física proibida quando referenciada em financeiro ou histórico.
 

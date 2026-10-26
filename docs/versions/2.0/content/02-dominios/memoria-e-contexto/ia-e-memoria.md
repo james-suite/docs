@@ -8,12 +8,12 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, tags, diario, lugares-checkins, notificacoes, migrations, enums
 source_refs: https://laravel.com/docs/13.x/ai-sdk
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Direção de produto
 
-Evoluir o James para um assistente que encontre relações e responda sobre a vida do próprio usuário. A fundação é guardar dados corretos, datas, fontes, vínculos e permissões. A primeira entrega de IA fica restrita à classificação, com sugestões por padrão e aplicação opcional de tags existentes; uma interface de conversa, memória vetorial e ações autônomas pertencem a fases futuras.
+Evoluir o James para um assistente que encontre relações e responda sobre a vida do próprio usuário. A fundação é guardar dados corretos, datas, fontes, vínculos e permissões. A primeira entrega prioriza classificação, com sugestões por padrão e aplicação opcional de tags existentes. A extração fiscal por IA é um uso separado e restrito, somente como fallback autorizado quando os leitores determinísticos não atenderem. Interface de conversa, memória vetorial e ações autônomas pertencem a fases futuras.
 
 Registrar mais dados só ajuda quando cada dado tem significado e pode ser corrigido, exportado e apagado. O registro de uma compra não prova uma visita; uma sugestão de IA não prova um fato biográfico; ausência de dados não significa que um evento não aconteceu.
 
@@ -34,6 +34,12 @@ Não alternar silenciosamente de provedor, chave ou modelo quando houver falha o
 5. Mostrar sugestão para aceitar ou recusar. Após validação do modo automático, o usuário pode autorizar aplicação de tags existentes, com revisão/escopo rechecados e possibilidade de desfazer. Categoria e nome novo exigem revisão; escolhas manuais não são substituídas.
 
 O resultado do modelo não pode definir `space_id`, executar SQL, chamar ferramentas financeiras nem disparar pagamentos. Descrições e comprovantes são conteúdo não confiável, inclusive se contiverem instruções para a IA.
+
+## Fallback para documentos fiscais
+
+A extração fiscal por IA é uma tarefa separada da classificação. Primeiro tentar XML/payload estruturado e um leitor determinístico disponível para a UF. Usar FiscalExtraction apenas quando esses caminhos não cobrirem o documento, com autorização específica antes de enviar nota/imagem à conexão escolhida. Aplicar orçamento e limites de dados da conexão; nenhuma falha permite trocar de provedor em silêncio.
+
+A resposta estruturada preenche apenas candidatos com proveniência e confiança por campo. A pessoa revisa emitente/filial, itens, quantidades, descontos e totais antes da confirmação. O modelo não escolhe pagador, conta, veículo, produto correspondente ou visita como fato confirmado. Se a pessoa não autorizar IA ou o leitor falhar, a edição manual continua disponível.
 
 ## Modos de aplicação
 

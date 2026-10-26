@@ -74,8 +74,21 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Oficina realiza óleo R$ 80 e mão de obra R$ 40 em uma visita. | Um evento com dois itens e despesa total R$ 120 ligada a uma transação, sem gerar R$ 240 ao consultar pelos dois módulos. |
 | Tanque cheio no km 1.000; parcial de 5 L no km 1.100; cheio com 15 L no km 1.250. | Intervalo completo considera 250 km e 20 L, resultando 12,5 km/L; não usar só os últimos 15 L nem o volume do abastecimento inicial. |
 | Marcar checklist de manutenção concluído sem registrar o serviço. | Checklist muda de estado, mas odômetro/base do plano não são atualizados como se o serviço tivesse ocorrido. |
+| Registrar 82.450 km na ficha do veículo sem abastecer nem pagar nada. | Uma leitura independente aparece na linha do tempo e atualiza as consultas futuras de distância; não cria evento de abastecimento ou transação. |
 | Compra numa empresa com endereço conhecido. | Pode sugerir associação ao lugar; não criar visita confirmada automaticamente. |
 | Editar texto íntimo do diário. | Revisão protegida no diário; Activity Log registra autoria/evento sem copiar todo o texto para diffs comuns. |
+
+## Produtos, preços e captura fiscal
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Nota de mercado tem três pacotes iguais de 500 g, GTIN conhecido e valor líquido total de R$ 24. | Revisar/associar ao produto; registrar quantidade-base de 1,5 kg, preço de R$ 8 por pacote e R$ 16/kg, ligado uma única vez à linha financeira. |
+| Duas compras do mesmo GTIN, uma em cada mercado e em meses diferentes. | Histórico compara preço por unidade-base, data e lugar sem duplicar despesas; texto original de cada nota continua preservado. |
+| Nota de vários produtos tem desconto geral de R$ 10 sem rateio por item. | Não atribuir os R$ 10 a um produto específico nem publicar preço líquido unitário como confirmado até revisar a alocação. |
+| Cesta pessoal contém quatro produtos, mas um não tem preço no período atual. | Mostrar o índice do subconjunto comparável e a cobertura; marcar como parcial. Não inventar ou interpolar o preço ausente. |
+| QR identifica empresa/endereço fiscal de um posto, mas ainda não há coordenadas. | Sugerir ou resolver a filial pelo identificador/endereço; deixar coordenadas vazias e não criar visita/check-in. |
+| UF não tem leitor determinístico disponível e a conexão fiscal de IA não foi autorizada. | Não enviar o documento a modelo; manter revisão manual e salvar normalmente. |
+| Leitor determinístico falha e usuário permite FiscalExtraction. | Criar candidatos com processador/versão e confiança disponíveis; exigir revisão humana e não confirmar pagamento, pagador, produto ou filial automaticamente. |
 
 ## Gate de aprovação
 

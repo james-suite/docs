@@ -35,6 +35,14 @@ Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o u
 
 Para abastecimento, a linha fiscal de combustível pode alimentar o histórico do [veículo](doc:veiculos) pelo seu vínculo de item. Se houver apenas um item de combustível e desconto identificável, o valor líquido pode determinar o preço por litro. Um desconto geral numa nota com vários produtos exige alocação revisada, sem rateio automático presumido.
 
+As linhas de mercado também podem ser relacionadas a um produto do catálogo pessoal para guardar código, marca, apresentação e unidade normalizada. A partir de compras confirmadas, [produtos e preços](doc:produtos-precos) mostram evolução do preço, comparação entre lugares e uma cesta pessoal “Minha inflação”. Isso consulta observações ligadas às linhas financeiras; não cria despesas duplicadas e não confunde o indicador pessoal com um índice oficial.
+
+## Estratégia de leitura fiscal por estado
+
+Manter uma fronteira de adaptadores por UF, com versão do leitor, jurisdição e campos reconhecidos registrados em cada tentativa. O scraper de RS existente deve ser inspecionado para reaproveitamento. Para outras UFs, começar por XML/dados estruturados e consultas fiscais suportadas, adicionando leitor determinístico quando houver documentos de exemplo para validar a cobertura.
+
+Se não houver adaptador compatível ou ele falhar/incompletar os campos, oferecer extração por LLM como fallback explícito, usando a conexão de IA escolhida e a permissão específica para documentos fiscais. Enviar apenas o necessário, controlar custo/quota e identificar o processador. A extração do modelo é sempre candidata, exibe confiança por campo quando disponível e exige revisão humana. Sem consentimento, conexão ou saldo, permitir leitura manual; nunca trocar provedor silenciosamente, efetivar pagamento ou confirmar a transação.
+
 ## Associações com bens e serviços
 
 Uma linha financeira pode ser associada a um veículo como compra destinada a ele, mesmo sem evento de serviço. Ao trocar depois o óleo comprado, o usuário cria o evento com a data real e pode relacionar o item adquirido. O vínculo entre finanças e veículo não cria um segundo documento ou pagamento, nem transforma uma compra em manutenção concluída.

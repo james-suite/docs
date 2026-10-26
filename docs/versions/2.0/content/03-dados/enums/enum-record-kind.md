@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, modelo-de-dados
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Contrato proposto
@@ -38,6 +38,7 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 | `AssetValuation` | `asset_valuation` | Avaliação patrimonial |
 | `WorkoutSession` | `workout_session` | Sessão de treino |
 | `MetricObservation` | `metric_observation` | Medição |
+| `Product` | `product` | Produto do catálogo pessoal |
 
 ## Regras e transições
 

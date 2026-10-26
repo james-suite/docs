@@ -22,15 +22,16 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 | Identidade | User, Space | PersonalSpaceContext, provisionar espaço pessoal, consultas por proprietário. |
 | Pessoas | Party, PartyIdentifier, PartyContactMethod, PartyGroup, PartyRelationship | Salvar, buscar alias/identificador, fusão revisada e arquivamento. |
 | Classificação | Tag, TagName, TagAssignment, FinancialCategory, ClassificationRule | SaveTagsForRecord, MergeTags, ApplyClassificationRules, classificação por item. |
-| Financeiro | FinancialAccount, FinancialTransaction, FinancialTransactionItem, FiscalDocument, FiscalDocumentExtraction, FinancialPayment, PaymentAllocation | Captura/revisão fiscal, SaveTransaction, PostPayment por pagador, ReversePayment, TransferFunds, consultas de caixa e consumo. |
+| Financeiro | FinancialAccount, FinancialTransaction, FinancialTransactionItem, FiscalDocument, FiscalDocumentExtraction, FinancialPayment, PaymentAllocation | Captura com adaptador fiscal por UF e fallback FiscalExtraction revisável, vínculo de emitente/filial, SaveTransaction, PostPayment por pagador, ReversePayment, TransferFunds, consultas de caixa e consumo. |
+| Produtos e preços | Product, ProductIdentifier, MeasurementUnit, ProductPriceObservation, PriceBasket, PriceBasketItem | Associar código/descrição fiscal a produto revisável; registrar observação da linha confirmada; normalizar unidade; consultar histórico, lugar e cesta pessoal com cobertura. |
 | Livro interno proposto | LedgerAccount, LedgerJournal, LedgerPosting | JournalBuilder e BalanceQuery; gate de protótipo antes da aprovação. |
 | Cartões | CreditCard, CardRuleVersion, CreditCardInvoice, CardCharge, CardInstallment, InvoicePaymentAllocation | Resolver/fechar ciclo, gerar parcelas, pagar/estornar fatura e calcular limite. |
 | Recorrências | FinancialRecurrence, RecurrenceTemplate, RecurrenceOccurrence | Prévia de datas, materialização idempotente, pausa e exceções. |
 | Acertos | SettlementGroup, SplitParticipant, SplitShare, SplitContribution, SettlementObligation, SettlementPayment | Rateio sem parcela própria, contribuições, liquidação parcial e projeção de saldos. |
 | Notificações | Notification, NotificationPreference, NotificationEndpoint, NotificationDelivery, NotificationDeliveryAttempt | Outbox, digest, reenvio, resolução/adiamento e deduplicação durável. |
 | IA | AiConnection, AiRun, ClassificationSuggestion, AiUsageEntry, AiBudgetPeriod | Seleção de conexão autorizada, reserva de orçamento, sugestão/revisão e falhas. |
-| Captura/diário | Place, Visit, CaptureDevice, JournalEntry, JournalEntryRevision | Check-in, captura por token restrito, diário versionado e vínculos. |
-| Veículos | Vehicle, VehicleEvent, VehicleEventItem, FuelEvent, VehicleFinancialLink, OdometerReading, MaintenancePlan | Leitura de nota, vínculo sem duplicar custos, diário genérico, serviços reais com vários itens, consumo, correção de odômetro e vencimento por km/data. |
+| Captura/diário | Place, PlaceIdentifier, Visit, CaptureDevice, JournalEntry, JournalEntryRevision | Filial/endereço, identificadores empresariais, check-in, captura por token restrito, diário versionado e vínculos. |
+| Veículos | Vehicle, VehicleEvent, VehicleEventItem, FuelEvent, VehicleFinancialLink, OdometerReading, MaintenancePlan | Lançamento independente de odômetro, leitura de nota, resolução do posto/filial, vínculo sem duplicar custos, diário genérico, serviços reais com vários itens, consumo, correção de odômetro e vencimento por km/data. |
 | Organização | Task, Checklist, ChecklistItem, CalendarEvent, CalendarSeries | Tarefas, checklist histórico, exceções de série e lembretes. |
 | Patrimônio/saúde | Asset, AssetValuation, Exercise, WorkoutRoutine, WorkoutSession, WorkoutSet, HealthObservation | Evolução patrimonial sem duplicação; treino real e unidades de medição. |
 | Portabilidade | DataExport no 1.x; ImportRun, ImportItem, LegacyIdMap no 2.0 | Gerar arquivo, analisar upload, prévia, confirmar na própria conta, reconciliar e limpar staging. |
@@ -55,7 +56,7 @@ Gerar exportação, validar/importar pacote, enviar notificações, materializar
 
 TagPicker com criação inline a partir de `select-create` do SGE; FiscalDocumentCapture com revisão campo a campo; PaymentEditor para vários meios/datas e pagadores; SplitEditor com lista explícita de consumidores/pagadores; InvoicePaymentsHistory; NotificationInbox; ImportWizard; VehicleServiceEditor com vários itens e data real; VehicleDiaryEditor; PrivateFileUpload; AuditHistory.
 
-Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
+Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket e OdometerQuickEntry independente do abastecimento. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
 
 ## Qualidade
 

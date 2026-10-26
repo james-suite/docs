@@ -51,7 +51,7 @@
         "items": [
           {
             "label": "Finanças",
-            "items": ["financas", "cartoes", "acertos"]
+            "items": ["financas", "cartoes", "acertos", "produtos-precos"]
           },
           {
             "label": "Organização pessoal",
@@ -101,6 +101,7 @@
               "enum-payment-method-family",
               "enum-payment-payer-type",
               "enum-payment-status",
+              "enum-price-observation-source",
               "enum-record-kind",
               "enum-recurrence-frequency",
               "enum-split-mode",
@@ -139,7 +140,8 @@
               "migration-17-calendar",
               "migration-18-assets",
               "migration-19-health",
-              "migration-20-imports"
+              "migration-20-imports",
+              "migration-21-products"
             ]
           }
         ]
