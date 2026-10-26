@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, lugares-checkins
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 ## Contrato proposto
@@ -17,14 +17,13 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 
 | Case | Valor persistido | Significado |
 | --- | --- | --- |
-| `Manual` | `manual` | Informado pela pessoa |
-| `Import` | `import` | Importação |
-| `Shortcut` | `shortcut` | Atalho autorizado |
-| `Native` | `native` | Aplicativo futuro |
+| `Manual` | `manual` | Informado pela pessoa no site |
+| `BrowserLocation` | `browser_location` | Posição obtida pelo navegador após ação e permissão da pessoa |
+| `Import` | `import` | Importação pelo site |
 
 ## Regras e transições
 
-Guardar método de captura separado da certeza do fato. native é previsto para evolução móvel; não representa recurso disponível na primeira entrega.
+Guardar método de captura separado da certeza do fato. `BrowserLocation` só é usado quando a pessoa aciona a captura de posição no formulário do site e o navegador a fornece.
 
 ## Persistência
 

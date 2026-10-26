@@ -31,15 +31,8 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `record_id, place_id, started_at, ended_at` | Visita; fim opcional não anterior ao início. |
-| `observed_timezone, precision_meters, source, received_at` | Qualidade, CaptureSource e hora de ingestão. |
-| `device_id, external_event_id, notes` | Deduplicação de origem e observação privada. |
-
-## `capture_devices`
-
-| Campo ou grupo | Contrato |
-| --- | --- |
-| `user_id, label, token_hash, revoked_at` | Token nunca recuperável, dispositivo e revogação. |
-| `scopes, last_seen_at` | Permissões restritas a check-ins e diagnóstico mínimo. |
+| `latitude, longitude, precision_meters, observed_timezone` | Posição pontual opcional e qualidade observada no check-in. Coordenadas devem ser ambas nulas ou válidas. |
+| `source, received_at, notes` | Origem do formulário do site, hora de gravação no servidor e observação privada. |
 
 ## place_identifiers
 
@@ -55,8 +48,8 @@ Após criar places, acrescentar a FK composta de fiscal_documents.issuer_place_i
 ## Integridade, índices e comportamento
 
 - CHECK latitude -90..90 e longitude -180..180, ambas presentes ou ambas nulas. Precisão não negativa.
-- UNIQUE(space_id, device_id, external_event_id) para eventos de integração; dispositivos e lugares do mesmo espaço.
-- Presença inferida de compra não entra como visita confirmada. Dados brutos contínuos de GPS ficam para uma migration futura com retenção/volume definidos.
+- Visitas, lugares e registros associados pertencem ao mesmo espaço; a Policy valida cada referência no envio do formulário.
+- Presença inferida de compra não entra como visita confirmada. A origem da captura é definida pelo fluxo do próprio site.
 - Uma empresa pode ser dona/operadora de vários lugares; transação e nota fiscal podem apontar para empresa e unidade separadamente. Resolver filial por identificador/endereço, e pedir revisão quando a correspondência for ambígua.
 
 ## Conversão do James 1.x
@@ -65,7 +58,7 @@ Não há visitas estruturadas para migrar. Notas antigas podem ser vinculadas ma
 
 ## Componentes previstos
 
-CreateVisit; CaptureVisitEndpoint; RevokeDevice; PlacesSearch; integração Atalhos iOS como piloto.
+CreateVisit; BrowserLocationCapture; PlacesSearch; seleção/criação de lugar no formulário.
 
 ## Checklist de implementação
 

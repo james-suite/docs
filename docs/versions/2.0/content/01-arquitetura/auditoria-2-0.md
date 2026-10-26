@@ -27,7 +27,7 @@ Histórico contextual dentro do registro e painel com filtros por módulo, sujei
 
 ## Retenção e outros históricos
 
-A convenção atual é retenção vitalícia da auditoria funcional, sem agendar `activitylog:clean`. Mudança disso exige decisão própria. Tentativas de notificações, staging, respostas técnicas de IA e GPS bruto não são Activity Log e têm contratos de retenção separados.
+A convenção atual é retenção vitalícia da auditoria funcional, sem agendar `activitylog:clean`. Mudança disso exige decisão própria. Tentativas de notificações, staging, respostas técnicas de IA e dados geográficos não são Activity Log e têm contratos de retenção separados.
 
 Tentativas de entrega e uso de IA são registros próprios: não duplicar cada mutação técnica num log genérico sem necessidade. Eliminação de dados pessoais e apagamento dos derivados de IA devem ser projetados junto da política de exclusão de conta antes do lançamento.
 

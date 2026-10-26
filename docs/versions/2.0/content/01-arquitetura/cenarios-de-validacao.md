@@ -76,6 +76,9 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Marcar checklist de manutenção concluído sem registrar o serviço. | Checklist muda de estado, mas odômetro/base do plano não são atualizados como se o serviço tivesse ocorrido. |
 | Registrar 82.450 km na ficha do veículo sem abastecer nem pagar nada. | Uma leitura independente aparece na linha do tempo e atualiza as consultas futuras de distância; não cria evento de abastecimento ou transação. |
 | Compra numa empresa com endereço conhecido. | Pode sugerir associação ao lugar; não criar visita confirmada automaticamente. |
+| Fazer check-in pelo site sem informar coordenadas. | Criar a visita com lugar e horário, sem exigir permissão de localização. |
+| Tocar em “Usar minha localização” e autorizar o navegador. | Uma posição e sua precisão são associadas somente ao check-in em andamento. |
+| Negar a permissão ou não obter posição no navegador. | Mostrar uma explicação breve e permitir salvar o check-in com lugar selecionado ou preenchido manualmente. |
 | Editar texto íntimo do diário. | Revisão protegida no diário; Activity Log registra autoria/evento sem copiar todo o texto para diffs comuns. |
 
 ## Produtos, preços e captura fiscal

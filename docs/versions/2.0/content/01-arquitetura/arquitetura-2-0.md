@@ -37,7 +37,7 @@ Fundação comum: identidade/escopo, arquivos privados, auditoria, tags, unidade
 - Catálogo de pessoas e organizações oferece identidade reutilizável para fornecedor, prestador, contato e lugar.
 - Notificações têm outbox e tentativas; leitura interna não se mistura com transporte externo.
 - IA é opcional, executada em contexto autorizado e inicialmente produz sugestões de classificação.
-- Diário/check-ins enriquecem a memória pessoal por fontes reais, sem supor aplicativo móvel ou captura contínua já disponível.
+- Diário/check-ins enriquecem a memória pessoal por registros manuais e automações pontuais autorizadas.
 
 ## Gates de modelagem
 

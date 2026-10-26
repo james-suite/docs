@@ -25,7 +25,7 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | [Produtos e preços](doc:produtos-precos) | Catálogo pessoal por código/apresentação, preços normalizados vindos de compras e comparação por lugar; cesta “Minha inflação” como evolução posterior. |
 | [Agenda e tarefas](doc:agenda-tarefas) | Compromissos, checklists, pendências e lembretes; não duplica fatos financeiros. |
 | [Diário](doc:diario) | Texto, revisões, anexos e contexto da vida; conecta fatos reais e preserva narrativa original. |
-| [Lugares e check-ins](doc:lugares-checkins) | Check-in manual e piloto com Atalhos iOS; origem e precisão explícitas. |
+| [Lugares e check-ins](doc:lugares-checkins) | Check-in manual no site, com posição opcional obtida pelo navegador após ação e permissão. |
 | [Patrimônio](doc:patrimonio) | Bens, avaliações e documentos sem duplicar ativos financeiros ou veículos. |
 | [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas, privadas e independentes de IA. |
 | [IA e memória](doc:ia-e-memoria) | Sugestão de classificação no início; busca/assistente com fontes em etapa posterior. |
@@ -38,4 +38,4 @@ Cada módulo só avança para implementação com campos, estados, ações, auto
 
 ## Evoluções posteriores
 
-Colaboração entre usuários, conta bancária conjunta, aplicativo com GPS contínuo, integração Apple Health, sincronização bancária, chat com acesso amplo, embeddings e ações autônomas não são pré-requisitos do núcleo 2.0. Precisam de jornadas e decisões próprias, mantendo os dados pessoais isolados.
+Colaboração entre usuários, conta bancária conjunta, integração Apple Health, sincronização bancária, chat com acesso amplo, embeddings e ações autônomas não são pré-requisitos do núcleo 2.0. Precisam de jornadas e decisões próprias, mantendo os dados pessoais isolados.

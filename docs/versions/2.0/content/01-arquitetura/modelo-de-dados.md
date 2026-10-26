@@ -70,7 +70,7 @@ Auditoria funcional conserva retenção vitalícia conforme a convenção atual.
 
 Priorizar índices compostos de espaço com data/status usados nas consultas. Unicidade de ocorrências, chaves de idempotência, nomes normalizados e mapas de importação pertence ao banco. Operações de soma entre linhas usam transação e bloqueio; um CHECK por linha não valida sozinho a soma de um pagamento ou lote.
 
-Criar busca textual onde necessária e medir com dados representativos. PostgreSQL continua a referência atual; PostGIS, particionamento e vetores são decisões posteriores motivadas por consultas reais e volume. Não criar tabelas de GPS bruto ou embeddings só para antecipar todo futuro possível.
+Criar busca textual onde necessária e medir com dados representativos. PostgreSQL continua a referência atual; PostGIS, particionamento e vetores são decisões posteriores motivadas por consultas reais e volume.
 
 ## Exemplos para revisar o schema
 

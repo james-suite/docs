@@ -44,6 +44,6 @@ Números são identificadores editoriais. Dependências adicionais devem ser res
 
 ## Evolução sem tabelas prematuras
 
-A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. Diário, localização, veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. GPS contínuo, embeddings, chat com memória e colaboração entre usuários ficam sem tabelas obrigatórias nesta etapa.
+A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. Diário, localização, veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. Embeddings, chat com memória e colaboração entre usuários ficam sem tabelas obrigatórias nesta etapa.
 
 Referências cruzadas: [Enums](doc:enums), [componentes técnicos](doc:componentes-tecnicos) e [compatibilidade com o 1.x](doc:compatibilidade-legado).
