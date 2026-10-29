@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, componentes-tecnicos, compatibilidade-legado, decisoes-e-pendencias
 source_refs:
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Ordem proposta
@@ -22,7 +22,7 @@ updated: 2026-10-28
 - [ ] **06 — Acertos:** participantes/pagadores distintos, parcela própria zero, obrigações e liquidações com integração financeira. [Acertos](doc:acertos).
 - [ ] **07 — Comunicação:** central de atenção, preferências individuais, outbox e tentativas, resumos e lembretes que acompanham o domínio. [Notificações](doc:notificacoes).
 - [ ] **08 — Migração real:** backport do exportador por navegador no 1.x, pacote consistente, upload no 2.0, prévia para a própria conta e reconciliação. Automatizar os cenários de [compatibilidade](doc:compatibilidade-legado).
-- [ ] **09 — IA inicial:** conexões pessoais/instalação explícitas, orçamento e sugestões de tags para transações e itens. Pode propor tags novas, criadas somente após confirmação. Fallback FiscalExtraction apenas quando XML, QR ou leitor determinístico da UF não atender, com permissão por documento e revisão obrigatória. Sem classificação de categorias, chat ou ferramentas de pagamento. [IA](doc:ia-e-memoria).
+- [ ] **09 — IA inicial:** conexões pessoais/instalação explícitas, orçamento e sugestões de tags para transações e itens. Pode propor tags novas, criadas somente após confirmação. Fallback FiscalExtraction apenas quando XML, QR ou leitor determinístico da UF não atender, com permissão por documento e revisão obrigatória. Avaliar à parte TransactionDraft sem nota, sempre iniciando como Draft e sem efetivar pagamentos. Sem classificação de categorias, chat ou ferramentas de pagamento. [IA](doc:ia-e-memoria).
 - [ ] **10 — Veículos e organização:** cadastro que não exige bem patrimonial, abastecimento preenchido pela nota e ligado ao item financeiro, pagador explícito, serviços com datas reais, diário genérico, odômetro, checklists, tarefas, agenda local e feed `.ics` somente leitura por URL secreta para iOS. Se aprovada, incluir comandos naturais delimitados para agenda, com alvo validado e confirmação para editar/excluir. [Veículos](doc:veiculos) e [agenda](doc:agenda-tarefas).
 - [ ] **11 — Diário e lugares:** notas/revisões, cadastro de lugares e check-in responsivo no próprio site, com localização opcional solicitada pela pessoa. [Diário](doc:diario) e [lugares](doc:lugares-checkins).
 - [ ] **12 — Patrimônio e saúde/treinos:** valores e unidades reproduzíveis, sem duplicação financeira; módulos podem ter releases próprios. [Patrimônio](doc:patrimonio) e [saúde](doc:saude-treinos).

@@ -6,16 +6,16 @@ type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, financas, pessoas-empresas, lugares-checkins, veiculos, migration-21-products, migration-06-transactions
+related: planejamento-2-0, financas, ia-e-memoria, pessoas-empresas, lugares-checkins, veiculos, migration-21-products, migration-06-transactions
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 ## Compras como fonte do histórico
 
 Uma linha de produto extraída de nota fiscal pode alimentar o catálogo pessoal e o histórico de preços depois de conferida. Cada observação aponta para a linha financeira original, para o produto identificado e, quando resolvido, para a filial ou lugar da compra. Assim, o preço não vira uma segunda despesa nem se perde a ligação com o comprovante.
 
-O catálogo pertence ao espaço pessoal. Nome, marca, variante, apresentação e códigos como GTIN/EAN ajudam a reconhecer produtos; esquema e país do identificador ficam explícitos. O mesmo nome pode representar tamanhos ou versões diferentes. Se a nota não trouxer código, o James sugere uma correspondência por descrição, marca e embalagem e pede revisão quando houver ambiguidade. Não unir produtos diferentes apenas porque os nomes se parecem.
+O catálogo pertence ao espaço pessoal. Nome, marca, variante, apresentação e códigos como GTIN/EAN ajudam a reconhecer produtos; esquema e país do identificador ficam explícitos. O mesmo nome pode representar tamanhos ou versões diferentes. Se a linha não trouxer código, o James sugere uma correspondência por descrição, marca, embalagem e estabelecimento e pede revisão quando houver ambiguidade. Não unir produtos diferentes apenas porque os nomes se parecem.
 
 ## Preços comparáveis
 
@@ -30,6 +30,10 @@ Desconto de cabeçalho só entra no preço do produto quando estiver atribuído 
 Uma empresa (Party) pode operar muitos estabelecimentos (Place). Cada lugar guarda endereço e, se disponível, identificadores próprios da filial. A nota pode apontar para a empresa e para a filial separadamente. CNPJ de filial e endereço fiscal ajudam a resolver o posto ou mercado exato; coordenadas geográficas são outro dado e podem exigir geocodificação ou confirmação.
 
 O James pode sugerir um lugar a partir do emitente, endereço e identificadores extraídos, procurando primeiro os registros já confirmados pelo usuário. Um nome de empresa sozinho não basta para escolher entre filiais. Criar lugar ou associação com baixa confiança fica como sugestão revisável. Essa compra não cria check-in confirmado.
+
+Um produto pode ter código ou nome de venda que só faz sentido em uma loja/filial. O catálogo continua sendo pessoal, mas aliases e identificadores podem ser limitados à empresa (`Party`) ou ao estabelecimento (`Place`). Reconhecer primeiro códigos globais verificados; para códigos locais e descrições, priorizar correspondência exata no estabelecimento, depois na empresa e só então correspondência geral. Se a loja não for conhecida ou houver mais de um produto compatível, mostrar opções em vez de escolher por semelhança. Esse escopo vale tanto para itens fiscais quanto para linhas digitadas ou preparadas por IA.
+
+Uma linha digitada sem nota ou criada inicialmente por IA pode formar observação `ManualEntry` depois que a pessoa confirmar produto, valor, quantidade/unidade e local conhecido. O rótulo original e a origem manual permanecem registrados; o fato de a IA ter ajudado a preparar a transação fica na proveniência/auditoria.
 
 ## “Minha inflação”
 

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Organização da implementação
@@ -22,14 +22,14 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 | Identidade | User, Space | PersonalSpaceContext, provisionar espaço pessoal, consultas por proprietário. |
 | Pessoas | Party, PartyIdentifier, PartyContactMethod, PartyGroup, PartyRelationship | Salvar, buscar alias/identificador, fusão revisada e arquivamento. |
 | Classificação | Tag, TagName, TagAssignment, FinancialCategory, ClassificationRule | SaveTagsForRecord, MergeTags, ApplyClassificationRules, classificação por item. |
-| Financeiro | FinancialAccount, FinancialTransaction, FinancialTransactionItem, FiscalDocument, FiscalDocumentExtraction, FinancialPayment, PaymentAllocation | Captura com adaptador fiscal por UF e fallback FiscalExtraction revisável, vínculo de emitente/filial, SaveTransaction, PostPayment por pagador, ReversePayment, TransferFunds, consultas de caixa e consumo. |
-| Produtos e preços | Product, ProductIdentifier, MeasurementUnit, ProductPriceObservation, PriceBasket, PriceBasketItem | Associar código/descrição fiscal a produto revisável; registrar observação da linha confirmada; normalizar unidade; consultar histórico, lugar e cesta pessoal com cobertura. |
+| Financeiro | FinancialAccount, FinancialTransaction, FinancialTransactionItem, FiscalDocument, FiscalDocumentExtraction, FinancialPayment, PaymentAllocation | Captura manual/por texto e adaptador fiscal por UF com fallback revisável; DraftTransactionFromText, ReviewAiTransactionDraft, vínculo de emitente/filial, PostPayment por pagador, ReversePayment, TransferFunds, consultas de caixa e consumo. |
+| Produtos e preços | Product, ProductIdentifier, ProductAlias, MeasurementUnit, ProductPriceObservation, PriceBasket, PriceBasketItem | Associar código/descrição com escopo global, de empresa ou estabelecimento; registrar observação de linha confirmada; normalizar unidade; consultar histórico e cesta pessoal com cobertura. |
 | Livro interno proposto | LedgerAccount, LedgerJournal, LedgerPosting | JournalBuilder e BalanceQuery; gate de protótipo antes da aprovação. |
 | Cartões | CreditCard, CardRuleVersion, CreditCardInvoice, CardCharge, CardInstallment, InvoicePaymentAllocation | Resolver/fechar ciclo, gerar parcelas, pagar/estornar fatura e calcular limite. |
 | Recorrências | FinancialRecurrence, RecurrenceTemplate, RecurrenceOccurrence | Prévia de datas, materialização idempotente, pausa e exceções. |
 | Acertos | SettlementGroup, SplitParticipant, SplitShare, SplitContribution, SettlementObligation, SettlementPayment | Rateio sem parcela própria, contribuições, liquidação parcial e projeção de saldos. |
 | Notificações | Notification, NotificationPreference, NotificationEndpoint, NotificationDelivery, NotificationDeliveryAttempt | Outbox, digest, reenvio, resolução/adiamento e deduplicação durável. |
-| IA | AiConnection, AiRun, ClassificationSuggestion, CalendarCommandProposal, AiUsageEntry, AiBudgetPeriod | Seleção de conexão autorizada, reserva de orçamento, sugestão/revisão de tags, rascunho tipado de comando de agenda e falhas. |
+| IA | AiConnection, AiRun, ClassificationSuggestion, CalendarCommandProposal, AiUsageEntry, AiBudgetPeriod | Seleção de conexão autorizada, reserva de orçamento, sugestão/revisão de tags, comandos de agenda e captura tipada de transação por texto, se aprovados. |
 | Captura/diário | Place, PlaceIdentifier, Visit, JournalEntry, JournalEntryRevision | Filial/endereço, identificadores empresariais, check-in pelo site, localização opcional do navegador, diário versionado e vínculos. |
 | Veículos | Vehicle, VehicleEvent, VehicleEventItem, FuelEvent, VehicleFinancialLink, OdometerReading, MaintenancePlan | Lançamento independente de odômetro, leitura de nota, resolução do posto/filial, vínculo sem duplicar custos, diário genérico, serviços reais com vários itens, consumo, correção de odômetro e vencimento por km/data. |
 | Organização | Task, Checklist, ChecklistItem, CalendarEvent, CalendarSeries, CalendarFeedToken, CalendarConnection, CalendarEventExternalLink | Tarefas, checklist histórico, exceções de série, lembretes, feed privado `.ics` e conexão bidirecional opcional posterior via CalDAV/Google. |
@@ -57,7 +57,7 @@ Gerar exportação, validar/importar pacote, enviar notificações, materializar
 
 TagPicker com criação inline a partir de `select-create` do SGE; FiscalDocumentCapture com revisão campo a campo; PaymentEditor para vários meios/datas e pagadores; SplitEditor com lista explícita de consumidores/pagadores; InvoicePaymentsHistory; NotificationInbox; ImportWizard; VehicleServiceEditor com vários itens e data real; VehicleDiaryEditor; PrivateFileUpload; AuditHistory.
 
-Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture, OdometerQuickEntry independente do abastecimento e CalendarCommandComposer com revisão de alvo/alterações. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
+Incluir também FiscalIssuerPlaceMatcher, AiTransactionComposer, ProductMatcher com identificação por empresa/estabelecimento e criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture, OdometerQuickEntry independente do abastecimento e CalendarCommandComposer com revisão de alvo/alterações. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
 
 ## Consultas de referência pela BrasilAPI
 

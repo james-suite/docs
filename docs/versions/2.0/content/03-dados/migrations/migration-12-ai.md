@@ -6,16 +6,16 @@ type: migration-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, agenda-tarefas, componentes-tecnicos
+related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, agenda-tarefas, financas, componentes-tecnicos
 source_refs:
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Estado e ordem
 
 Contrato proposto, sem migration PHP executável. O número é uma ordem lógica de planejamento, não timestamp de arquivo. Na implementação, gerar migrations com Artisan e separar responsabilidades; DDL e conversão dos dados não ficam no mesmo arquivo.
 
-Dependências lógicas: 02, 04. Consulte a [ordem de migrations](doc:migrations) para resolver FKs adicionadas depois.
+Dependências lógicas: 02, 04, 06. Consulte a [ordem de migrations](doc:migrations) para resolver FKs adicionadas depois.
 
 Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](doc:modelo-de-dados). As tabelas abaixo são propostas de persistência, não funcionalidades disponíveis.
 
@@ -32,14 +32,14 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, connection_id, enabled, classification_mode, policy_revision` | Seleção explícita de conexão; ClassificationMode com padrão Suggest e revisão da preferência para autoria da automação. |
-| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_suggestion`, `fiscal_extraction` e, se aprovada, `calendar_command`; orçamento aplicável por função/conexão. Cada função começa desativada até autorização explícita. |
+| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_suggestion`, `fiscal_extraction` e, se aprovadas, `calendar_command` e `transaction_draft`; orçamento aplicável por função/conexão. Cada função começa desativada até autorização explícita. |
 
 ## `ai_runs`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, space_id, connection_id, task, status` | Solicitante e contexto imutáveis. |
-| `record_id, source_revision, prompt_version, input_hash` | Proveniência para rejeitar resultado antigo. |
+| `record_id, source_revision, prompt_version, input_hash` | Proveniência para rejeitar resultado antigo. Em TransactionDraft, record_id aponta para a transação recém-criada em estado Draft. |
 | `idempotency_key, provider_request_id, failure_code` | Chave única, cobrança ambígua rastreável e erro sanitizado. |
 
 ## `classification_suggestions`
@@ -62,6 +62,12 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | `reviewed_by_user_id, reviewed_at, automatic_policy_revision, applied_at, failure_code` | Autor e modo da decisão, aplicação idempotente e falha sanitizada. Criação automática só pode ocorrer após preferência explícita e autorização separada. |
 
 Um pedido ambíguo não gera proposta aplicável: solicita esclarecimento ou registra candidatos identificáveis para a pessoa escolher. Editar, cancelar e excluir exigem confirmação mostrando o alvo e a mudança. Se a proposta expirar ou a agenda mudar, não aplicar automaticamente.
+
+## `financial_transactions` — execução de `TransactionDraft`
+
+Não criar uma segunda tabela de proposta financeira: o resultado aprovado pelo validador nasce como `financial_transactions.state=draft`, com seus itens conhecidos, e `ai_runs.record_id` guarda a proveniência. A chave idempotente do run impede criar outro rascunho em repetição. A pessoa edita esse mesmo rascunho e chama ConfirmTransaction pelo fluxo financeiro normal; descarte usa a regra de rascunho existente.
+
+TransactionDraft nunca cria `fiscal_documents`. Não exigir itens quando a pessoa só informou descrição/total; se houver linhas, seus totais devem reconciliar. Pagamentos não são criados nem efetivados pela tarefa. O campo `party_id` ou referências de produto só recebem IDs resolvidos no mesmo espaço, com revisão de correspondência quando houver ambiguidade. A confirmação humana e o histórico permanecem na auditoria financeira.
 
 ## `ai_usage_entries`
 
@@ -87,6 +93,7 @@ Um pedido ambíguo não gera proposta aplicável: solicita esclarecimento ou reg
 - Uma execução libera/acerta sua reserva uma única vez. Contadores do período são reconciliáveis pelas entradas de uso; verificar limites da instalação e do usuário quando ambos existirem.
 - Usar a tarefa FiscalExtraction somente como fallback permitido após o leitor estruturado/UF aplicável. Salvar processador, versão, custo e estado no histórico de extração fiscal; não guardar prompt/imagem integral em logs de IA.
 - CalendarCommand só recebe a mensagem explícita e o contexto mínimo de eventos candidatos quando necessário; nunca envia o calendário inteiro por padrão nem chama integração externa por conta própria.
+- TransactionDraft só recebe a descrição explícita e contexto mínimo de contraparte/produto autorizado. IDs e valores passam por validação no servidor; pedidos repetidos usam idempotência. Nunca escolher ou efetivar conta, cartão, pagador, categoria ou pagamento por inferência.
 - Chave geral é opcional, habilitada por administrador e escolhida pelo usuário; sem fallback silencioso. Não incluir segredos em auditoria/exportação.
 
 ## Conversão do James 1.x
@@ -95,7 +102,7 @@ Não há IA no 1.x para migrar. Tags e escolhas humanas viram base de regras loc
 
 ## Componentes previstos
 
-SuggestClassification; ReviewSuggestion; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas.
+SuggestClassification; ReviewSuggestion; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; DraftTransactionFromText; ReviewAiTransactionDraft; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas.
 
 ## Checklist de implementação
 

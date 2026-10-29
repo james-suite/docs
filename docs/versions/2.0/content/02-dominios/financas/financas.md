@@ -6,9 +6,9 @@ type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
+related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, ia-e-memoria, produtos-precos, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php, https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Proposta central
@@ -32,6 +32,12 @@ Exemplo: uma compra de R$ 150 tem um pagamento de R$ 50 por Pix e outro de R$ 10
 O usuário pode capturar uma NFC-e/XML ou imagem e revisar os campos extraídos antes de salvar. A leitura preenche contraparte, data e linhas com descrição, quantidade, preço, desconto e total; mantém o arquivo de origem e uma extração identificada por versão. O registro começa como rascunho. Uma nota não deve efetivar sozinha um pagamento, escolher uma conta bancária ou inferir um veículo.
 
 Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o usuário pagou, o instrumento pessoal é obrigatório e o caixa muda. Quando um contato pagou, o custo pode ficar registrado sem criar débito pessoal; eventual dívida, reembolso ou rateio nasce somente de uma decisão explícita no módulo de [acertos](doc:acertos). Custo do bem, consumo do usuário e fluxo da conta são dimensões diferentes.
+
+## Entrada simples sem documento fiscal
+
+Uma compra ou despesa pode ser registrada sem nota, com descrição, data e valor no cabeçalho e itens opcionais. A proposta é aceitar uma frase natural e transformá-la em rascunho revisável; a pessoa confirma o lançamento pelo fluxo financeiro existente. Não criar nota fiscal ou itemização fictícia. Pagamentos continuam independentes: escolher “paguei” no texto não autoriza a IA a escolher conta/cartão nem a efetivar movimentação de saldo.
+
+Se a pessoa informar produtos, relacionar as linhas a um produto de catálogo somente após correspondência confiável ou confirmação. O estabelecimento/filial faz parte do contexto de reconhecimento: um apelido ou código local de uma loja não deve identificar automaticamente produto de mesmo nome em outro lugar. Itens manuais confirmados podem alimentar o histórico de preços se produto, valor, quantidade/unidade e origem forem conhecidos.
 
 Para abastecimento, a linha fiscal de combustível pode alimentar o histórico do [veículo](doc:veiculos) pelo seu vínculo de item. Se houver apenas um item de combustível e desconto identificável, o valor líquido pode determinar o preço por litro. Um desconto geral numa nota com vários produtos exige alocação revisada, sem rateio automático presumido.
 

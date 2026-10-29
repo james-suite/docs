@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, produtos-precos, financas, migration-03-parties, migration-06-transactions, migration-13-places, enum-price-observation-source
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 ## Estado, ordem e dependências
@@ -38,14 +38,14 @@ Registrar códigos estáveis, família física, unidade-base e fator racional de
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| product_id, scheme, country, value_normalized | Identificador como GTIN/EAN/UPC ou código local, com esquema e país. |
+| product_id, scheme, country, value_normalized, party_id, place_id | Identificador como GTIN/EAN/UPC global ou código local limitado a empresa/estabelecimento. party_id e place_id definem escopo opcional; validar que o estabelecimento pertence à empresa quando ambos forem informados. |
 | source, verified_at | Origem e estado de conferência do código. |
 
-Unicidade proposta por espaço, esquema, país e código normalizado. Um código pode sugerir produto existente; conflito ou embalagem diferente precisa de revisão. Não adotar catálogo global de produtos no primeiro corte.
+Unicidade proposta por espaço, esquema, país, código normalizado e escopo. GTIN/EAN conhecido é global no catálogo pessoal; códigos internos da loja podem se repetir em outros Places. Conflito no mesmo escopo ou embalagem diferente precisa de revisão. Não adotar catálogo global de produtos no primeiro corte.
 
 ## Tabela product_aliases
 
-Guardar product_id, normalized_description, party_id nullable, source e verified_at. Unicidade por espaço/produto/emitente/descrição normalizada. party_id limita o alias a uma loja/emitente específico; a linha fiscal original continua preservada. Aliases só sugerem correspondência, não mesclam variantes.
+Guardar product_id, normalized_description, party_id nullable, place_id nullable, source e verified_at. Unicidade por espaço/produto/empresa/estabelecimento/descrição normalizada. place_id limita o alias a uma filial específica; party_id cobre a empresa quando a filial não for conhecida. Validar consistência do Place com Party. A linha original continua preservada. Aliases só sugerem correspondência, não mesclam variantes.
 
 ## financial_transaction_items
 
@@ -76,9 +76,10 @@ As FKs de filiais usam places e place_identifiers do pacote 13. Fontes auxiliare
 ## Integridade e comportamento
 
 - Produto, item, observação e lugar pertencem ao mesmo space_id; todas as FKs sensíveis usam chaves compostas.
-- Uma linha só gera observação após confirmação da compra e da correspondência de produto. Repetir extração ou confirmação é idempotente.
+- Uma linha só gera observação após confirmação da compra e da correspondência de produto. ManualEntry pode vir de linha sem nota criada por pessoa ou preparada por IA, após confirmação de produto, valor, quantidade/unidade e lugar conhecido. Repetir extração ou confirmação é idempotente.
 - Atribuição de desconto geral a itens é explícita ou segue regra determinística aprovada; não inferir desconto por produto sem base.
 - Busca por GTIN, nome normalizado e aliases deve ser indexada por espaço; aliases não transformam variantes em um mesmo produto automaticamente.
+- Resolver códigos globais verificados e, para códigos/descrições locais, procurar primeiro o Place exato, depois Party e por último correspondência geral. Dois produtos com o mesmo rótulo em lojas diferentes continuam entidades distintas; resultado ambíguo exige escolha.
 - Aliases e identificadores são únicos somente dentro do catálogo pessoal e podem ser desativados/corrigidos com histórico; não fundir registros entre contas.
 - occurred_on vem do documento/compra; data de extração e data de revisão ficam nos campos de proveniência fiscal.
 - Cestas só contam produtos com unidade/moeda comparáveis. Apresentar quantidade de observações e cobertura ao lado do índice pessoal.

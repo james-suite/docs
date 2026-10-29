@@ -6,9 +6,9 @@ type: enum-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, enums, migrations, ia-e-memoria, agenda-tarefas
+related: planejamento-2-0, enums, migrations, ia-e-memoria, agenda-tarefas, financas
 source_refs:
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Contrato proposto
@@ -20,10 +20,11 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 | `TagSuggestion` | `tag_suggestion` | Sugerir tags para uma transação ou um item de transação; pode propor nome novo, sempre sujeito à confirmação antes de criar a tag. |
 | `FiscalExtraction` | `fiscal_extraction` | Extrair candidatos estruturados de documento fiscal quando um leitor determinístico não atender e o usuário permitir o envio |
 | `CalendarCommand` | `calendar_command` | Interpretar um pedido explícito de agenda e preparar uma operação tipada de compromisso, sujeita à autorização da função e às confirmações do domínio |
+| `TransactionDraft` | `transaction_draft` | Interpretar uma descrição natural sem documento fiscal e criar um rascunho financeiro para revisão, sem efetivar pagamentos |
 
 ## Regras e transições
 
-TagSuggestion e FiscalExtraction são as funções definidas. CalendarCommand é uma proposta adicional em avaliação e só pode operar sobre agenda explicitamente autorizada. Não habilita chat geral, extração de fatos pessoais nem ações autônomas fora do conjunto tipado de comandos. Sugestões de tags não criam nem alteram categorias financeiras. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
+TagSuggestion e FiscalExtraction são as funções definidas. CalendarCommand e TransactionDraft são propostas adicionais em avaliação e exigem permissões separadas. TransactionDraft só cria estado Draft em `financial_transactions`; não escolhe nem efetiva pagamento, não cria documento fiscal e não altera categorias. Não habilita chat geral, extração de fatos pessoais nem ações autônomas fora dos comandos tipados. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
 
 ## Persistência
 

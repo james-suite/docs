@@ -1,21 +1,21 @@
 ---
 id: ia-e-memoria
-title: IA para tags, agenda e documentos fiscais
-description: Sugestões de tags, comandos delimitados para agenda e leitura fiscal por IA somente como fallback.
+title: IA para transações, tags, agenda e documentos fiscais
+description: Rascunhos de transações por texto, sugestões de tags, comandos de agenda e leitura fiscal somente como fallback.
 type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, modelo-de-dados, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, migrations, enums
+related: planejamento-2-0, modelo-de-dados, financas, produtos-precos, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, migrations, enums
 source_refs: https://laravel.com/docs/13.x/ai-sdk
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Direção de produto
 
 No escopo planejado para o James 2.0, estão definidas duas funções: sugerir tags para transações e seus itens, podendo propor uma tag nova quando o catálogo não atender; e atuar como fallback na leitura de notas fiscais quando o XML, o QR ou um leitor determinístico disponível para a UF não resolver o documento. Uma tag nova só é criada após confirmação da pessoa. A IA não cria nem altera categorias financeiras.
 
-Uma terceira função está em avaliação: interpretar pedidos explícitos de agenda em linguagem natural e preparar uma operação delimitada de criação, edição, cancelamento ou exclusão de compromisso. Isso não habilita um assistente conversacional geral, memória vetorial ou ações fora da agenda.
+Estão em avaliação duas funções adicionais e delimitadas: interpretar pedidos explícitos de agenda; e transformar uma descrição em linguagem natural em rascunho de transação sem documento fiscal. Essas propostas não habilitam um assistente conversacional geral, memória vetorial ou ações fora dos domínios descritos aqui.
 
 O modelo não confirma fatos financeiros. Valores, estabelecimento, produtos e outros campos extraídos da nota permanecem como candidatos para revisão. O modelo também não chama ferramentas de calendário diretamente: o servidor valida e executa somente as Actions permitidas, com autorização, escopo e auditoria.
 
@@ -42,6 +42,18 @@ O resultado do modelo não pode definir `space_id`, categoria financeira, execut
 A extração fiscal por IA é uma tarefa separada da classificação. Primeiro tentar XML/payload estruturado e um leitor determinístico disponível para a UF. Usar FiscalExtraction apenas quando esses caminhos não cobrirem o documento, com autorização específica antes de enviar nota/imagem à conexão escolhida. Aplicar orçamento e limites de dados da conexão; nenhuma falha permite trocar de provedor em silêncio.
 
 A resposta estruturada preenche apenas candidatos com proveniência e confiança por campo. A pessoa revisa emitente/filial, itens, quantidades, descontos e totais antes da confirmação. O modelo não escolhe pagador, conta, veículo, produto correspondente ou visita como fato confirmado. Se a pessoa não autorizar IA ou o leitor falhar, a edição manual continua disponível.
+
+## Rascunho de transação sem nota — proposta
+
+A pessoa pode escrever algo como “ontem gastei R$ 28 no Café Central” sem anexar nota. A tarefa `TransactionDraft` interpreta apenas os dados presentes e cria uma `FinancialTransaction` em estado Draft, sem `FiscalDocument`. A pessoa confere descrição, data, valor e contraparte/filial e confirma pelo fluxo normal de finanças; campos ausentes ou ambíguos geram uma pergunta, não um palpite.
+
+Uma transação resumida pode não ter itens. Se a pessoa mencionar produtos sem dizer os preços/quantidades de cada linha, preservar o total no cabeçalho e deixar a transação sem itemização até ela complementar; não inventar uma divisão. Quando informados, os valores das linhas precisam reconciliar com o total antes de confirmar. O rascunho pode sugerir uma contraparte ou produtos existentes, mas só usa IDs do mesmo espaço e correspondências aceitas. Não cria nem mescla produtos, categorias ou tags sem a revisão apropriada.
+
+Pagador, conta, cartão, forma/data do pagamento e categoria não são presumidos. Mesmo que o texto diga “paguei”, a IA não registra pagamento efetivado nem movimenta saldo; o pagamento passa pelo editor financeiro e pelas regras do domínio. Sugestões de tags continuam na tarefa separada TagSuggestion. Uma transação de texto não é fallback fiscal e não cria comprovante fiscal fictício.
+
+Para encontrar um produto, usar o estabelecimento identificado e os aliases/códigos já confirmados: correspondência no local exato tem prioridade, depois na empresa, depois identificadores globais e nomes gerais. O mesmo rótulo pode designar produtos diferentes em lojas diferentes. Se o texto não indicar loja/filial e houver candidatos conflitantes, apresentar opções; uma criação nova exige ação da pessoa. Uma linha manual só alimenta histórico de preços depois de confirmar produto, preço, quantidade/unidade e local quando conhecidos.
+
+Autorizar `transaction_draft` separadamente nas configurações de IA. Enviar somente a mensagem e o contexto mínimo de contraparte/produto que a pessoa permitiu. Registrar a execução ligada ao rascunho e usar idempotência para não duplicar uma transação em repetição de requisição.
 
 ## Comandos explícitos de agenda — proposta
 

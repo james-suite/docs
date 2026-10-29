@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0
 source_refs:
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Confirmado pelo usuário
@@ -26,6 +26,7 @@ updated: 2026-10-28
 - Guardar produtos com códigos e histórico de preços de compras em lugares/datas diferentes, com possibilidade de uma cesta pessoal “Minha inflação”.
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
 - Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
+- Considerar empresa e estabelecimento ao resolver produtos; nomes e códigos locais podem diferenciar produtos iguais de lojas distintas.
 - Funções de IA definidas: sugerir tags para transações/itens e usar extração fiscal como fallback; tag nova requer confirmação. Comandos delimitados para agenda estão em avaliação; assistente pessoal amplo fica fora do escopo atual.
 - Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV e Google Calendar por OAuth ficam como possibilidades posteriores. A agenda interna continua funcionando sem conectores.
 
@@ -41,6 +42,7 @@ updated: 2026-10-28
 | Combobox com nomes pendentes | Criar tag durante o formulário sem deixar órfãs ao cancelar. |
 | Chave de IA pessoal + conexão da instalação opcional | Separa custos e permite serviço oferecido pelo administrador com consentimento/quota; não é decisão comercial fechada. |
 | Comandos de agenda por linguagem natural | Interpretar pedidos explícitos para criar/editar/cancelar/excluir eventos; considerar auto-salvar criações inequívocas com opt-in, exigir confirmação para alterar/excluir e manter desfazer/auditoria. Não vira assistente geral. |
+| Transação simples por linguagem natural | Preparar compra sem nota como FinancialTransaction Draft; revisar dados e itens antes de confirmar; não escolher categoria, pagador ou conta nem efetivar pagamento. Confirmar a identidade de produto com escopo de empresa/estabelecimento. |
 | Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
 | Importação inicial em domínios vazios | Reduz mistura ambígua de dois históricos; mesclagem incremental requer projeto próprio. |
 | Histórico efetivado imutável | Corrigir por inversão; exceção explícita ao SoftDeletes genérico em postings/tentativas. |
@@ -60,6 +62,7 @@ updated: 2026-10-28
 11. Aprovar a fórmula e o limite de cobertura para o índice “Minha inflação”, mantendo cesta e período-base explícitos.
 12. Decidir se comandos de agenda por linguagem natural entram no escopo implementado do 2.0 e qual política de confirmação vale para criações inequívocas.
 13. Fazer um protótipo CalDAV/Google antes de fixar schema e fase; definir se a sincronização bidirecional justifica o custo depois do feed `.ics`.
+14. Decidir se a captura de transação por texto entra na IA inicial, quais campos podem ser extraídos e quando uma linha manual está completa o bastante para alimentar histórico de preço.
 
 ## Regra editorial
 

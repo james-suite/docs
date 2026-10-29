@@ -6,9 +6,9 @@ type: migration-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, produtos-precos, veiculos, migration-15-vehicles, migration-21-products, componentes-tecnicos, enum-fiscal-capture-method, enum-fiscal-extraction-status
+related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, ia-e-memoria, produtos-precos, veiculos, migration-15-vehicles, migration-21-products, componentes-tecnicos, enum-fiscal-capture-method, enum-fiscal-extraction-status
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Estado e ordem
@@ -27,7 +27,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `record_id, kind, purpose, state` | Registro e enums TransactionKind, TransactionPurpose e TransactionState. |
+| `record_id, kind, purpose, state` | Registro e enums TransactionKind, TransactionPurpose e TransactionState. Entrada por texto com IA usa Draft até confirmação financeira. |
 | `description, occurred_on, due_on` | Descrição, data econômica e vencimento opcional. |
 | `amount_minor, currency` | Valor total positivo e moeda. |
 | `party_id, default_category_id` | Contraparte e classificação de fallback opcionais. |
@@ -44,6 +44,8 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | `gross_minor, discount_minor, surcharge_minor, total_minor` | gross − discount + surcharge = total; soma dos totais dos itens igual ao cabeçalho. |
 | `is_legacy_summary` | Item sintético de resumo quando o 1.x não tinha itens; quantity/unit_price podem ser nulos nesse caso, sem inventar produtos ou quantidades. |
 | `category_id, ownership` | Categoria única e ItemOwnership para consumo próprio/terceiros. |
+
+Itens financeiros são opcionais. Uma transação simples sem nota pode guardar descrição, data e total sem inventar produto ou resumo sintético; quando houver itens, os totais precisam reconciliar com o cabeçalho. `is_legacy_summary` permanece reservado a linhas sintéticas de importação do 1.x.
 
 ## `fiscal_documents`
 
@@ -69,6 +71,7 @@ Após aceitar a leitura, os valores confirmados ficam em `financial_transactions
 
 - Registrar transação e itens atomicamente; total consistente e escala de moeda explícita. Desconto/acréscimo do cabeçalho deve ser distribuído nos itens por regra determinística ou representado por item de ajuste; não contar o mesmo ajuste duas vezes.
 - Leitura de XML/QR/imagem produz candidatos, não lançamento confirmado. Validar duplicidade por chave fiscal e, quando ausente, por impressão digital; preservar o original em armazenamento privado e não buscar URL arbitrária extraída do QR.
+- Uma transação digitada ou montada por `TransactionDraft` não precisa de `fiscal_documents`. Criar como Draft e confirmar só após revisão; não criar item, categoria ou pagamento ausente no texto.
 - Captura deve preencher emitente, estabelecimento, data e linhas quando reconhecíveis e mostrar confiança/itens ambíguos para revisão. Um nome de rede não identifica sozinho a filial. Pagador e conta não são presumidos a partir da nota fiscal.
 - Ordem de leitura: payload/XML fiscal disponível, adaptador determinístico compatível com a UF e, somente se permitido, tarefa de IA FiscalExtraction. Todo resultado permanece em rascunho para conferência; armazenar código/versão do processador, UF, custo quando houver e confiança por campo.
 - A tarefa de IA usa o pipeline autorizado do pacote 12, seu limite de gasto e a permissão específica de conteúdo fiscal. Recusa, indisponibilidade ou falha não bloqueia revisão e entrada manual; não enviar a nota a outro provedor como fallback invisível.
