@@ -6,9 +6,9 @@ type: enum-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, enums, migrations, ia-e-memoria
+related: planejamento-2-0, enums, migrations, ia-e-memoria, agenda-tarefas
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-28
 ---
 
 ## Contrato proposto
@@ -21,14 +21,15 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 | `Accepted` | `accepted` | Aceita |
 | `Rejected` | `rejected` | Recusada |
 | `Stale` | `stale` | Fonte ou catálogo mudou |
+| `Expired` | `expired` | Proposta não foi confirmada dentro do prazo |
 
 ## Regras e transições
 
-proposed → accepted/rejected/stale. Aceite revalida IDs, contexto e revisão da fonte; respostas antigas não são aplicadas automaticamente.
+proposed → accepted/rejected/stale/expired. Aceite revalida IDs, contexto e revisão da fonte; respostas antigas não são aplicadas automaticamente. Usar em sugestões de tags e propostas de comando de agenda.
 
 ## Persistência
 
-Aplicar em `classification_suggestions` conforme [migrations](doc:migrations). Persistir string com cast Eloquent e restrição de valores quando apropriado. Não usar texto traduzido como valor de banco. Valores derivados ou exibidos como filtro não devem ser persistidos novamente sem necessidade.
+Aplicar em `classification_suggestions` e `calendar_command_proposals` conforme [migrations](doc:migrations). Persistir string com cast Eloquent e restrição de valores quando apropriado. Não usar texto traduzido como valor de banco. Valores derivados ou exibidos como filtro não devem ser persistidos novamente sem necessidade.
 
 ## Checklist
 

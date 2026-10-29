@@ -23,12 +23,12 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | --- | --- |
 | [Veículos](doc:veiculos) | Cadastro independente de patrimônio, abastecimento preenchido por nota fiscal, custos ligados a itens financeiros, serviço com data real, diário genérico, odômetro e checklist. |
 | [Produtos e preços](doc:produtos-precos) | Catálogo pessoal por código/apresentação, preços normalizados vindos de compras e comparação por lugar; cesta “Minha inflação” como evolução posterior. |
-| [Agenda e tarefas](doc:agenda-tarefas) | Compromissos, checklists, pendências e lembretes; não duplica fatos financeiros. |
+| [Agenda e tarefas](doc:agenda-tarefas) | Compromissos, checklists, pendências e lembretes; não duplica fatos financeiros. Comandos por linguagem natural e conectores Apple/Google estão propostos, em fases distintas. |
 | [Diário](doc:diario) | Texto, revisões, anexos e contexto da vida; conecta fatos reais e preserva narrativa original. |
 | [Lugares e check-ins](doc:lugares-checkins) | Check-in manual no site, com posição opcional obtida pelo navegador após ação e permissão. |
 | [Patrimônio](doc:patrimonio) | Bens, avaliações e documentos sem duplicar ativos financeiros ou veículos. |
 | [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas, privadas e independentes de IA. |
-| [IA](doc:ia-e-memoria) | Sugestões de tags para transações e itens, com criação de tag nova mediante confirmação; fallback para leitura fiscal quando os leitores disponíveis não atenderem. |
+| [IA](doc:ia-e-memoria) | Funções definidas: sugestões de tags para transações/itens e fallback fiscal. Interpretação de comandos explícitos da agenda está em avaliação; criação de tag nova requer confirmação. |
 
 Consultas opcionais da BrasilAPI complementam os formulários de empresa, endereço, instituição financeira, item fiscal, veículo e agenda. São pesquisas pontuais com resultado revisável, nunca requisito para o James funcionar; usos e limites estão nos [componentes técnicos](doc:componentes-tecnicos).
 

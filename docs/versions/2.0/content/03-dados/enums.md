@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, componentes-tecnicos
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-28
 ---
 
 ## Critério
@@ -62,5 +62,6 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — TimePrecision](doc:enum-time-precision) — `financial_payments, journal_entries, vehicle_events`.
 
 - [Enum — CalendarEventState](doc:enum-calendar-event-state) — `calendar_events`.
+- [Enum — CalendarCommandAction](doc:enum-calendar-command-action) — `calendar_command_proposals`.
 
 - [Enum — CardDebtDirection](doc:enum-card-debt-direction) — `card_charges`.

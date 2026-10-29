@@ -1,21 +1,23 @@
 ---
 id: ia-e-memoria
-title: IA para classificação e documentos fiscais
-description: Sugestões de tags para transações e itens, com leitura fiscal por IA somente como fallback.
+title: IA para tags, agenda e documentos fiscais
+description: Sugestões de tags, comandos delimitados para agenda e leitura fiscal por IA somente como fallback.
 type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, modelo-de-dados, tags, diario, lugares-checkins, notificacoes, migrations, enums
+related: planejamento-2-0, modelo-de-dados, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, migrations, enums
 source_refs: https://laravel.com/docs/13.x/ai-sdk
-updated: 2026-10-26
+updated: 2026-10-28
 ---
 
 ## Direção de produto
 
-No escopo planejado para o James 2.0, a IA tem duas funções: sugerir tags para transações e seus itens, podendo propor uma tag nova quando o catálogo não atender; e atuar como fallback na leitura de notas fiscais quando o XML, o QR ou um leitor determinístico disponível para a UF não resolver o documento. Uma tag nova só é criada após confirmação da pessoa. A IA não cria nem altera categorias financeiras.
+No escopo planejado para o James 2.0, estão definidas duas funções: sugerir tags para transações e seus itens, podendo propor uma tag nova quando o catálogo não atender; e atuar como fallback na leitura de notas fiscais quando o XML, o QR ou um leitor determinístico disponível para a UF não resolver o documento. Uma tag nova só é criada após confirmação da pessoa. A IA não cria nem altera categorias financeiras.
 
-O modelo não confirma fatos financeiros. Valores, estabelecimento, produtos e outros campos extraídos da nota permanecem como candidatos para revisão. Assistente conversacional, memória vetorial e ações autônomas são possibilidades futuras e não fazem parte dessas funções planejadas para o 2.0.
+Uma terceira função está em avaliação: interpretar pedidos explícitos de agenda em linguagem natural e preparar uma operação delimitada de criação, edição, cancelamento ou exclusão de compromisso. Isso não habilita um assistente conversacional geral, memória vetorial ou ações fora da agenda.
+
+O modelo não confirma fatos financeiros. Valores, estabelecimento, produtos e outros campos extraídos da nota permanecem como candidatos para revisão. O modelo também não chama ferramentas de calendário diretamente: o servidor valida e executa somente as Actions permitidas, com autorização, escopo e auditoria.
 
 ## Chaves e provedores: recomendação inicial
 
@@ -41,9 +43,17 @@ A extração fiscal por IA é uma tarefa separada da classificação. Primeiro t
 
 A resposta estruturada preenche apenas candidatos com proveniência e confiança por campo. A pessoa revisa emitente/filial, itens, quantidades, descontos e totais antes da confirmação. O modelo não escolhe pagador, conta, veículo, produto correspondente ou visita como fato confirmado. Se a pessoa não autorizar IA ou o leitor falhar, a edição manual continua disponível.
 
+## Comandos explícitos de agenda — proposta
+
+Uma mensagem como “dia 2 de novembro às 14h tenho dentista” pode virar um rascunho tipado contendo ação, título, data/horário, fuso, duração e local somente quando informados ou resolvidos por preferências explícitas. Data incompleta deve ser interpretada com referência ao fuso e à data local atuais; se ainda houver mais de uma interpretação plausível, perguntar antes de executar.
+
+Criação inequívoca pode ser salva sem uma etapa extra quando a pessoa habilitar essa preferência; exibir o resultado e oferecer desfazer. Edição, cancelamento e exclusão apresentam o evento-alvo e as mudanças, exigindo confirmação. Excluir usa lixeira reversível; cancelar preserva o compromisso com estado Cancelled. Se o evento mudar enquanto a IA prepara a proposta, marcar como desatualizada e recalcular após revisão.
+
+A autorização dessa função é separada de classificação e extração fiscal. Enviar somente o texto necessário e, para localizar um alvo, os candidatos mínimos da agenda autorizada. Não enviar o calendário inteiro como contexto por padrão. Sem conexão permitida, orçamento ou aprovação de política, a pessoa pode continuar manualmente.
+
 ## Modos de aplicação
 
-O [ClassificationMode](doc:enum-classification-mode) distingue Suggest e AutomaticExistingTags. A automação é uma proposta opt-in depois de avaliar exemplos representativos; aplica somente tags do catálogo autorizado. O sistema registra qual política autorizou a aplicação e não inventa um revisor humano. Desfazer só remove atribuições daquela execução, preservando mudanças humanas posteriores.
+O [ClassificationMode](doc:enum-classification-mode) distingue Suggest e AutomaticExistingTags. A automação de tags é uma proposta opt-in depois de avaliar exemplos representativos; aplica somente tags do catálogo autorizado. O sistema registra qual política autorizou a aplicação e não inventa um revisor humano. Desfazer só remove atribuições daquela execução, preservando mudanças humanas posteriores. Essa política não autoriza salvar ou alterar eventos.
 
 ## Custo e falhas
 

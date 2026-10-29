@@ -29,10 +29,10 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 | Recorrências | FinancialRecurrence, RecurrenceTemplate, RecurrenceOccurrence | Prévia de datas, materialização idempotente, pausa e exceções. |
 | Acertos | SettlementGroup, SplitParticipant, SplitShare, SplitContribution, SettlementObligation, SettlementPayment | Rateio sem parcela própria, contribuições, liquidação parcial e projeção de saldos. |
 | Notificações | Notification, NotificationPreference, NotificationEndpoint, NotificationDelivery, NotificationDeliveryAttempt | Outbox, digest, reenvio, resolução/adiamento e deduplicação durável. |
-| IA | AiConnection, AiRun, ClassificationSuggestion, AiUsageEntry, AiBudgetPeriod | Seleção de conexão autorizada, reserva de orçamento, sugestão/revisão e falhas. |
+| IA | AiConnection, AiRun, ClassificationSuggestion, CalendarCommandProposal, AiUsageEntry, AiBudgetPeriod | Seleção de conexão autorizada, reserva de orçamento, sugestão/revisão de tags, rascunho tipado de comando de agenda e falhas. |
 | Captura/diário | Place, PlaceIdentifier, Visit, JournalEntry, JournalEntryRevision | Filial/endereço, identificadores empresariais, check-in pelo site, localização opcional do navegador, diário versionado e vínculos. |
 | Veículos | Vehicle, VehicleEvent, VehicleEventItem, FuelEvent, VehicleFinancialLink, OdometerReading, MaintenancePlan | Lançamento independente de odômetro, leitura de nota, resolução do posto/filial, vínculo sem duplicar custos, diário genérico, serviços reais com vários itens, consumo, correção de odômetro e vencimento por km/data. |
-| Organização | Task, Checklist, ChecklistItem, CalendarEvent, CalendarSeries | Tarefas, checklist histórico, exceções de série e lembretes. |
+| Organização | Task, Checklist, ChecklistItem, CalendarEvent, CalendarSeries, CalendarConnection, CalendarEventExternalLink | Tarefas, checklist histórico, exceções de série, lembretes e conexão opcional posterior via CalDAV/Google. |
 | Patrimônio/saúde | Asset, AssetValuation, Exercise, WorkoutRoutine, WorkoutSession, WorkoutSet, HealthObservation | Evolução patrimonial sem duplicação; treino real e unidades de medição. |
 | Dados públicos do Brasil | BrasilApiReferenceLookup | Consultas sob demanda de CNPJ, CEP, bancos, NCM, FIPE e feriados; registrar origem e data de consulta quando a resposta alimentar um cadastro. |
 | Portabilidade | DataExport no 1.x; ImportRun, ImportItem, LegacyIdMap no 2.0 | Gerar arquivo, analisar upload, prévia, confirmar na própria conta, reconciliar e limpar staging. |
@@ -51,13 +51,13 @@ Form Requests/validação Livewire aceitam somente dados do formulário; space_i
 
 ## Jobs e processos agendados
 
-Gerar exportação, validar/importar pacote, enviar notificações, materializar recorrências e chamar IA em filas. Job carrega IDs de domínio e de conexão, nunca uma API key serializada. Definir timeout, backoff, failed() sanitizado, limites externos e recuperação do estado após interrupção. UNIQUE no banco continua sendo a garantia final de idempotência.
+Gerar exportação, validar/importar pacote, enviar notificações, materializar recorrências, sincronizar calendários externos e chamar IA em filas. Job carrega IDs de domínio e de conexão, nunca uma API key serializada. Definir timeout, backoff, failed() sanitizado, limites externos e recuperação do estado após interrupção. UNIQUE no banco continua sendo a garantia final de idempotência.
 
 ## Componentes de UI
 
 TagPicker com criação inline a partir de `select-create` do SGE; FiscalDocumentCapture com revisão campo a campo; PaymentEditor para vários meios/datas e pagadores; SplitEditor com lista explícita de consumidores/pagadores; InvoicePaymentsHistory; NotificationInbox; ImportWizard; VehicleServiceEditor com vários itens e data real; VehicleDiaryEditor; PrivateFileUpload; AuditHistory.
 
-Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture e OdometerQuickEntry independente do abastecimento. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
+Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture, OdometerQuickEntry independente do abastecimento e CalendarCommandComposer com revisão de alvo/alterações. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
 
 ## Consultas de referência pela BrasilAPI
 

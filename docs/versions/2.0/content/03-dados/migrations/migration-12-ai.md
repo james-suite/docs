@@ -1,14 +1,14 @@
 ---
 id: migration-12-ai
 title: Migration 12 — IA, credenciais e sugestões
-description: Contrato lógico de tabelas, FKs, índices e conversão: ia, credenciais e sugestões.
+description: Contrato lógico de tabelas, FKs, índices e conversão: IA, credenciais e propostas.
 type: migration-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, componentes-tecnicos
+related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, agenda-tarefas, componentes-tecnicos
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -32,7 +32,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, connection_id, enabled, classification_mode, policy_revision` | Seleção explícita de conexão; ClassificationMode com padrão Suggest e revisão da preferência para autoria da automação. |
-| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos por função e orçamento. Permitir somente classificação de tags e fallback fiscal; cada função começa desativada até autorização explícita. |
+| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_suggestion`, `fiscal_extraction` e, se aprovada, `calendar_command`; orçamento aplicável por função/conexão. Cada função começa desativada até autorização explícita. |
 
 ## `ai_runs`
 
@@ -50,6 +50,18 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | `proposed_tags` | Tabela filha classification_suggestion_tags com tag_id; novo nome sugerido fica separado e exige confirmação. |
 | `proposed_new_tag_names` | Tabela filha `classification_suggestion_new_tags` com `proposed_name` e `normalized_name`, sem FK de tag até a aceitação. Confirmar explicitamente; então criar a tag e sua atribuição ao registro na mesma transação, verificando duplicidade. |
 | `reviewed_by_user_id, reviewed_at, accepted_policy_revision, reason` | Revisão humana ou aceite automático sob política autorizada; actor de sistema não finge revisão humana. Sem cadeia de pensamento do modelo. |
+
+## `calendar_command_proposals` — proposta para agenda
+
+| Campo ou grupo | Contrato |
+| --- | --- |
+| `run_id, user_id, space_id, status, expires_at` | Uma proposta vinculada à execução e ao espaço autorizado; `SuggestionStatus` e validade curta. |
+| `requested_action` | `CalendarCommandAction`: Create, Update, Cancel ou Delete. Cancelar preserva o histórico; excluir move para a lixeira. |
+| `target_event_id, target_revision` | Nulos para criação; obrigatórios para edição, cancelamento e exclusão. A migration 17 adiciona a FK após criar `calendar_events`. Revisão divergente torna a proposta stale. |
+| `proposed_title, starts_at, ends_at, starts_on, ends_on, all_day, timezone, place_id, notes, recurrence_spec` | Campos tipados e validados; não persistir payload arbitrário do modelo. Datas de dia inteiro permanecem separadas de instantes. |
+| `reviewed_by_user_id, reviewed_at, automatic_policy_revision, applied_at, failure_code` | Autor e modo da decisão, aplicação idempotente e falha sanitizada. Criação automática só pode ocorrer após preferência explícita e autorização separada. |
+
+Um pedido ambíguo não gera proposta aplicável: solicita esclarecimento ou registra candidatos identificáveis para a pessoa escolher. Editar, cancelar e excluir exigem confirmação mostrando o alvo e a mudança. Se a proposta expirar ou a agenda mudar, não aplicar automaticamente.
 
 ## `ai_usage_entries`
 
@@ -69,10 +81,12 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 - Adicionar ai_run_id nullable a tag_assignments após criar ai_runs. Comparar revisão e validar IDs na Action de aceite.
 - Adicionar ai_run_id nullable a fiscal_document_extractions e uma FK composta após criar ai_runs. O job fiscal só anexa sua tentativa à execução do mesmo espaço e documento.
+- A migration 17 cria a FK de `calendar_command_proposals.target_event_id`; a Action também valida que o evento e a execução pertencem ao mesmo usuário/espaço.
 - User secret não entra em payload serializado de Job; o worker carrega conexão autorizada por ID. Não alterar config global mutável para trocar chaves entre usuários.
 - Orçamento é reservado sob bloqueio antes da chamada; manter histórico de tentativas, sem cobrança dupla invisível.
 - Uma execução libera/acerta sua reserva uma única vez. Contadores do período são reconciliáveis pelas entradas de uso; verificar limites da instalação e do usuário quando ambos existirem.
 - Usar a tarefa FiscalExtraction somente como fallback permitido após o leitor estruturado/UF aplicável. Salvar processador, versão, custo e estado no histórico de extração fiscal; não guardar prompt/imagem integral em logs de IA.
+- CalendarCommand só recebe a mensagem explícita e o contexto mínimo de eventos candidatos quando necessário; nunca envia o calendário inteiro por padrão nem chama integração externa por conta própria.
 - Chave geral é opcional, habilitada por administrador e escolhida pelo usuário; sem fallback silencioso. Não incluir segredos em auditoria/exportação.
 
 ## Conversão do James 1.x
@@ -81,7 +95,7 @@ Não há IA no 1.x para migrar. Tags e escolhas humanas viram base de regras loc
 
 ## Componentes previstos
 
-SuggestClassification; ReviewSuggestion; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas.
+SuggestClassification; ReviewSuggestion; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas.
 
 ## Checklist de implementação
 
