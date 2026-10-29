@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, agenda-tarefas, componentes-tecnicos
-source_refs:
-updated: 2026-10-25
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -39,6 +39,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 - UNIQUE(space_id, series_id, original_occurrence_key) quando série presente.
 - Data de dia inteiro não sofre conversão UTC que altere o dia. Fim deve ser posterior ou igual conforme formato definido.
 - Editar esta ocorrência e próximas ocorrências são operações diferentes; preservar histórico e lembretes.
+- Feriados nacionais/estaduais consultados pela BrasilAPI são uma camada de leitura/cache, não `calendar_events` pessoais; a integração é contextual, não altera vencimentos e não promete feriados municipais.
 
 ## Conversão do James 1.x
 

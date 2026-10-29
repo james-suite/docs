@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
-source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php
-updated: 2026-10-26
+source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php, https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Proposta central
@@ -70,6 +70,8 @@ Transações financeiras de terceiros podem ser acompanhadas nos acertos sem inf
 `archived_at` tira o instrumento dos seletores padrão e bloqueia novas operações usuais. O saldo e o histórico continuam nos totais patrimoniais e nas consultas históricas. Arquivar não equivale a excluir nem a zerar saldo. Dívidas, estornos e conciliações de operações anteriores continuam acessíveis. Antes de arquivar, mostrar recorrências e compromissos que precisam ser redirecionados.
 
 Conta bancária conjunta entre usuários não faz parte do escopo inicial. O caso confirmado de “conta compartilhada” é [divisão de despesas sem parcela própria](doc:acertos).
+
+Ao cadastrar uma conta, a instituição brasileira pode ser pesquisada pelo catálogo de bancos da BrasilAPI e vinculada ao cadastro de instituição correspondente. É apenas preenchimento de referência; não autoriza conexão bancária, leitura de saldo ou movimentação externa. Se o catálogo não localizar a instituição, manter o nome digitável.
 
 ## Compatibilidade 1.x
 

@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, pessoas-empresas, agenda-tarefas, patrimonio, migration-15-vehicles, migration-18-assets, enum-vehicle-event-type
-source_refs:
-updated: 2026-10-26
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Veículo e patrimônio são registros independentes
@@ -16,6 +16,10 @@ updated: 2026-10-26
 O cadastro de veículo existe por si só para guardar abastecimentos, quilometragem, serviços, documentos e notas. Criar um veículo não obriga a incluí-lo no módulo de patrimônio. Quando fizer sentido acompanhar seu valor patrimonial, um bem pode apontar para aquele veículo; essa relação é opcional e única. Sem o vínculo, o veículo continua completo para uso e histórico.
 
 Se for vinculado como bem, a avaliação entra uma vez no patrimônio. O mesmo veículo não pode aparecer de novo como um segundo bem sem vínculo. Compra, manutenção e venda continuam sendo fatos financeiros próprios, não avaliações patrimoniais.
+
+### Consulta opcional à FIPE
+
+No cadastro, a consulta FIPE pode ajudar a selecionar tipo, marca, modelo, ano/combustível e guardar o código FIPE para consultas posteriores. Mostrar valor e mês da tabela juntos. O usuário pode registrar esse valor como uma avaliação do bem somente por ação explícita; sem vínculo patrimonial, ele permanece uma referência visual do veículo. Não substituir custo de aquisição, avaliação manual nem criar transação financeira.
 
 ## Nota fiscal e abastecimento
 

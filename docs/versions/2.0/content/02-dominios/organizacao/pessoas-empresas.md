@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, tags, financas, lugares-checkins, veiculos, migrations
-source_refs: https://github.com/james-suite/james/blob/master/app/Models/Contact.php
-updated: 2026-10-26
+source_refs: https://github.com/james-suite/james/blob/master/app/Models/Contact.php, https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Base proposta
@@ -28,6 +28,10 @@ Interações registram encontro, ligação, serviço ou observação com data e 
 ## Busca e aprendizado local
 
 Aliases de empresa facilitam reconhecer lançamentos de cartão e NFC-e. Uma regra de categorização pode apontar para empresa confirmada. O emitente fiscal e a filial são identificações distintas; quando os dados do QR/XML contêm identificador e endereço, o James tenta resolver o lugar exato. Se só houver nome da rede, não adivinhar qual loja ou posto foi visitado. O sistema sugere correspondências, mas uma fusão de partes exige revisão, mantém os IDs de origem e pode ser desfeita quando tecnicamente seguro.
+
+### Consulta de CNPJ
+
+Ao informar um CNPJ, oferecer uma ação para consultar a BrasilAPI e sugerir razão social, nome de uso e dados cadastrais básicos do estabelecimento. Preencher os campos como candidatos editáveis; mostrar a origem e a data da consulta. A filial identificada pelo CNPJ não deve ser fundida automaticamente com uma matriz ou outro cadastro, e dados de sócios não são necessários para esse fluxo. Se a consulta falhar ou estiver indisponível, o cadastro manual continua completo.
 
 ## Limites
 

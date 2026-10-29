@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, componentes-tecnicos
-source_refs:
-updated: 2026-10-25
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -47,6 +47,8 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | `name, archived_at` | Conta interna; usuário não precisa operar um plano contábil completo. |
 
 ## Integridade, índices e comportamento
+
+A seleção de instituição pode consultar o catálogo de bancos da BrasilAPI por código/nome. Persistir apenas a referência confirmada em `institution_party_id` e, quando útil, o identificador externo em `party_identifiers`; permitir digitação manual. Essa consulta não cria conexão, credencial ou sincronização bancária.
 
 - A camada ledger é proposta técnica com gate de protótipo. Se for recusada, revisar 05/07/08 juntos antes de implementar; não manter duas fontes de saldo.
 - Saldo inicial é uma operação rastreável, não coluna mutável na conta.

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: financas, tags, veiculos, diario, migrations, enums, decisoes-e-pendencias
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-28
 ---
 
 ## Núcleo que deve migrar
@@ -29,6 +29,8 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | [Patrimônio](doc:patrimonio) | Bens, avaliações e documentos sem duplicar ativos financeiros ou veículos. |
 | [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas, privadas e independentes de IA. |
 | [IA](doc:ia-e-memoria) | Sugestões de tags para transações e itens, com criação de tag nova mediante confirmação; fallback para leitura fiscal quando os leitores disponíveis não atenderem. |
+
+Consultas opcionais da BrasilAPI complementam os formulários de empresa, endereço, instituição financeira, item fiscal, veículo e agenda. São pesquisas pontuais com resultado revisável, nunca requisito para o James funcionar; usos e limites estão nos [componentes técnicos](doc:componentes-tecnicos).
 
 ## Corte do primeiro lançamento
 

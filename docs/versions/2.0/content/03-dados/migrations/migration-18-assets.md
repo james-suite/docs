@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, patrimonio, componentes-tecnicos
-source_refs:
-updated: 2026-10-26
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -32,8 +32,8 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `record_id, asset_id, valued_on, amount_minor, currency, source` | Avaliação datada com fonte e valor não negativo. |
-| `notes` | Critério/observação, sem gerar entrada de caixa. |
+| `record_id, asset_id, valued_on, amount_minor, currency, source` | Avaliação datada com fonte e valor não negativo. Uma cotação FIPE confirmada é uma fonte possível. |
+| `source_reference, notes` | Referência externa como código/mês da tabela FIPE e critério/observação; não gerar entrada de caixa. |
 
 ## Integridade, índices e comportamento
 

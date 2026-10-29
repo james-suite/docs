@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, produtos-precos, veiculos, migration-15-vehicles, migration-21-products, componentes-tecnicos, enum-fiscal-capture-method, enum-fiscal-extraction-status
-source_refs:
-updated: 2026-10-26
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -40,6 +40,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | --- | --- |
 | `record_id, transaction_id, position` | Identidade vinculável, pai do mesmo espaço e ordem única por transação. |
 | `description, quantity, unit_price` | Quantidade e preço exatos com escala; não float. |
+| `fiscal_ncm_code` | Código NCM opcional copiado da linha fiscal original; consulta externa pode validar descrição e vigência, sem transformar NCM em identidade de produto ou tag. |
 | `gross_minor, discount_minor, surcharge_minor, total_minor` | gross − discount + surcharge = total; soma dos totais dos itens igual ao cabeçalho. |
 | `is_legacy_summary` | Item sintético de resumo quando o 1.x não tinha itens; quantity/unit_price podem ser nulos nesse caso, sem inventar produtos ou quantidades. |
 | `category_id, ownership` | Categoria única e ItemOwnership para consumo próprio/terceiros. |
@@ -71,6 +72,7 @@ Após aceitar a leitura, os valores confirmados ficam em `financial_transactions
 - Captura deve preencher emitente, estabelecimento, data e linhas quando reconhecíveis e mostrar confiança/itens ambíguos para revisão. Um nome de rede não identifica sozinho a filial. Pagador e conta não são presumidos a partir da nota fiscal.
 - Ordem de leitura: payload/XML fiscal disponível, adaptador determinístico compatível com a UF e, somente se permitido, tarefa de IA FiscalExtraction. Todo resultado permanece em rascunho para conferência; armazenar código/versão do processador, UF, custo quando houver e confiança por campo.
 - A tarefa de IA usa o pipeline autorizado do pacote 12, seu limite de gasto e a permissão específica de conteúdo fiscal. Recusa, indisponibilidade ou falha não bloqueia revisão e entrada manual; não enviar a nota a outro provedor como fallback invisível.
+- Quando a linha da nota contiver NCM, permitir consultar o catálogo da BrasilAPI para mostrar descrição e vigência do código na data fiscal. Preservar o código original; não inferir NCM pelo nome do produto nem usar a descrição fiscal para mesclar produtos ou atribuir tags.
 - Linhas fiscais podem receber product_id e base_quantity/base_unit por FKs adicionadas no pacote 21. A observação de preço só nasce após confirmar a identidade do produto, a compra e a quantidade/unidade comparável.
 - Só aplicar desconto geral ao preço unitário de combustível automaticamente quando há um único item de combustível e quantidade identificável. Nota com vários itens exige atribuição explícita do desconto; valor total e linhas precisam reconciliar antes de confirmar.
 - Sem itens no legado, criar um resumo identificado com valor conhecido, sem fabricar produto ou quantidade. Substituir o resumo por itens detalhados exige reconciliação e histórico.

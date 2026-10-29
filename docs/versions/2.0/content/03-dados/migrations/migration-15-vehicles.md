@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, veiculos, financas, patrimonio, componentes-tecnicos, enum-vehicle-event-type, enum-vehicle-financial-link-purpose
-source_refs:
-updated: 2026-10-26
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -23,7 +23,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `record_id, nickname, make, model, model_year` | Identificação opcionalmente detalhada; cadastro é útil mesmo sem um bem patrimonial. |
+| `record_id, nickname, make, model, model_year, fipe_code` | Identificação opcionalmente detalhada; `fipe_code` pode ligar o veículo a uma variante consultada e confirmada; cadastro é útil mesmo sem um bem patrimonial. |
 | `plate, vin, distance_unit, acquired_on, disposed_on, archived_at` | Dados privados, unidade e ciclo de posse. |
 
 ## `vehicle_odometer_readings`

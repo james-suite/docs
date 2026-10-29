@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0
-source_refs:
-updated: 2026-10-26
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Organização da implementação
@@ -34,6 +34,7 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 | Veículos | Vehicle, VehicleEvent, VehicleEventItem, FuelEvent, VehicleFinancialLink, OdometerReading, MaintenancePlan | Lançamento independente de odômetro, leitura de nota, resolução do posto/filial, vínculo sem duplicar custos, diário genérico, serviços reais com vários itens, consumo, correção de odômetro e vencimento por km/data. |
 | Organização | Task, Checklist, ChecklistItem, CalendarEvent, CalendarSeries | Tarefas, checklist histórico, exceções de série e lembretes. |
 | Patrimônio/saúde | Asset, AssetValuation, Exercise, WorkoutRoutine, WorkoutSession, WorkoutSet, HealthObservation | Evolução patrimonial sem duplicação; treino real e unidades de medição. |
+| Dados públicos do Brasil | BrasilApiReferenceLookup | Consultas sob demanda de CNPJ, CEP, bancos, NCM, FIPE e feriados; registrar origem e data de consulta quando a resposta alimentar um cadastro. |
 | Portabilidade | DataExport no 1.x; ImportRun, ImportItem, LegacyIdMap no 2.0 | Gerar arquivo, analisar upload, prévia, confirmar na própria conta, reconciliar e limpar staging. |
 
 ## Casts, valores e helpers
@@ -57,6 +58,23 @@ Gerar exportação, validar/importar pacote, enviar notificações, materializar
 TagPicker com criação inline a partir de `select-create` do SGE; FiscalDocumentCapture com revisão campo a campo; PaymentEditor para vários meios/datas e pagadores; SplitEditor com lista explícita de consumidores/pagadores; InvoicePaymentsHistory; NotificationInbox; ImportWizard; VehicleServiceEditor com vários itens e data real; VehicleDiaryEditor; PrivateFileUpload; AuditHistory.
 
 Incluir também FiscalIssuerPlaceMatcher, ProductMatcher com criação revisável, PriceHistory, PersonalPriceBasket, BrowserLocationCapture e OdometerQuickEntry independente do abastecimento. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
+
+## Consultas de referência pela BrasilAPI
+
+Usos propostos, sempre ligados a uma ação ou formulário do usuário:
+
+| Domínio | Consulta | Rota (sufixo da documentação) | Uso no James |
+| --- | --- | --- | --- |
+| Pessoas e empresas | CNPJ | `/cnpj/v1/{cnpj}` | Sugerir razão social, nome de uso e dados do estabelecimento para preencher Party/Place. |
+| Endereços | CEP | `/cep/v1/{cep}`, opcionalmente `/cep/v2/{cep}` | Preencher endereço de lugar; coordenadas da versão 2 são apenas uma sugestão aproximada associada ao CEP. |
+| Finanças | Bancos | `/banks/v1`, `/banks/v1/{code}` | Pesquisar instituição e código ao cadastrar conta financeira; não conecta à conta nem consulta saldo. |
+| Notas e produtos | NCM | `/ncm/v1/{code}` ou `/ncm/v1?search=...` | Conferir código, descrição e vigência do NCM quando ele já vier na linha fiscal. Não identifica sozinho o produto comercial nem cria tags. |
+| Veículos e patrimônio | FIPE | `/fipe/detalhes/v1/...`, `/fipe/preco/v1/{fipeCode}` | Ajudar a selecionar marca/modelo/ano e consultar valor por código e mês de referência. |
+| Agenda | Feriados | `/feriados/v1/{ano}?uf={UF}` | Marcar feriados nacionais e estaduais como contexto; não alterar compromisso nem vencimento automaticamente. |
+
+Manter chamadas sob demanda, com timeout, limite de repetição e edição manual disponível em qualquer falha. Registrar BrasilAPI como origem e a data da consulta nos dados externos aceitos; guardar separado o que o usuário corrigiu. Seguir os termos e limites do serviço: sem crawling, varredura de faixas ou atualização em loop. Aplicar cache somente conforme a política de cada endpoint e nunca armazenar respostas de erro que a documentação proíba cachear. As respostas são referências para revisão, não confirmação de identidade, endereço atual, valor de venda ou presença física.
+
+Referência: [documentação e termos da BrasilAPI](https://brasilapi.com.br/docs).
 
 ## Qualidade
 

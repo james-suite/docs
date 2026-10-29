@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, pessoas-empresas, componentes-tecnicos
-source_refs:
-updated: 2026-10-26
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Estado e ordem
@@ -32,6 +32,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `party_id, scheme, country, value_normalized` | Documento/identificador normalizado. Unicidade por parte e esquema, sem unicidade global entre espaços. |
+| `source_code, retrieved_at, verified_at` | Procedência opcional do identificador consultado em fonte pública, como BrasilAPI; revisão humana permanece distinta da data de consulta. |
 
 ## `party_contact_methods`
 

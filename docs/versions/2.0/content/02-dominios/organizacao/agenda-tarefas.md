@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, notificacoes, veiculos, diario, migrations
-source_refs:
-updated: 2026-10-25
+source_refs: https://brasilapi.com.br/docs
+updated: 2026-10-28
 ---
 
 ## Contrato
@@ -26,3 +26,5 @@ Uma tarefa pode estar vinculada a diário, veículo, pessoa ou compra. O víncul
 ## Limites iniciais
 
 Não planejar colaboração entre usuários, convites a terceiros ou sincronização bidirecional de calendários antes de requisitos próprios. Importação/exportação ICS e integração externa são posteriores à consistência da agenda local.
+
+O calendário pode oferecer uma camada visual de feriados nacionais e estaduais consultados por ano/UF. A fonte BrasilAPI não cobre todos os feriados municipais; não apresentar a lista como calendário legal completo nem deslocar vencimentos, tarefas ou compromissos automaticamente. Se a consulta estiver indisponível, os eventos pessoais continuam funcionando.
