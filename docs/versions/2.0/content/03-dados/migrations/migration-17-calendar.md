@@ -44,9 +44,19 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 - `calendar_command_proposals.target_event_id` recebe FK para `calendar_events` neste pacote; o pacote 12 cria a proposta antes da tabela.
 - Exclusão gera tombstone suficiente para propagar remoção aos conectores e evitar que a sincronização recrie o evento.
 
-## Integrações externas — fase posterior
+## Feed `.ics` por URL secreta — primeira integração iOS
 
-Uma conta CalDAV do James pode ser adicionada no Calendário do iPhone como conta própria. Um feed `.ics` é uma alternativa simples, somente leitura; não equivale à sincronização bidirecional. Google Calendar usa OAuth e a API Google Calendar. Ambos podem estar conectados ao mesmo espaço se a pessoa os habilitar.
+O James oferece um feed de assinatura somente leitura, acessível por URL secreta. O iPhone busca esse feed periodicamente; mudanças feitas no James aparecem após a próxima atualização do Calendário. Alterações feitas na cópia assinada no iPhone não voltam ao James. O feed inclui apenas eventos ativos do espaço autorizado e não é indexável/publicamente listado, mas qualquer pessoa que obtenha a URL consegue ler os eventos.
+
+| Tabela | Campos e invariantes |
+| --- | --- |
+| `calendar_feed_tokens` | `space_id, owner_user_id, name, token_hash, expires_at, revoked_at, last_accessed_at`. UNIQUE(token_hash); segredo aleatório de alta entropia mostrado uma vez e armazenado somente como hash. Usuário pode revogar/rotacionar cada feed e ver último acesso. |
+
+URL do feed funciona como credencial, não como uma sessão autenticada do James: exigir HTTPS, limitar a dados do dono/espaço, usar respostas privadas sem cache compartilhado, remover o token de logs e referenciadores, permitir expiração e revogação imediata. A emissão do link requer aviso de que qualquer pessoa com a URL poderá ler os eventos até sua revogação.
+
+## Sincronização bidirecional — fase posterior
+
+Uma conta CalDAV do James pode ser adicionada no Calendário do iPhone como conta própria. Google Calendar usa OAuth e a API Google Calendar. Ambos podem estar conectados ao mesmo espaço se a pessoa os habilitar.
 
 Antes de habilitar sincronização bidirecional, planejar a extensão destas tabelas:
 
@@ -56,7 +66,7 @@ Antes de habilitar sincronização bidirecional, planejar a extensão destas tab
 | `calendar_event_external_links` | `connection_id, calendar_event_id, external_event_id, external_revision, sync_state, last_synced_at`. UNIQUE por evento/conexão e por ID externo/conexão; identidade externa nunca é inferida só pelo título. |
 | `calendar_sync_runs` | `connection_id, direction, idempotency_key, cursor, status, started_at, completed_at, error_code`. Cursors/sync tokens pertencem à conexão e precisam ser atualizados atomicamente com os eventos aceitos. |
 
-As tabelas de conector só entram na migration física quando CalDAV/Google tiverem protótipo e regras aprovadas. Resolver edição concorrente com revisão/ETag e escolha explícita; não sobrescrever silenciosamente eventos alterados fora do James. Respeitar exclusão, escopo por usuário e revogação do conector. Para feeds `.ics`, usar segredo revogável e calendário limitado; não expor URL pública previsível.
+As tabelas de conector só entram na migration física quando CalDAV/Google tiverem protótipo e regras aprovadas. Resolver edição concorrente com revisão/ETag e escolha explícita; não sobrescrever silenciosamente eventos alterados fora do James. Respeitar exclusão, escopo por usuário e revogação do conector.
 
 ## Conversão do James 1.x
 

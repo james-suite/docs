@@ -27,7 +27,7 @@ updated: 2026-10-28
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
 - Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
 - Funções de IA definidas: sugerir tags para transações/itens e usar extração fiscal como fallback; tag nova requer confirmação. Comandos delimitados para agenda estão em avaliação; assistente pessoal amplo fica fora do escopo atual.
-- Avaliar integração de agenda com Calendário do iPhone por CalDAV ou `.ics`, com Google Calendar por OAuth, podendo habilitar uma ou as duas. A agenda interna continua funcionando sem conectores.
+- Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV e Google Calendar por OAuth ficam como possibilidades posteriores. A agenda interna continua funcionando sem conectores.
 
 ## Propostas técnicas para revisar
 
@@ -41,7 +41,7 @@ updated: 2026-10-28
 | Combobox com nomes pendentes | Criar tag durante o formulário sem deixar órfãs ao cancelar. |
 | Chave de IA pessoal + conexão da instalação opcional | Separa custos e permite serviço oferecido pelo administrador com consentimento/quota; não é decisão comercial fechada. |
 | Comandos de agenda por linguagem natural | Interpretar pedidos explícitos para criar/editar/cancelar/excluir eventos; considerar auto-salvar criações inequívocas com opt-in, exigir confirmação para alterar/excluir e manter desfazer/auditoria. Não vira assistente geral. |
-| Sincronização com calendários externos | iPhone pode assinar feed `.ics` ou usar CalDAV do James; Google usa API OAuth. Aprovar quais entram no primeiro marco e como tratar conflitos, duplicatas, calendário padrão e exclusões. |
+| Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
 | Importação inicial em domínios vazios | Reduz mistura ambígua de dois históricos; mesclagem incremental requer projeto próprio. |
 | Histórico efetivado imutável | Corrigir por inversão; exceção explícita ao SoftDeletes genérico em postings/tentativas. |
 
@@ -59,7 +59,7 @@ updated: 2026-10-28
 10. Escolher fonte, licença e política de atualização da base auxiliar de empresas; decidir quando a cobertura e qualidade permitem sugerir relações externas.
 11. Aprovar a fórmula e o limite de cobertura para o índice “Minha inflação”, mantendo cesta e período-base explícitos.
 12. Decidir se comandos de agenda por linguagem natural entram no escopo implementado do 2.0 e qual política de confirmação vale para criações inequívocas.
-13. Fazer um protótipo CalDAV/Google antes de fixar schema e fase; decidir se o iPhone conecta uma conta CalDAV do James ou se a primeira entrega fica em feed `.ics` somente leitura.
+13. Fazer um protótipo CalDAV/Google antes de fixar schema e fase; definir se a sincronização bidirecional justifica o custo depois do feed `.ics`.
 
 ## Regra editorial
 
