@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, lugares-checkins, pessoas-empresas, produtos-precos, componentes-tecnicos
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## Estado e ordem
@@ -51,6 +51,7 @@ Após criar places, acrescentar a FK composta de fiscal_documents.issuer_place_i
 - CHECK latitude -90..90 e longitude -180..180, ambas presentes ou ambas nulas. Precisão não negativa.
 - Visitas, lugares e registros associados pertencem ao mesmo espaço; a Policy valida cada referência no envio do formulário.
 - Presença inferida de compra não entra como visita confirmada. A origem da captura é definida pelo fluxo do próprio site.
+- `visits` representa check-ins/visitas. `activity_location_contexts` representa onde ocorreu uma ação de registro e não deve criar visita nem substituir `places.latitude/longitude`.
 - Uma empresa pode ser dona/operadora de vários lugares; transação e nota fiscal podem apontar para empresa e unidade separadamente. Resolver filial por identificador/endereço, e pedir revisão quando a correspondência for ambígua.
 
 ## Conversão do James 1.x

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, modelo-de-dados, enums, componentes-tecnicos, fases-2-0, compatibilidade-legado
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 ## Como usar este catálogo
@@ -44,6 +44,6 @@ Números são identificadores editoriais. Dependências adicionais devem ser res
 
 ## Evolução sem tabelas prematuras
 
-A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. Diário, localização, veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. Embeddings, chat com memória e colaboração entre usuários ficam sem tabelas obrigatórias nesta etapa.
+A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. A preferência e o contexto geográfico por ação são previstos na base/identidade; lugares e visitas/check-ins têm seu contrato de domínio no pacote 13. Veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. Embeddings, chat com memória e colaboração entre usuários ficam sem tabelas obrigatórias nesta etapa.
 
 Referências cruzadas: [Enums](doc:enums), [componentes técnicos](doc:componentes-tecnicos) e [compatibilidade com o 1.x](doc:compatibilidade-legado).

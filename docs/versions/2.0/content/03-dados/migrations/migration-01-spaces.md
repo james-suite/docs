@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-29
 ---
 
 ## Estado e ordem
@@ -33,7 +33,9 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 - Não criar memberships, convites de workspace ou papéis colaborativos agora: o usuário não prevê relação entre contas reais.
 - space_id sempre vem da conta autenticada; importação não pode escolher proprietário pelo arquivo.
 - Cada tabela escopada tem UNIQUE(space_id, id), permitindo FKs compostas entre registros de um mesmo espaço. Policies e Actions também revalidam o escopo.
-- Adicionar FKs de space_id em media e activity_log após criar spaces. Jobs usam IDs persistidos e nunca auth() como fonte de contexto.
+- Adicionar FKs de space_id em media e activity_log após criar spaces. Criar então `activity_location_contexts` como extensão opcional de `activity_log`, com escopo e `correlation_id` único; não colocar coordenadas no JSON de auditoria.
+- A retenção de `activity_location_contexts` é definida separadamente da retenção vitalícia do Activity Log; apagar o contexto geográfico preserva a ação auditada.
+- Jobs usam IDs persistidos e nunca auth() como fonte de contexto. Eventos automáticos não recebem localização da pessoa que os iniciou em outro momento.
 
 ## Conversão do James 1.x
 

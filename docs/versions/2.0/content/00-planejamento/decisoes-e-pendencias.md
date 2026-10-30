@@ -22,6 +22,7 @@ updated: 2026-10-29
 - Não há relação entre contas de usuários prevista inicialmente. Contatos e participantes de rateio não precisam ser usuários.
 - Planejar módulos existentes no roadmap, empresas/relacionamentos, check-ins, diário e veículos com vários itens de serviço/checklist.
 - Fazer check-ins pelo próprio site; não criar API ou automação externa para iOS/Android. A posição atual pode ser preenchida pelo navegador mediante ação e permissão da pessoa.
+- Poder registrar a posição do navegador junto a cada criação/edição/ação manual feita no site e consultar essas posições no histórico e num mapa. A captura é pontual ao salvar, nunca contínua ou em segundo plano; o sistema ainda precisa da permissão do navegador.
 - Registrar odômetro sem exigir abastecimento; usar o QR/XML da nota para identificar, quando os dados permitirem, o posto/filial e associá-lo ao abastecimento.
 - Guardar produtos com códigos e histórico de preços de compras em lugares/datas diferentes, com possibilidade de uma cesta pessoal “Minha inflação”.
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
@@ -45,6 +46,8 @@ updated: 2026-10-29
 | Transação simples por linguagem natural | Preparar compra sem nota como FinancialTransaction Draft; revisar dados e itens antes de confirmar; não escolher categoria, pagador ou conta nem efetivar pagamento. Confirmar a identidade de produto com escopo de empresa/estabelecimento. |
 | Produto pessoal e cadastro comercial separados | Permite comparar o mesmo item entre lojas sem perder o nome/SKU/PLU usado por cada empresa; validar o custo da tabela e o tratamento de cadastros sem correspondência. |
 | Leitura determinística de etiquetas variáveis | Separar GTIN/RCN/PLU de peso e preço da peça; só automatizar perfis de loja depois de obter amostras reais e validar formato, unidade, precisão e reconciliação. |
+| Captura da localização ao salvar | Preferência por usuário, desligada por padrão e ligada somente em gravações iniciadas no site; falha/recusa não bloqueia o registro. Uma posição por ação/correlation_id, separada do local comercial e do check-in. |
+| Mapa privado com base OpenStreetMap | Atribuição visível, provedor de tiles configurável e consultas sob demanda; o servidor público de tiles tem capacidade/política próprias e não é API ilimitada gratuita. |
 | Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
 | Importação inicial em domínios vazios | Reduz mistura ambígua de dois históricos; mesclagem incremental requer projeto próprio. |
 | Histórico efetivado imutável | Corrigir por inversão; exceção explícita ao SoftDeletes genérico em postings/tentativas. |
@@ -66,6 +69,7 @@ updated: 2026-10-29
 13. Fazer um protótipo CalDAV/Google antes de fixar schema e fase; definir se a sincronização bidirecional justifica o custo depois do feed `.ics`.
 14. Decidir se a captura de transação por texto entra na IA inicial, quais campos podem ser extraídos e quando uma linha manual está completa o bastante para alimentar histórico de preço.
 15. Reunir exemplos de notas e etiquetas de balança de diferentes lojas; confirmar quais trazem código do produto, peso, preço por unidade e total, e quando um código local pode ser considerado válido para uma empresa inteira ou somente uma filial.
+16. Definir prazo padrão e opções de retenção para coordenadas de auditoria, precisão apresentada no mapa e provedor de tiles para produção. A retenção não herda a vida útil do Activity Log.
 
 ## Regra editorial
 

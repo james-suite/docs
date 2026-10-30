@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migration-00-base, notificacoes, ia-e-memoria, compatibilidade-legado
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-29
 ---
 
 ## Preservar e adaptar
@@ -21,13 +21,17 @@ Guardar espaço, autor humano ou sistema, sujeito, ação, instante e correlaç�
 
 Operações financeiras efetivadas registram estorno e substituição com referência ao original. Auditoria não recalcula saldo nem substitui o registro atual do domínio. Job deve indicar sistema e origem (recorrência, importação ou execução de IA) com contexto persistido.
 
+Quando a preferência da pessoa permitir, uma ação de criação/edição iniciada no site pode capturar uma posição pontual do navegador. Guardar esse contexto geográfico numa relação própria por `correlation_id`, fora de `properties` e `attribute_changes`: uma submissão pode gerar vários eventos de auditoria, mas usa uma posição só. O histórico pode mostrar a posição junto à ação; ela não prova que a pessoa esteve no lugar associado ao registro.
+
+Não capturar posição para jobs ou eventos do sistema. Importação confirmada pela pessoa no site pode ter um contexto para a confirmação, nunca um contexto copiado para cada linha importada. Se um job decorrer de uma ação web, a localização só pode ser atribuída à ação humana se compartilhar o `correlation_id` original; não usar localização no momento em que o job rodou.
+
 ## Consulta
 
 Histórico contextual dentro do registro e painel com filtros por módulo, sujeito, ação, autor e período. Abrir detalhe e retornar preserva o filtro/página. Resolver nomes e links somente dentro do escopo atual; snapshot mínimo mantém a leitura quando o sujeito foi arquivado/excluído.
 
 ## Retenção e outros históricos
 
-A convenção atual é retenção vitalícia da auditoria funcional, sem agendar `activitylog:clean`. Mudança disso exige decisão própria. Tentativas de notificações, staging, respostas técnicas de IA e dados geográficos não são Activity Log e têm contratos de retenção separados.
+A convenção atual é retenção vitalícia da auditoria funcional, sem agendar `activitylog:clean`. Mudança disso exige decisão própria. Tentativas de notificações, staging, respostas técnicas de IA e dados geográficos não são Activity Log e têm contratos de retenção separados. Apagar coordenadas expiradas ou a pedido deixa ação, autoria, instante e diff funcional intactos; nunca colocar coordenadas no JSON vitalício do Activity Log.
 
 Tentativas de entrega e uso de IA são registros próprios: não duplicar cada mutação técnica num log genérico sem necessidade. Eliminação de dados pessoais e apagamento dos derivados de IA devem ser projetados junto da política de exclusão de conta antes do lançamento.
 

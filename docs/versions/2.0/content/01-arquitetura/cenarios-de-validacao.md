@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, validação
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 Estes casos são critérios para revisar o plano e, na implementação, criar testes de domínio e integração. Não representam testes já executados ou recursos implementados. Os números abaixo usam reais e nenhuma conversão de moeda.
@@ -79,6 +79,12 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Fazer check-in pelo site sem informar coordenadas. | Criar a visita com lugar e horário, sem exigir permissão de localização. |
 | Tocar em “Usar minha localização” e autorizar o navegador. | Uma posição e sua precisão são associadas somente ao check-in em andamento. |
 | Negar a permissão ou não obter posição no navegador. | Mostrar uma explicação breve e permitir salvar o check-in com lugar selecionado ou preenchido manualmente. |
+| Ativar captura ao salvar e criar ou editar um registro no site. | Uma posição pontual é associada ao evento por correlation_id; contexto, precisão e horário aparecem no histórico do registro. |
+| Uma gravação cria uma transação, itens e alocações com vários eventos de auditoria. | Todos usam o mesmo contexto de localização da ação; não há cópias por item nem várias posições. |
+| Negar localização, exceder o tempo limite, usar navegador sem suporte ou falhar o serviço de mapas. | Salvar e consultar o registro/histórico textual normalmente; não usar IP como substituto nem criar ponto sem coordenadas. |
+| Job de recorrência, importação ou execução de IA altera registros. | Auditoria identifica origem automática sem atribuir a posição atual do navegador ou de uma ação humana anterior. |
+| Abrir mapa com tiles OpenStreetMap. | Exibir atribuição visível, filtros e agrupamento; mapa mostra precisão reportada e não envia metadados do registro ao provedor. |
+| Expirar/apagar contexto geográfico associado a um evento. | Remover a posição do mapa mantendo ação, autoria, data e diff funcional no Activity Log. |
 | Editar texto íntimo do diário. | Revisão protegida no diário; Activity Log registra autoria/evento sem copiar todo o texto para diffs comuns. |
 
 ## Produtos, preços e captura fiscal

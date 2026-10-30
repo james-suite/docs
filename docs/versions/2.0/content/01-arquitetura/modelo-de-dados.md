@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migrations, enums, financas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 ## Estado do desenho
@@ -52,6 +52,7 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Rateio 1:N participantes, cotas e contribuições; obrigação N:N liquidações.
 - Record 1:1 entidade vinculável; Record N:N tags e vínculos tipados com outros Records.
 - Notificação 1:N intenções de entrega; intenção 1:N tentativas.
+- Uma submissão humana pode gerar vários eventos de Activity Log e no máximo um `ActivityLocationContext` por `correlation_id`; coordenadas ficam fora do JSON de auditoria e expiram independentemente.
 - Conexão de IA 1:N execuções; execução gera sugestões sujeitas à revisão da fonte.
 - Veículo 1:N leituras, abastecimentos e eventos; finanças N:N veículo/itens por `vehicle_financial_links`; evento real, despesa e compra destinada ao veículo não são o mesmo fato.
 - Asset pode apontar para no máximo um veículo, mas veículo não depende de Asset; tarefa/checklist acompanha e não comprova serviço.
@@ -65,6 +66,8 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 A convenção atual de SoftDeletes continua para entidades mutáveis. Postings efetivados e tentativas históricas são imutáveis e precisam de exceção documentada no 2.0: correção por operação inversa, sem exclusão que reescreva saldo. Uma lixeira não equivale a arquivamento de conta/cartão.
 
 Auditoria funcional conserva retenção vitalícia conforme a convenção atual. Segredos e texto íntimo completo não entram nesse histórico. Arquivos temporários, staging de importação, tentativas técnicas e derivados de IA recebem políticas próprias; não conservar tudo indefinidamente apenas para a ideia de “cérebro”. Exclusão definitiva de conta e tratamento dos eventos mínimos de auditoria precisam de decisão explícita antes do lançamento.
+
+Posições ligadas a ações de auditoria são dados geográficos sensíveis com retenção separada e apagamento independente. O registro de auditoria pode continuar existindo após expirar a posição, sem coordenadas no diff ou snapshot vitalício.
 
 ## Índices e integridade
 

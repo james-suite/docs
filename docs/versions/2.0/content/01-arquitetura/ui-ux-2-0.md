@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 ## Linguagem do produto
@@ -34,6 +34,9 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 | Ler nota em mercado/posto | Mostrar empresa, possível filial/endereço, itens, produtos sugeridos e confiança; pedir confirmação do lugar/produto quando houver homônimos ou campos incompletos. |
 | Conferir preços | No detalhe do produto, mostrar preço por embalagem e por unidade-base, data e lugar; permitir montar uma cesta pessoal e explicar sua cobertura. |
 | Diário/check-in | Formulário responsivo no próprio site, com seleção de lugar e botão opcional para usar a localização atual após permissão do navegador. |
+| Localização ao salvar | Preferência por usuário para capturar posição uma vez em cada criação/edição manual; mostrar estado/precisão e permitir ignorar naquele salvamento. Falha/recusa nunca bloqueia o registro. |
+| Histórico no mapa | Abrir eventos auditados num mapa privado, com filtro por módulo/período, agrupamento de pontos próximos e link para o registro. Atribuição OpenStreetMap permanece visível; mapa indisponível não afeta o histórico textual. |
+| Salvamento com posição | Com a preferência ativa e permissão do navegador, tentar capturar uma posição por ação no envio do formulário; exibir a precisão quando fornecida e oferecer “salvar sem localização” em caso de demora/erro. |
 
 ## Componentes próprios
 
