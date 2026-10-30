@@ -7,7 +7,7 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, financas, ia-e-memoria, pessoas-empresas, lugares-checkins, veiculos, migration-21-products, migration-06-transactions
-source_refs:
+source_refs: https://ref.gs1.org/standards/genspecs/, https://ref.gs1.org/guidelines/2d-in-retail/
 updated: 2026-10-29
 ---
 
@@ -37,11 +37,25 @@ Uma linha digitada sem nota ou criada inicialmente por IA pode formar observaç�
 
 ## Carnes e etiquetas de peso variável
 
-Separar dois casos. Um GTIN de embalagem fixa identifica a apresentação vendida — por exemplo, 500 g e 1 kg são apresentações distintas. Já o PLU/código interno da balança identifica o tipo de carne dentro de uma empresa/filial; a etiqueta pode trazer também o peso e o preço daquela peça. Códigos e nomes como “patinho moído”, “carne moída” ou um número de PLU não são presumidos universais.
+Separar três identidades que podem aparecer na mesma compra:
 
-No primeiro caso, a apresentação e seu peso ficam no produto/variante. No segundo, o peso efetivo pertence à linha daquela compra: produto com unidade-base kg, quantidade pesada em kg, preço por kg e total líquido da linha. Se a etiqueta codificar peso ou preço no próprio valor lido, separar o PLU do valor variável, preservar o código original e reconciliar peso × preço unitário com o total; não gravar o peso da peça como se fosse peso fixo do produto.
+1. **Produto comparável do catálogo pessoal:** por exemplo, “patinho bovino moído”. Marca, corte, preparo, teor de gordura e apresentação podem mudar o que é comparável; não unir itens apenas porque o nome é parecido.
+2. **Cadastro comercial da loja:** nome de venda, SKU ou PLU usado por uma empresa/filial. Ele pode ser ligado a um produto do catálogo após confirmação, ou ficar sem correspondência até haver informação suficiente. A mesma peça pode ter nomes/códigos diferentes em duas lojas; o mesmo PLU também pode significar coisas diferentes em lojas distintas.
+3. **Unidade física comprada:** a peça/pacote específico daquela transação, com seu peso e preço. Peso variável nunca vira peso fixo do cadastro do produto.
 
-Cada estabelecimento pode usar nomes, PLUs e formatos de etiqueta diferentes. Interpretar formatos variáveis apenas com um perfil de leitura versionado e validado para aquela loja; não criar regra global nem deixar a IA adivinhar o peso pelo nome/código. Sem perfil ou peso confiável, guardar o identificador e a descrição originais e pedir revisão. Se o produto for reconhecido mas não houver quantidade, não gerar preço por kg nem observação comparável.
+Um GTIN de embalagem fixa identifica uma apresentação vendida — por exemplo, 500 g e 1 kg são variantes distintas. Já etiquetas de produtos pesados podem usar um código restrito/local (RCN/PLU) ou um GTIN com atributos adicionais. No padrão GS1, RCN não é GTIN e não deve ser tratado como código global; códigos RCN e seus formatos dependem do ambiente/território. Alguns códigos estruturados GS1 podem carregar o GTIN e atributos como peso líquido, preço, lote ou validade. O James deve distinguir a identidade estável do produto dos dados variáveis da etiqueta, sem assumir que toda sequência numérica segue um formato universal. ([GS1 General Specifications](https://ref.gs1.org/standards/genspecs/), [guia GS1 para códigos 2D no varejo](https://ref.gs1.org/guidelines/2d-in-retail/))
+
+No produto fixo, peso e unidade da embalagem ficam no catálogo/variante. Na linha variável, registrar quantidade pesada com unidade e precisão explícitas, preço unitário quando conhecido e total líquido da linha. Manter separados preço por kg e total pago: se o código já informar o total, não multiplicá-lo novamente; se informar peso e preço unitário, reconciliar o produto desses valores com a linha fiscal, respeitando o arredondamento monetário. Se só houver o valor total, não inventar peso nem preço por kg.
+
+Ao ler etiqueta, preservar o conteúdo bruto e a simbologia quando disponível, o código estável extraído, os atributos decodificados e a versão do perfil determinístico usado. Nunca usar o código completo que muda a cada peça como identificador permanente do produto. Validar estrutura, dígito verificador quando aplicável, unidade, escala decimal, campos obrigatórios e coerência com o total. Perfil ausente, código malformado ou divergência vira proposta para revisão manual, sem preço comparável automático.
+
+Perfis de leitura precisam ser associados à empresa ou filial correta, ter versão e exemplos reais conferidos. Regras desconhecidas não devem ser inferidas por prefixos genéricos; não aceitar expressões/código arbitrário como parser. Primeiro registrar PLU/SKU local e fazer revisão manual; adicionar decodificação automática apenas para formatos que tenham exemplos suficientes e validação determinística. A IA pode ajudar a ler texto da nota no fluxo fiscal autorizado, mas não é decodificador de código de barras nem pode inventar peso, corte ou preço.
+
+Exemplo: “PLU 1234 — patinho moído” de um mercado e “PLU 076 — carne bovina moída” de outro são dois cadastros locais. A pessoa pode relacioná-los ao mesmo produto comparável se confirmar corte e preparo; cada compra continua guardando seu próprio nome, código, peso e valor.
+
+Se a mesma compra aparecer na nota e na etiqueta fotografada/lida, associar as duas fontes à mesma linha e criar uma única observação de preço. Uma correção futura do alias, da loja ou do perfil não reescreve a compra passada; a linha mantém o produto, o cadastro comercial e a interpretação confirmados naquela revisão. Descrição, loja, código, unidade, preço/kg e total precisam estar visíveis durante a conferência. Sem perfil ou peso confiável, guardar a descrição/código originais e pedir revisão.
+
+Nesta etapa, o objetivo é identidade de produto e histórico de compra/preço. Campos extras encontrados na etiqueta não ativam automaticamente rastreabilidade de lote, validade ou controle de estoque.
 
 ## “Minha inflação”
 
