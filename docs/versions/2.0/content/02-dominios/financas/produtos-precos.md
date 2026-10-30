@@ -35,6 +35,14 @@ Um produto pode ter código ou nome de venda que só faz sentido em uma loja/fil
 
 Uma linha digitada sem nota ou criada inicialmente por IA pode formar observação `ManualEntry` depois que a pessoa confirmar produto, valor, quantidade/unidade e local conhecido. O rótulo original e a origem manual permanecem registrados; o fato de a IA ter ajudado a preparar a transação fica na proveniência/auditoria.
 
+## Carnes e etiquetas de peso variável
+
+Separar dois casos. Um GTIN de embalagem fixa identifica a apresentação vendida — por exemplo, 500 g e 1 kg são apresentações distintas. Já o PLU/código interno da balança identifica o tipo de carne dentro de uma empresa/filial; a etiqueta pode trazer também o peso e o preço daquela peça. Códigos e nomes como “patinho moído”, “carne moída” ou um número de PLU não são presumidos universais.
+
+No primeiro caso, a apresentação e seu peso ficam no produto/variante. No segundo, o peso efetivo pertence à linha daquela compra: produto com unidade-base kg, quantidade pesada em kg, preço por kg e total líquido da linha. Se a etiqueta codificar peso ou preço no próprio valor lido, separar o PLU do valor variável, preservar o código original e reconciliar peso × preço unitário com o total; não gravar o peso da peça como se fosse peso fixo do produto.
+
+Cada estabelecimento pode usar nomes, PLUs e formatos de etiqueta diferentes. Interpretar formatos variáveis apenas com um perfil de leitura versionado e validado para aquela loja; não criar regra global nem deixar a IA adivinhar o peso pelo nome/código. Sem perfil ou peso confiável, guardar o identificador e a descrição originais e pedir revisão. Se o produto for reconhecido mas não houver quantidade, não gerar preço por kg nem observação comparável.
+
 ## “Minha inflação”
 
 Com observações comparáveis, oferecer evolução de preço por produto, comparação entre lugares e uma cesta pessoal chamada “Minha inflação”. A pessoa escolhe produtos e quantidades/pesos de referência; o James compara períodos usando somente itens identificados e unidades compatíveis. Exibir cobertura, período-base, substituições e ausências ao lado do índice.

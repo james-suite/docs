@@ -39,7 +39,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `record_id, transaction_id, position` | Identidade vinculável, pai do mesmo espaço e ordem única por transação. |
-| `description, quantity, unit_price` | Quantidade e preço exatos com escala; não float. |
+| `description, quantity, quantity_unit_label, unit_price` | Quantidade e preço exatos com escala e unidade informada na linha; guardar o rótulo original da unidade. Não usar float. |
 | `fiscal_ncm_code` | Código NCM opcional copiado da linha fiscal original; consulta externa pode validar descrição e vigência, sem transformar NCM em identidade de produto ou tag. |
 | `gross_minor, discount_minor, surcharge_minor, total_minor` | gross − discount + surcharge = total; soma dos totais dos itens igual ao cabeçalho. |
 | `is_legacy_summary` | Item sintético de resumo quando o 1.x não tinha itens; quantity/unit_price podem ser nulos nesse caso, sem inventar produtos ou quantidades. |

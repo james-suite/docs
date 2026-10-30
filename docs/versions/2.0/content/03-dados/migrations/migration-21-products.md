@@ -31,7 +31,7 @@ Registrar códigos estáveis, família física, unidade-base e fator racional de
 | Campo ou grupo | Contrato |
 | --- | --- |
 | record_id, name, brand, variant | Produto privado do espaço; marca e variante opcionais. |
-| package_quantity, package_unit_code, base_unit_code | Conteúdo da embalagem e unidade comparável; decimal exato e unidade de catálogo controlado, sem float. |
+| package_quantity, package_unit_code, base_unit_code | Conteúdo da embalagem opcional para produtos de peso variável; unidade-base comparável (por exemplo, kg) e decimal exato, sem float. Pesos fixos diferentes identificam apresentações diferentes. |
 | archived_at, notes | Arquivar sem apagar compras e observações passadas. |
 
 ## Tabela product_identifiers
@@ -41,7 +41,7 @@ Registrar códigos estáveis, família física, unidade-base e fator racional de
 | product_id, scheme, country, value_normalized, party_id, place_id | Identificador como GTIN/EAN/UPC global ou código local limitado a empresa/estabelecimento. party_id e place_id definem escopo opcional; validar que o estabelecimento pertence à empresa quando ambos forem informados. |
 | source, verified_at | Origem e estado de conferência do código. |
 
-Unicidade proposta por espaço, esquema, país, código normalizado e escopo. GTIN/EAN conhecido é global no catálogo pessoal; códigos internos da loja podem se repetir em outros Places. Conflito no mesmo escopo ou embalagem diferente precisa de revisão. Não adotar catálogo global de produtos no primeiro corte.
+Unicidade proposta por espaço, esquema, país, código normalizado e escopo. GTIN/EAN conhecido é global no catálogo pessoal; PLU, SKU e códigos de balança são locais e podem se repetir em outros Places. Conflito no mesmo escopo ou embalagem diferente precisa de revisão. Não adotar catálogo global de produtos no primeiro corte.
 
 ## Tabela product_aliases
 
@@ -50,6 +50,8 @@ Guardar product_id, normalized_description, party_id nullable, place_id nullable
 ## financial_transaction_items
 
 Adicionar product_id nullable e normalized_base_quantity/normalized_base_unit_code quando a linha puder ser comparada. A FK composta garante espaço igual. A descrição e os números fiscais originais continuam imutáveis como snapshot da compra, mesmo se o nome do produto for posteriormente corrigido.
+
+Para etiquetas de peso variável, preservar opcionalmente `raw_scanned_identifier` e separar o código PLU do peso/preço decodificado. A quantidade e o `quantity_unit_label` da linha registram o peso daquela compra; normalização para kg só ocorre após validar a unidade. Não escrever o peso da peça no cadastro permanente do produto.
 
 ## Tabela product_price_observations
 
@@ -80,6 +82,8 @@ As FKs de filiais usam places e place_identifiers do pacote 13. Fontes auxiliare
 - Atribuição de desconto geral a itens é explícita ou segue regra determinística aprovada; não inferir desconto por produto sem base.
 - Busca por GTIN, nome normalizado e aliases deve ser indexada por espaço; aliases não transformam variantes em um mesmo produto automaticamente.
 - Resolver códigos globais verificados e, para códigos/descrições locais, procurar primeiro o Place exato, depois Party e por último correspondência geral. Dois produtos com o mesmo rótulo em lojas diferentes continuam entidades distintas; resultado ambíguo exige escolha.
+- Se for necessário decodificar etiquetas que embutem PLU, peso ou preço, usar perfil de leitura versionado associado ao estabelecimento, com identificador de perfil controlado pelo código e amostras verificadas. Não aceitar regex/código executável fornecido pelo usuário nem aplicar formato de uma loja a outra. Perfil ainda não validado deixa a etiqueta para revisão manual.
+- Quantidade × preço unitário deve reconciliar com o total da linha dentro da regra monetária. Se a etiqueta traz preço total e peso, tratar o total como fonte da linha e não multiplicá-lo novamente; se peso ou unidade estiverem ausentes, não produzir comparação por kg.
 - Aliases e identificadores são únicos somente dentro do catálogo pessoal e podem ser desativados/corrigidos com histórico; não fundir registros entre contas.
 - occurred_on vem do documento/compra; data de extração e data de revisão ficam nos campos de proveniência fiscal.
 - Cestas só contam produtos com unidade/moeda comparáveis. Apresentar quantidade de observações e cobertura ao lado do índice pessoal.
