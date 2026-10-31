@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, componentes-tecnicos
 source_refs:
-updated: 2026-10-28
+updated: 2026-10-31
 ---
 
 ## Critério
@@ -65,3 +65,5 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — CalendarCommandAction](doc:enum-calendar-command-action) — `calendar_command_proposals`.
 
 - [Enum — CardDebtDirection](doc:enum-card-debt-direction) — `card_charges`.
+- [Enum — HealthSyncStatus](doc:enum-health-sync-status) — `health_sync_runs` (extensão opcional).
+- [Enum — HealthDataOrigin](doc:enum-health-data-origin) — origem manual ou importada de observações e treinos.

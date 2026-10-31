@@ -6,8 +6,8 @@ type: migration-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, agenda-tarefas, financas, componentes-tecnicos
-source_refs:
+related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, assistente-pessoal-rag, agenda-tarefas, financas, componentes-tecnicos
+source_refs: https://platform.openai.com/docs/guides/embeddings, https://github.com/pgvector/pgvector
 updated: 2026-10-29
 ---
 
@@ -32,7 +32,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, connection_id, enabled, classification_mode, policy_revision` | Seleção explícita de conexão; ClassificationMode com padrão Suggest e revisão da preferência para autoria da automação. |
-| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_suggestion`, `fiscal_extraction` e, se aprovadas, `calendar_command` e `transaction_draft`; orçamento aplicável por função/conexão. Cada função começa desativada até autorização explícita. |
+| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_suggestion`, `fiscal_extraction` e, se aprovadas, `calendar_command` e `transaction_draft`; orçamento aplicável por função/conexão. Futuramente, `assistant_answer`, `memory_indexing` e `assistant_action` recebem consentimentos separados. Cada função começa desativada até autorização explícita. |
 
 ## `ai_runs`
 
@@ -83,6 +83,28 @@ TransactionDraft nunca cria `fiscal_documents`. Não exigir itens quando a pesso
 | `user_id, connection_id, starts_at, ends_at` | Janela de orçamento, UNIQUE(user_id, connection_id, starts_at); término posterior ao início. |
 | `limit_minor, reserved_minor, spent_minor, currency` | Valores exatos; reserva/acerto sob bloqueio. Uso desconhecido mantém reserva até reconciliação ou decisão explícita. |
 
+## Extensão opcional futura: Assistente pessoal do James
+
+Estas tabelas são propostas para uma fase posterior à IA inicial. Não fazem parte do primeiro schema migrável; criar somente após aprovar fontes, consentimento, retenção, provedor e critérios de qualidade. A extensão do PostgreSQL `vector`/pgvector fica opcional. Começar comparando busca SQL/textual e busca vetorial exata; índice aproximado HNSW só após medir volume, latência e cobertura. Dimensão `N` e modelo não são fixados até escolher provedor/modelo.
+
+### `ai_conversations` e `ai_messages`
+
+Conversas pertencem ao mesmo `user_id`/`space_id`. Mensagens guardam papel, conteúdo visível, instante e referência opcional ao `ai_run_id`; estado de retenção e arquivamento ficam explícitos. Não persistir chain-of-thought, credenciais, prompts internos completos ou payloads brutos de ferramentas. Retenção de conversas tem política própria e não segue a retenção vitalícia do Activity Log.
+
+### `ai_memory_sources`
+
+Uma linha por Record/revisão e perfil de indexação: `space_id`, `record_id`, `source_revision`, `content_hash`, `module_code`, estado (`excluded`, `pending`, `indexed`, `failed`, `stale`), `indexing_profile`, `embedding_model`, `chunker_version` e instantes. UNIQUE na fonte/revisão/perfil. Inclusão nasce de preferência explícita por fontes/domínios; remoção, exclusão, mudança de acesso ou nova revisão agenda invalidação/reindexação idempotente.
+
+### `ai_memory_chunks`
+
+Uma linha por trecho com `space_id`, `memory_source_id`, `chunk_index`, snapshot mínimo de texto recuperável, `embedding vector(N)`, `embedding_model`, dimensão, versão do chunker, hash e contagem de tokens. UNIQUE por fonte/revisão/perfil/trecho. Texto, vetores e metadados derivados são dados privados e sensíveis; manter referência à fonte para abrir, corrigir, invalidar e apagar. Não transformar vetor em fonte de verdade nem carregar conteúdo de um Record não autorizado.
+
+O mesmo conjunto/index usa uma dimensão/modelo compatíveis; troca de modelo cria uma versão de perfil e reindexação, sem misturar vetores incompatíveis. Filtro de `space_id`, fontes selecionadas e Policies vem do servidor e é aplicado antes da montagem do contexto. RLS/consulta escopada garante confidencialidade; índice ANN não é controle de autorização. Com filtros em índices aproximados, medir cobertura contra busca exata e ajustar a consulta/particionamento se necessário.
+
+### `assistant_action_proposals` (se a camada genérica for aprovada)
+
+Campos candidatos: `run_id`, `tool_code` allowlisted, `target_record_id`, `target_revision`, `schema_version`, parâmetros tipados validados, status, expiração, idempotency key, confirmação (`reviewed_by_user_id`, `reviewed_at`) e execução (`applied_at`). O servidor chama Action do módulo dono do dado e revalida Policy, estado e revisão. Essa tabela não deve duplicar `calendar_command_proposals` nem `financial_transactions` Draft; decidir se será apenas um envelope de orquestração ligado aos contratos já existentes.
+
 ## Integridade, índices e comportamento
 
 - Adicionar ai_run_id nullable a tag_assignments após criar ai_runs. Comparar revisão e validar IDs na Action de aceite.
@@ -95,6 +117,10 @@ TransactionDraft nunca cria `fiscal_documents`. Não exigir itens quando a pesso
 - CalendarCommand só recebe a mensagem explícita e o contexto mínimo de eventos candidatos quando necessário; nunca envia o calendário inteiro por padrão nem chama integração externa por conta própria.
 - TransactionDraft só recebe a descrição explícita e contexto mínimo de contraparte/produto autorizado. IDs e valores passam por validação no servidor; pedidos repetidos usam idempotência. Nunca escolher ou efetivar conta, cartão, pagador, categoria ou pagamento por inferência.
 - Chave geral é opcional, habilitada por administrador e escolhida pelo usuário; sem fallback silencioso. Não incluir segredos em auditoria/exportação.
+- Para o assistente futuro, recuperação SQL/textual/vetorial devolve IDs de fonte e trechos autorizados; o modelo não recebe conexão SQL, permissões globais ou capacidade de ampliar `space_id`.
+- Material derivado obedece à revisão/remoção da fonte. Jobs de indexação comparam `source_revision` antes/depois da geração para evitar persistir embeddings atrasados; repetição de job não cria chunks duplicados.
+- Uma resposta conversacional guarda referências de origem e versão de busca/modelo; falta de evidência produz abstenção. Conteúdo recuperado é dado não confiável, nunca instrução para trocar políticas ou ferramentas.
+- Separar limites/custo de geração, embeddings e reindexação. Indexar apenas registros incluídos pelo usuário; localização, diário íntimo, saúde e finanças exigem escolha própria e não são indexados por padrão.
 
 ## Conversão do James 1.x
 
@@ -102,7 +128,7 @@ Não há IA no 1.x para migrar. Tags e escolhas humanas viram base de regras loc
 
 ## Componentes previstos
 
-SuggestClassification; ReviewSuggestion; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; DraftTransactionFromText; ReviewAiTransactionDraft; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas.
+SuggestClassification; ReviewSuggestion; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; DraftTransactionFromText; ReviewAiTransactionDraft; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas. Extensão futura: IndexAssistantMemory; RetrieveAssistantEvidence; AnswerWithSources; ReviewAssistantAction.
 
 ## Checklist de implementação
 

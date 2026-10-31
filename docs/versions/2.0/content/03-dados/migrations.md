@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, modelo-de-dados, enums, componentes-tecnicos, fases-2-0, compatibilidade-legado
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Como usar este catálogo
@@ -42,8 +42,12 @@ Números são identificadores editoriais. Dependências adicionais devem ser res
 - [Migration 20 — Exportação, importação e mapeamento legado](doc:migration-20-imports) — portabilidade.
 - [Migration 21 — Catálogo de produtos e preços observados](doc:migration-21-products) — catálogo pessoal, preços comparáveis e cestas.
 
+A extensão opcional futura do pacote 12 para conversas, memória derivada e busca vetorial está descrita em [Migration 12 — IA](doc:migration-12-ai) e no [plano do assistente pessoal](doc:assistente-pessoal-rag); ela não adiciona tabelas obrigatórias à sequência acima.
+
+A conexão opcional com Apple Health estende a [Migration 19 — Saúde e treinos](doc:migration-19-health), sem novo pacote de domínio. O plano propõe sincronização iniciada pela pessoa e importação XML manual; nenhuma dessas opções é requisito da primeira migração do James.
+
 ## Evolução sem tabelas prematuras
 
-A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. A preferência e o contexto geográfico por ação são previstos na base/identidade; lugares e visitas/check-ins têm seu contrato de domínio no pacote 13. Veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. Embeddings, chat com memória e colaboração entre usuários ficam sem tabelas obrigatórias nesta etapa.
+A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. A preferência e o contexto geográfico por ação são previstos na base/identidade; lugares e visitas/check-ins têm seu contrato de domínio no pacote 13. Veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. Conversas, embeddings e memória derivada do assistente do James ficam como extensão futura opcional, sem tabelas ou extensão pgvector obrigatórias no primeiro lançamento.
 
 Referências cruzadas: [Enums](doc:enums), [componentes técnicos](doc:componentes-tecnicos) e [compatibilidade com o 1.x](doc:compatibilidade-legado).

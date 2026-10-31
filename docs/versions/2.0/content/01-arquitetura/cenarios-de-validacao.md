@@ -6,7 +6,7 @@ type: acceptance-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, validação
-related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0
+related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0, assistente-pessoal-rag
 source_refs:
 updated: 2026-10-29
 ---
@@ -45,6 +45,12 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | --- | --- |
 | Resposta de IA chega depois de o usuário editar a transação. | Sugestão desatualizada, nenhuma aplicação silenciosa sobre a nova revisão. |
 | Modelo devolve tag de outro espaço, ID inexistente ou instrução para mover dinheiro. | Resultado recusado; nenhuma alteração financeira ou acesso cruzado. |
+| Busca futura do assistente pergunta por registro de outro usuário/espaço. | A consulta é filtrada/negada antes da montagem do contexto; nenhum título, trecho, embedding, cache ou citação cruzada é retornado. |
+| RAG responde pergunta autobiográfica com uma nota e um serviço do veículo. | Cada afirmação verificável aponta para registro e data; conteúdo insuficiente resulta em resposta de não encontrado, não em fato inventado. |
+| Pergunta “quanto gastei?” passa pelo assistente pessoal. | O modelo chama consulta financeira autorizada; soma, moeda e período vêm do domínio, e a resposta cita filtros usados sem somar trechos manualmente. |
+| Texto recuperado contém instrução para ignorar regras ou revelar outro espaço. | Tratado como conteúdo não confiável; não muda instruções, escopo ou ferramentas disponíveis. |
+| Fonte indexada é editada, removida ou excluída das permissões de IA. | Chunks, vetores, resumo e cache correspondentes são invalidados; revisão antiga não é usada para responder. |
+| Índice HNSW retorna poucos candidatos depois do filtro por espaço/módulo. | Métrica compara recall com busca exata; ajusta-se o índice/consulta ou mantém busca exata, sem relaxar isolamento. |
 | Chave pessoal falha e existe chave da instalação. | Falha identificada sem trocar de chave/provedor automaticamente. Salvar sem IA continua disponível. |
 | Job de vencimento é repetido e o Telegram falha uma vez. | Uma notificação, uma intenção de entrega e tentativas distintas. Não duplicar o aviso por reenvio do transporte. |
 | Fatura é paga antes do lembrete agendado. | Lembrete pendente é resolvido/cancelado; aviso antigo leva ao estado atual e não oferece cobrança já concluída. |

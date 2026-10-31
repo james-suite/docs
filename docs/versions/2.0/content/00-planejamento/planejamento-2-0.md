@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: home, modelo-de-dados, migrations, enums, escopo-2-0, fases-2-0, decisoes-e-pendencias
+related: home, modelo-de-dados, migrations, enums, escopo-2-0, fases-2-0, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-31
 ---
 
 ## Direção
@@ -34,10 +34,11 @@ Cada conta terá seu próprio conjunto de dados. Relação entre usuários reais
 | [Cenários de validação](doc:cenarios-de-validacao) | Exemplos numéricos e resultados que o desenho precisa suportar. |
 | [Fases](doc:fases-2-0) | Sequência de protótipos, implementação e preparação do lançamento. |
 | [Decisões e pendências](doc:decisoes-e-pendencias) | Confirmado, proposto e ainda em aberto. |
+| [Módulos candidatos e integrações](doc:modulos-e-integracoes) | Oportunidades futuras e fluxos entre módulos sem duplicar dados. |
 
 ## Domínios detalhados
 
-As notas de domínio seguem pastas por contexto: [finanças](doc:financas), [organização pessoal](doc:tags), [memória e contexto](doc:diario) e [bens e saúde](doc:veiculos). A página inicial lista todos os módulos e mostra o mapa completo das pastas.
+As notas de domínio seguem pastas por contexto: [finanças](doc:financas), [organização pessoal](doc:tags), [memória e contexto](doc:diario) e [bens e saúde](doc:veiculos). A visão do [assistente pessoal do James](doc:assistente-pessoal-rag) é uma evolução futura separada das funções iniciais de IA. A página inicial lista os módulos e mostra o mapa completo das pastas.
 
 ## Princípios
 

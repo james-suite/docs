@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: financas, tags, veiculos, diario, migrations, enums, decisoes-e-pendencias
+related: financas, tags, veiculos, diario, migrations, enums, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes, saude-treinos
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Núcleo que deve migrar
@@ -27,10 +27,12 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | [Diário](doc:diario) | Texto, revisões, anexos e contexto da vida; conecta fatos reais e preserva narrativa original. |
 | [Lugares e check-ins](doc:lugares-checkins) | Check-in manual no site, com posição opcional obtida pelo navegador após ação e permissão. |
 | [Patrimônio](doc:patrimonio) | Bens, avaliações e documentos sem duplicar ativos financeiros ou veículos. |
-| [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas, privadas e independentes de IA. |
-| [IA](doc:ia-e-memoria) | Funções definidas: sugestões de tags para transações/itens e fallback fiscal. Comandos de agenda e rascunhos de transação por texto sem nota estão em avaliação; criação de tag nova requer confirmação. |
+| [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas e privadas; HealthKit é uma integração opcional posterior, sem depender do primeiro lançamento migrável. |
+| [IA](doc:ia-e-memoria) | Primeiro: sugestões de tags para transações/itens e fallback fiscal; comandos de agenda e rascunhos por texto sem nota estão em avaliação. Evolução posterior do assistente pessoal está planejada em [Memória e RAG](doc:assistente-pessoal-rag). |
 
 Consultas opcionais da BrasilAPI complementam os formulários de empresa, endereço, instituição financeira, item fiscal, veículo e agenda. São pesquisas pontuais com resultado revisável, nunca requisito para o James funcionar; usos e limites estão nos [componentes técnicos](doc:componentes-tecnicos).
+
+As conexões entre os módulos existentes e as ideias de novas áreas — documentos e prazos, manutenção da casa, viagens e projetos pessoais — estão em [Módulos candidatos e integrações](doc:modulos-e-integracoes). São propostas para descoberta posterior e não aumentam o escopo do primeiro lançamento.
 
 ## Corte do primeiro lançamento
 
@@ -40,4 +42,4 @@ Cada módulo só avança para implementação com campos, estados, ações, auto
 
 ## Evoluções posteriores
 
-Colaboração entre usuários, conta bancária conjunta, integração Apple Health, sincronização bancária, assistente conversacional, embeddings e ações autônomas não são pré-requisitos do núcleo 2.0. A visão de um assistente pessoal mais amplo fica fora do escopo atual de IA e exige jornada e decisões próprias, mantendo os dados pessoais isolados.
+Colaboração entre usuários, conta bancária conjunta, integração Apple Health e sincronização bancária não são pré-requisitos do núcleo migrável. A integração Apple Health é uma fase opcional do módulo [Saúde e treinos](doc:saude-treinos), com detalhes de HealthKit, cliente iOS, importação XML e privacidade na [Migration 19](doc:migration-19-health). O assistente pessoal do James, com RAG e ferramentas entre módulos, está planejado em fases posteriores e não é pré-requisito do primeiro lançamento. Voz e ações proativas/autônomas continuam decisões separadas; o caminho inicial é busca fundamentada somente leitura, com dados pessoais isolados.

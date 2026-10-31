@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: migrations, enums, financas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado
+related: migrations, enums, financas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Estado do desenho
@@ -54,11 +54,14 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Notificação 1:N intenções de entrega; intenção 1:N tentativas.
 - Uma submissão humana pode gerar vários eventos de Activity Log e no máximo um `ActivityLocationContext` por `correlation_id`; coordenadas ficam fora do JSON de auditoria e expiram independentemente.
 - Conexão de IA 1:N execuções; execução gera sugestões sujeitas à revisão da fonte.
+- O futuro índice de memória da IA deriva trechos/embeddings dos Records escolhidos, sempre guarda espaço, record_id e revisão da fonte, e pode ser apagado/recriado sem alterar o registro de domínio.
 - Veículo 1:N leituras, abastecimentos e eventos; finanças N:N veículo/itens por `vehicle_financial_links`; evento real, despesa e compra destinada ao veículo não são o mesmo fato.
 - Asset pode apontar para no máximo um veículo, mas veículo não depende de Asset; tarefa/checklist acompanha e não comprova serviço.
 - Documento fiscal pode apontar à empresa emitente e à filial/lugar separadamente; identificadores da unidade ajudam a reconhecer posto e mercado sem inferir check-in.
 - Leitura de odômetro é observação independente e pode existir sem abastecimento, serviço ou transação.
 - Produto pessoal 1:N identificadores e observações de preço; cada observação liga uma linha financeira, produto e lugar opcional. Cestas calculam comparação usando quantidades fixas e observações reais, com cobertura explícita.
+- Conector de saúde opcional 1:N execuções de sincronização; cada observação/atividade importada preserva identificador e origem externos para idempotência e reconciliação. Sessões podem ter amostras de métricas e uma rota privada opcional; rota não é visita nem contexto de auditoria.
+- Resumos de métricas e séries ponto a ponto são níveis distintos. Importar só a granularidade necessária; alterações/remoções da fonte não sobrescrevem observações manuais.
 - Party 1:N referências externas versionadas; vínculos empresariais guardam origem e revisão. Catálogos auxiliares não recebem dados fiscais privados de outras contas.
 
 ## Exclusão e histórico

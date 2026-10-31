@@ -6,9 +6,9 @@ type: overview
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: planejamento-2-0, modelo-de-dados, migrations, enums, fases-2-0, migracao-2-0
+related: planejamento-2-0, modelo-de-dados, migrations, enums, fases-2-0, migracao-2-0, assistente-pessoal-rag, modulos-e-integracoes
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-31
 ---
 
 ## Comece pelo plano
@@ -19,6 +19,7 @@ O planejamento preserva a experiência dos módulos atuais e os conecta melhor: 
 - [Modelo de dados](doc:modelo-de-dados), [migrations](doc:migrations), [enums](doc:enums) e [componentes técnicos](doc:componentes-tecnicos).
 - [Migração por arquivo no navegador](doc:migracao-2-0) e [compatibilidade com o James atual](doc:compatibilidade-legado).
 - [Fases de desenvolvimento](doc:fases-2-0).
+- [Integrações entre módulos e módulos candidatos para depois](doc:modulos-e-integracoes).
 
 O desenvolvimento dos módulos planejados começa em 2027, com o starter kit disponível naquele momento e Flux 2 gratuito. O plano ainda contém propostas a revisar; nenhum schema planejado foi aplicado à versão atual do James.
 
@@ -47,7 +48,7 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 
 ### Memória e contexto
 
-[Diário](doc:diario) · [Lugares/check-ins](doc:lugares-checkins) · [IA](doc:ia-e-memoria).
+[Diário](doc:diario) · [Lugares/check-ins](doc:lugares-checkins) · [IA delimitada](doc:ia-e-memoria) · [Assistente pessoal e RAG](doc:assistente-pessoal-rag).
 
 ### Bens e saúde
 

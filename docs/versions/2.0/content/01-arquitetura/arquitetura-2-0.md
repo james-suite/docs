@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: modelo-de-dados, componentes-tecnicos, enums, migrations, ui-ux-2-0, ia-e-memoria, decisoes-e-pendencias
+related: modelo-de-dados, componentes-tecnicos, enums, migrations, ui-ux-2-0, ia-e-memoria, assistente-pessoal-rag, decisoes-e-pendencias
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-29
 ---
 
 ## Direção confirmada
@@ -37,6 +37,7 @@ Fundação comum: identidade/escopo, arquivos privados, auditoria, tags, unidade
 - Catálogo de pessoas e organizações oferece identidade reutilizável para fornecedor, prestador, contato e lugar.
 - Notificações têm outbox e tentativas; leitura interna não se mistura com transporte externo.
 - IA é opcional e restrita a sugestões de tags para transações/itens e fallback fiscal autorizado; tags novas exigem confirmação e categorias financeiras não são classificadas por IA.
+- O assistente pessoal do James é uma evolução posterior: começa com busca somente leitura e respostas ligadas a fontes; ferramentas e ações chegam por módulo, com permissões e confirmações próprias. Não amplia o escopo do primeiro lançamento migrável.
 - Diário/check-ins enriquecem a memória pessoal por registros manuais e automações pontuais autorizadas.
 
 ## Gates de modelagem
@@ -53,4 +54,4 @@ Dinheiro e quantidades usam aritmética exata. Datas de negócio e instantes de 
 
 Adaptar Policies por contexto, componentes de formulário, combobox com criação, loading, histórico contextual e tentativas de entrega. O James usa propriedade pessoal, sem importar campus, vínculo institucional, perfis acadêmicos ou uma matriz de autorização desnecessária.
 
-Projetar a busca com Eloquent e PostgreSQL antes de adotar vetores. Avaliar o SDK de IA disponível em 2027 atrás de uma fronteira pequena. Não espalhar chamadas ao modelo pelos Controllers ou hooks de Model.
+Projetar busca estruturada/textual com Eloquent e PostgreSQL antes de adotar vetores. A [visão do assistente pessoal](doc:assistente-pessoal-rag) prevê pgvector como protótipo opcional se perguntas semânticas justificarem, mantendo fontes tipadas e uma fronteira pequena para provedores. Não espalhar chamadas ao modelo pelos Controllers ou hooks de Model.

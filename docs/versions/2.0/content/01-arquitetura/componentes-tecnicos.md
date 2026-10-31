@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0
+related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0, assistente-pessoal-rag, migration-19-health
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Organização da implementação
@@ -30,10 +30,11 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 | Acertos | SettlementGroup, SplitParticipant, SplitShare, SplitContribution, SettlementObligation, SettlementPayment | Rateio sem parcela própria, contribuições, liquidação parcial e projeção de saldos. |
 | Notificações | Notification, NotificationPreference, NotificationEndpoint, NotificationDelivery, NotificationDeliveryAttempt | Outbox, digest, reenvio, resolução/adiamento e deduplicação durável. |
 | IA | AiConnection, AiRun, ClassificationSuggestion, CalendarCommandProposal, AiUsageEntry, AiBudgetPeriod | Seleção de conexão autorizada, reserva de orçamento, sugestão/revisão de tags, comandos de agenda e captura tipada de transação por texto, se aprovados. |
+| Assistente pessoal (futuro) | AiConversation, AiMessage, AiMemorySource, AiMemoryChunk, AssistantActionProposal | Busca híbrida com filtros por espaço/fonte, respostas com referências, consulta SQL de domínio para números, indexação idempotente e propostas por ferramentas allowlisted; extensão separada, não necessária ao primeiro lançamento. |
 | Captura/diário | Place, PlaceIdentifier, Visit, JournalEntry, JournalEntryRevision, ActivityLocationContext | Filial/endereço, identificadores empresariais, check-in pelo site, contexto geográfico por ação auditada, diário versionado e vínculos. |
 | Veículos | Vehicle, VehicleEvent, VehicleEventItem, FuelEvent, VehicleFinancialLink, OdometerReading, MaintenancePlan | Lançamento independente de odômetro, leitura de nota, resolução do posto/filial, vínculo sem duplicar custos, diário genérico, serviços reais com vários itens, consumo, correção de odômetro e vencimento por km/data. |
 | Organização | Task, Checklist, ChecklistItem, CalendarEvent, CalendarSeries, CalendarFeedToken, CalendarConnection, CalendarEventExternalLink | Tarefas, checklist histórico, exceções de série, lembretes, feed privado `.ics` e conexão bidirecional opcional posterior via CalDAV/Google. |
-| Patrimônio/saúde | Asset, AssetValuation, Exercise, WorkoutRoutine, WorkoutSession, WorkoutSet, HealthObservation | Evolução patrimonial sem duplicação; treino real e unidades de medição. |
+| Patrimônio/saúde | Asset, AssetValuation, Exercise, WorkoutRoutine, WorkoutSession, WorkoutSet, HealthObservation, HealthConnection, HealthSyncRun | Evolução patrimonial sem duplicação; treino real e unidades; importar medidas e treinos pelo app iOS HealthKit, com proveniência, idempotência e revisão. Séries de atividade e rotas são extensões privadas e opcionais. |
 | Dados públicos do Brasil | BrasilApiReferenceLookup | Consultas sob demanda de CNPJ, CEP, bancos, NCM, FIPE e feriados; registrar origem e data de consulta quando a resposta alimentar um cadastro. |
 | Portabilidade | DataExport no 1.x; ImportRun, ImportItem, LegacyIdMap no 2.0 | Gerar arquivo, analisar upload, prévia, confirmar na própria conta, reconciliar e limpar staging. |
 
@@ -51,13 +52,13 @@ Form Requests/validação Livewire aceitam somente dados do formulário; space_i
 
 ## Jobs e processos agendados
 
-Gerar exportação, validar/importar pacote, enviar notificações, materializar recorrências, sincronizar calendários externos e chamar IA em filas. Job carrega IDs de domínio e de conexão, nunca uma API key serializada. Definir timeout, backoff, failed() sanitizado, limites externos e recuperação do estado após interrupção. UNIQUE no banco continua sendo a garantia final de idempotência.
+Gerar exportação, validar/importar pacote/XML de saúde, enviar notificações, materializar recorrências, sincronizar calendários externos e chamar IA em filas. O cliente iOS inicia o envio HealthKit; o servidor valida e processa lotes com escopo e chave idempotente, sem depender de leitura do aparelho em background. Job carrega IDs de domínio e de conexão, nunca uma API key serializada. Definir timeout, backoff, failed() sanitizado, limites externos e recuperação do estado após interrupção. UNIQUE no banco continua sendo a garantia final de idempotência.
 
 ## Componentes de UI
 
 TagPicker com criação inline a partir de `select-create` do SGE; FiscalDocumentCapture com revisão campo a campo; PaymentEditor para vários meios/datas e pagadores; SplitEditor com lista explícita de consumidores/pagadores; InvoicePaymentsHistory; NotificationInbox; ImportWizard; VehicleServiceEditor com vários itens e data real; VehicleDiaryEditor; PrivateFileUpload; AuditHistory.
 
-Incluir também FiscalIssuerPlaceMatcher, AiTransactionComposer, ProductMatcher com identificação por empresa/estabelecimento e criação revisável, ProductListingReview, VariableMeasureCodeReview com peso/preço/total e origem visíveis, PriceHistory, PersonalPriceBasket, BrowserLocationCapture no salvamento, ActivityLocationMap, OdometerQuickEntry independente do abastecimento e CalendarCommandComposer com revisão de alvo/alterações. A captura geográfica deve associar-se por correlação ao evento de auditoria; o mapa usa tiles de provedor configurável e respeita retenção da localização. O decoder de etiqueta deve ser determinístico; só perfis testados com etiquetas reais podem preencher candidatos. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
+Incluir também FiscalIssuerPlaceMatcher, AiTransactionComposer, ProductMatcher com identificação por empresa/estabelecimento e criação revisável, ProductListingReview, VariableMeasureCodeReview com peso/preço/total e origem visíveis, PriceHistory, PersonalPriceBasket, BrowserLocationCapture no salvamento, ActivityLocationMap, OdometerQuickEntry independente do abastecimento e CalendarCommandComposer com revisão de alvo/alterações. Para saúde, HealthKitConnectionSettings, HealthSyncReview, WorkoutHeartRateChart e WorkoutRouteMap; não confundir rota de atividade com visita ou contexto da auditoria. Para a evolução futura: AssistantConversation com fontes clicáveis, AnswerEvidenceList e AssistantActionReview; não ocultar de onde vieram as respostas nem aplicar proposta sem autorização do domínio. A captura geográfica deve associar-se por correlação ao evento de auditoria; o mapa usa tiles de provedor configurável e respeita retenção da localização. O decoder de etiqueta deve ser determinístico; só perfis testados com etiquetas reais podem preencher candidatos. Os nomes são propostas de responsabilidades, não classes já criadas. Cada componente deve ter loading, validação, teclado e retorno ao contexto anterior. Flux 2 gratuito fornece a base; componentes próprios cobrem o domínio sem depender de recursos Pro.
 
 ## Consultas de referência pela BrasilAPI
 

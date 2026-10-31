@@ -6,9 +6,9 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0
+related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Confirmado pelo usuário
@@ -28,8 +28,10 @@ updated: 2026-10-29
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
 - Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
 - Separar o produto pessoal comparável do listing/cadastro de cada loja; nomes e códigos locais podem diferenciar produtos de lojas ou filiais distintas, e uma etiqueta de peso variável não deve transformar o peso da peça em atributo permanente do produto.
-- Funções de IA definidas: sugerir tags para transações/itens e usar extração fiscal como fallback; tag nova requer confirmação. Comandos delimitados para agenda estão em avaliação; assistente pessoal amplo fica fora do escopo atual.
+- Funções iniciais de IA: sugerir tags para transações/itens e usar extração fiscal como fallback; tag nova requer confirmação. Comandos delimitados para agenda e rascunhos de transação estão em avaliação; assistente pessoal do James está planejado para fases posteriores, começando por busca fundamentada.
+- Quero planejar uma evolução do James como assistente pessoal que consulta dados autorizados e ajuda a agir entre módulos; primeiro lançamento continua com funções delimitadas, e a evolução começa por busca fundamentada com fontes.
 - Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV e Google Calendar por OAuth ficam como possibilidades posteriores. A agenda interna continua funcionando sem conectores.
+- Na área de saúde, Apple Health/HealthKit é prioridade sobre Strava; Strava não faz parte da primeira integração. A ideia é reutilizar fontes que já sincronizam com o app Saúde e só avaliar conectores diretos quando faltar dado relevante.
 
 ## Propostas técnicas para revisar
 
@@ -48,9 +50,12 @@ updated: 2026-10-29
 | Leitura determinística de etiquetas variáveis | Separar GTIN/RCN/PLU de peso e preço da peça; só automatizar perfis de loja depois de obter amostras reais e validar formato, unidade, precisão e reconciliação. |
 | Captura da localização ao salvar | Preferência por usuário, desligada por padrão e ligada somente em gravações iniciadas no site; falha/recusa não bloqueia o registro. Uma posição por ação/correlation_id, separada do local comercial e do check-in. |
 | Mapa privado com base OpenStreetMap | Atribuição visível, provedor de tiles configurável e consultas sob demanda; o servidor público de tiles tem capacidade/política próprias e não é API ilimitada gratuita. |
+| RAG e assistente pessoal do James em fases posteriores | Manter a fonte de verdade nos módulos; começar com busca somente leitura, filtros pessoais e citações antes de habilitar ferramentas de escrita, proatividade ou voz. |
+| PostgreSQL/pgvector como protótipo do índice semântico | Evita outro serviço enquanto o volume é pequeno; começar com busca exata, medir qualidade e latência, só usar HNSW/particionamento se necessário. A extensão não é requisito do lançamento inicial. |
 | Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
 | Importação inicial em domínios vazios | Reduz mistura ambígua de dois históricos; mesclagem incremental requer projeto próprio. |
 | Histórico efetivado imutável | Corrigir por inversão; exceção explícita ao SoftDeletes genérico em postings/tentativas. |
+| Apple HealthKit como primeira integração de saúde | Reutiliza o hub do app Saúde para medidas, atividades, frequência cardíaca e rotas de treino. Importação somente de leitura, por tipo autorizado; HealthKit requer um cliente iOS e não pode ser consultado diretamente pelo site. XML enviado pelo navegador é alternativa manual. Rota GPS permanece opcional e distinta de check-in. |
 
 ## Pendências antes do schema definitivo
 
@@ -70,6 +75,10 @@ updated: 2026-10-29
 14. Decidir se a captura de transação por texto entra na IA inicial, quais campos podem ser extraídos e quando uma linha manual está completa o bastante para alimentar histórico de preço.
 15. Reunir exemplos de notas e etiquetas de balança de diferentes lojas; confirmar quais trazem código do produto, peso, preço por unidade e total, e quando um código local pode ser considerado válido para uma empresa inteira ou somente uma filial.
 16. Definir prazo padrão e opções de retenção para coordenadas de auditoria, precisão apresentada no mapa e provedor de tiles para produção. A retenção não herda a vida útil do Activity Log.
+17. Para o assistente futuro, definir quais módulos a pessoa pode incluir, retenção de conversas/índice, execução local ou envio a provedores, modelo de embeddings, orçamento e métricas mínimas de groundedness/recall.
+18. Definir níveis de confirmação para ferramentas de escrita, comportamento proativo e se voz terá valor; nenhuma dessas capacidades é necessária para a busca somente leitura.
+19. Decidir se manter um app iOS complementar e um endpoint de ingestão autenticado, limitado ao HealthKit, vale o custo frente à importação manual do XML pelo navegador.
+20. Aprovar tipos de saúde e granularidade: altura/peso, resumo de atividade, séries de frequência cardíaca e rotas devem ter permissões, retenção, exportação e exclusão próprias; definir se a sincronização é sempre iniciada pela pessoa.
 
 ## Regra editorial
 

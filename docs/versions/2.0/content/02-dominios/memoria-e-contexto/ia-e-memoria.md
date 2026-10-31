@@ -6,7 +6,7 @@ type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, modelo-de-dados, financas, produtos-precos, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, migrations, enums
+related: planejamento-2-0, modelo-de-dados, financas, produtos-precos, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, assistente-pessoal-rag, migrations, enums
 source_refs: https://laravel.com/docs/13.x/ai-sdk
 updated: 2026-10-29
 ---
@@ -73,11 +73,9 @@ Reservar orçamento antes da chamada; registrar consumo por usuário e conexão;
 
 Ao mudar a transação ou seu catálogo, sugestões antigas passam a desatualizadas. Falha de IA não impede salvar dados nem escolher tags manualmente. Não guardar prompts e respostas completos por padrão quando bastarem hash, versão e resultado estruturado; definir retenção curta para diagnóstico opcional.
 
-## Possibilidade futura: “JARVIS”
+## Assistente pessoal do James — evolução futura
 
-Uma evolução para assistente pessoal exigiria uma jornada e planejamento próprios. Não está incluída nas funções de IA previstas para o 2.0. A proposta de `records` e vínculos tipados pode organizar fontes reais, mas não autoriza por si só busca conversacional, embeddings ou memória derivada.
-
-Se essa evolução for retomada, respostas precisarão apontar fontes e período; fatos extraídos guardarão referência, revisão e estado de confirmação. Apagar ou revogar uma fonte deverá invalidar resumos, caches e índices derivados.
+A visão de um assistente que consulta dados pessoais e ajuda em vários módulos está planejada como evolução separada do primeiro lançamento migrável. Leia [Assistente pessoal, memória e RAG](doc:assistente-pessoal-rag) para as camadas de busca fundamentada, isolamento, índice derivado, ferramentas autorizadas, avaliações e fases futuras. As funções descritas nesta página continuam sendo o escopo inicial; a existência de `records` não ativa, por si só, chat geral, embeddings ou ações autônomas.
 
 ## Tecnologia a avaliar em 2027
 
