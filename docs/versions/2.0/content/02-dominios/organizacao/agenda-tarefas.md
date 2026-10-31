@@ -6,9 +6,9 @@ type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
-related: planejamento-2-0, modelo-de-dados, notificacoes, veiculos, diario, migrations, ia-e-memoria
+related: planejamento-2-0, modelo-de-dados, notificacoes, veiculos, diario, migrations, ia-e-memoria, modulos-e-integracoes
 source_refs: https://support.apple.com/guide/iphone/iphc37be2016/27/ios, https://support.apple.com/guide/iphone/iph3d1110d4/27/ios, https://developers.google.com/workspace/calendar/api/v3/reference/events
-updated: 2026-10-28
+updated: 2026-10-31
 ---
 
 ## Contrato
@@ -44,11 +44,11 @@ O James mantém sua própria agenda como fonte de verdade. “Calendário do iPh
 | Conta CalDAV do James | Adicionar o próprio James em Ajustes > Apps > Calendário > Contas de Calendário e editar/sincronizar eventos pelo app Calendário do iPhone. | A agenda aparece como uma conta separada ao lado do iCloud. Exige implementar e manter o protocolo CalDAV, autenticação, concorrência e compatibilidade dos clientes. |
 | Google Calendar API | Conectar um calendário Google por OAuth para criar, atualizar, remover e sincronizar eventos. | Requer consentimento OAuth, escopos mínimos, armazenamento seguro de credenciais e resolução de conflitos. |
 
-O feed `.ics` escolhido para a primeira integração não escreve no calendário iCloud nem traz alterações do iPhone de volta ao James. Em uma fase posterior, CalDAV e Google podem oferecer sincronização bidirecional: o evento salvo no James seria enviado às conexões habilitadas, e alterações externas precisariam de IDs estáveis, controle de revisão, idempotência, tombstones de exclusão e regra explícita de conflito. A pessoa poderia usar uma ou ambas as conexões.
+O feed `.ics` escolhido para a primeira integração não escreve no calendário iCloud nem traz alterações do iPhone de volta ao James. Para sincronização bidirecional, avaliar uma conta CalDAV hospedada pelo James e Google Calendar por OAuth; definir IDs estáveis, revisão, idempotência, exclusões e conflitos antes de escolher. O James não terá app iOS nem acesso direto à conta iCloud.
 
-Fases escolhidas: agenda local e comandos de IA; feed `.ics` por URL secreta, somente leitura, como primeira integração com iOS; Google via OAuth e CalDAV ficam para uma fase posterior, se houver necessidade de sincronização bidirecional. Se a equipe preferir integração nativa por aplicativo iOS, EventKit também oferece acesso a eventos, mas exige um cliente iOS nativo e permissões do sistema.
+Fases propostas: agenda local e comandos de IA; feed `.ics` por URL secreta, somente leitura, como primeira integração; depois comparar CalDAV e Google via OAuth para o fluxo que realmente for necessário. O produto funciona sem todos eles.
 
-Referências oficiais: [adicionar conta CalDAV no iPhone](https://support.apple.com/guide/iphone/iphc37be2016/27/ios), [assinar calendário `.ics` no iPhone](https://support.apple.com/guide/iphone/iph3d1110d4/27/ios), [EventKit](https://developer.apple.com/documentation/eventkit) e [operações de eventos da API Google Calendar](https://developers.google.com/workspace/calendar/api/v3/reference/events).
+Referências oficiais: [adicionar conta CalDAV no iPhone](https://support.apple.com/guide/iphone/iphc37be2016/27/ios), [assinar calendário `.ics` no iPhone](https://support.apple.com/guide/iphone/iph3d1110d4/27/ios) e [operações de eventos da API Google Calendar](https://developers.google.com/workspace/calendar/api/v3/reference/events).
 
 ## Limites iniciais
 

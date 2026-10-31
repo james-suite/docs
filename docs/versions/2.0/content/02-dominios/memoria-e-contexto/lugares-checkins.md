@@ -39,6 +39,8 @@ Cada ação de formulário tem no máximo uma observação de localização liga
 
 O histórico geográfico fica em armazenamento próprio, referenciado pela correlação da ação e separado das propriedades do Activity Log. A auditoria funcional tem retenção vitalícia no plano atual, mas isso não pode impor retenção vitalícia a coordenadas. A pessoa precisa poder consultar, exportar e apagar dados de localização; definir o prazo padrão e opções de retenção antes de fechar o schema. A posição não entra em IA por padrão nem fica acessível a administradores da instalação.
 
+Um deslocamento importado não é visita, check-in, presença no estabelecimento ou local de uma ação de auditoria. Pode aparecer em uma linha do tempo/mapa separado, com trilha quando os pontos estiverem no arquivo; associar a um veículo apenas após seleção/revisão. Não criar automaticamente uma visita mesmo quando o destino coincide com um `Place`. Repetir a mesma exportação não deve duplicar trajetos.
+
 ### Mapa com OpenStreetMap
 
 O histórico pode exibir as ações num mapa privado, com filtros por período, módulo e tipo de ação e agrupamento de pontos próximos. A visualização pode abrir o registro e o evento de auditoria correspondente, respeitando o mesmo escopo da conta. Tiles são carregados somente quando alguém abre o mapa; queda do serviço de mapas não afeta salvar registros nem consultar o texto do histórico.
@@ -49,4 +51,4 @@ Usar dados OpenStreetMap com atribuição visível “© OpenStreetMap contribut
 
 Histórico de localização é privado e não entra em IA por padrão. O usuário pode exportar, corrigir e apagar visitas e contextos geográficos de auditoria. A captura é opcional, tem finalidade explicada na preferência e respeita a permissão do navegador. Localização exata pode revelar casa, saúde, trabalho e rotina; aplicar autorização de leitura, retenção própria e exclusão sem apagar o evento funcional da auditoria.
 
-Usar latitude/longitude com limites e índices de data no início. PostGIS e particionamento devem ser adotados quando houver requisito de consultas espaciais ou volume que os justifique. Não presumir integração automática com o histórico do Google nem um formato estável de exportação sem verificar o arquivo disponível.
+Usar latitude/longitude com limites e índices de data no início. PostGIS e particionamento devem ser adotados quando houver requisito de consultas espaciais ou volume que os justifique. Não presumir integrações automáticas com históricos externos nem formatos estáveis de exportação sem verificar um arquivo disponível.

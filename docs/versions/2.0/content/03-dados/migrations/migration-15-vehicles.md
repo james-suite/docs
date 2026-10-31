@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, veiculos, financas, patrimonio, componentes-tecnicos, enum-vehicle-event-type, enum-vehicle-financial-link-purpose
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -44,24 +44,24 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `event_id, position, description, quantity, unit_price` | Várias operações/peças/mão de obra no mesmo evento; precisão exata, sem copiar valores financeiros. |
+| `event_id, position, description, quantity, quantity_unit_label` | Várias operações, peças ou mão de obra realizadas no evento; quantidade e unidade são opcionais e descritivas. Não guardar preço nem total aqui: custos financeiros vêm dos vínculos com transações/itens. |
 
 ## `vehicle_financial_links`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `record_id, vehicle_id, financial_transaction_id, financial_transaction_item_id` | Liga custo/compra ao veículo; item opcional para identificar a linha fiscal exata e evitar FK de veículo no núcleo financeiro. |
+| `record_id, vehicle_id, financial_transaction_id, financial_transaction_item_id` | Liga a transação inteira ou um item ao veículo; `financial_transaction_id` sempre presente e o item opcional identifica uma linha de compra mista. Não adicionar FK de veículo no núcleo financeiro. |
 | `vehicle_event_id` | Evento realizado opcional. Nulo significa que o custo foi associado ao veículo, não que um serviço aconteceu. |
 | `purpose, quantity_allocated, amount_allocated_minor, notes` | Purpose distingue combustível, compra destinada ao veículo, custo de serviço e outro; valores de rateio opcionais e exatos nunca excedem a linha original. |
 
-Links não criam transações, pagamentos ou lançamentos. Um item comprado pode primeiro ser ligado ao veículo sem evento e depois atualizado para apontar ao evento real de instalação/troca; a data de compra e a data do serviço continuam distintas. Se uma linha for dividida entre vários veículos ou serviços, quantidades/valores alocados não podem exceder o original. Relatórios contam a despesa financeira uma vez, mesmo quando há link de evento.
+Links não criam transações, pagamentos ou lançamentos. Um link de transação representa o custo inteiro associado ao veículo, inclusive quando a transação não tem itens. Em compra mista, usar links por item para associar somente as linhas relevantes; não combinar um link da transação inteira com links de seus itens sem alocação explícita que impeça duplicidade. A UI pode exibir o veículo como chip/filtro parecido com uma tag, mas o vínculo continua tipado e não ocupa o catálogo de tags. Um item comprado pode primeiro ser ligado ao veículo sem evento e depois atualizado para apontar ao evento real de instalação/troca; a data de compra e a data do serviço continuam distintas. Se uma linha for dividida entre vários veículos ou serviços, quantidades/valores alocados não podem exceder o original. Relatórios contam a despesa financeira uma vez, mesmo quando há link de evento.
 
 ## `fuel_events`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `vehicle_event_id, fuel_type, quantity, quantity_unit, full_tank` | Dados específicos de abastecimento, ligados a evento com tipo Fueling; valor não se duplica aqui. |
-| `odometer_reading_id, place_id` | Leitura opcional e lugar/filial do posto; FKs adicionadas após places quando a ordem física exigir. |
+| `place_id` | Lugar/filial do posto; FK adicionada após places quando a ordem física exigir. A leitura do odômetro pertence ao evento-pai e não é repetida nesta tabela. |
 
 Preço líquido e preço por litro são calculados a partir do item fiscal ligado com purpose `fuel`; não guardar uma cópia que possa divergir do financeiro. Sem comprovante, o preço pode ficar desconhecido.
 
@@ -78,6 +78,9 @@ Preço líquido e preço por litro são calculados a partir do item fiscal ligad
 - Oferecer ação de registrar odômetro fora do formulário de abastecimento; aceitar leituras manuais e datadas sem evento financeiro.
 - Permitir correção de odômetro com justificativa; regras dependem da unidade e sequência temporal, não só de MAX(valor).
 - `vehicle_financial_links` é a única ponte entre módulos; não gerar segunda despesa ao consultar veículo e finanças.
+- `fuel_events` só pode existir para um `vehicle_event` com tipo `Fueling`; um evento de diário ou serviço não recebe dados de abastecimento por engano.
+- `vehicle_event_items` descreve o que foi feito, não é uma segunda fonte de preço. Valor pago ou alocado é consultado pela `vehicle_financial_links`; um item comprado antes pode ser associado ao evento de instalação sem trocar sua data de compra.
+- Um vínculo ao nível de transação e vínculos ao nível dos itens da mesma transação são mutuamente exclusivos, salvo rateio explícito com valores/quantidades que reconcilie exatamente a origem. Usar índices únicos adequados para impedir duplicatas no nível escolhido.
 - Todos os FKs de vehicle, transaction, item e event compartilham `space_id`; se houver `financial_transaction_item_id`, o item pertence à transação indicada. Indexar linha do tempo por veículo/data e links nos dois sentidos.
 - Uma nota fiscal com um único item de combustível e quantidade conhecida permite calcular preço efetivo por litro após desconto. Com vários itens e desconto de cabeçalho, exigir atribuição revisada; não escolher arbitrariamente o combustível.
 - O pagador está no pagamento financeiro, não no veículo. Pagamento por contato ou desconhecido não movimenta uma conta pessoal nem gera acerto automaticamente.

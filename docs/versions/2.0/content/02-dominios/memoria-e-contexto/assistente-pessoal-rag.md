@@ -21,7 +21,7 @@ O assistente não ganha acesso irrestrito ao banco. Ele recebe ferramentas e fon
 
 | Camada | Comportamento | Gate para avançar |
 | --- | --- | --- |
-| 1. Funções delimitadas | Sugestões de tags, fallback fiscal e, se aprovados, rascunho de transação e comando de agenda. | Revisão, orçamento e autorização independentes por função. |
+| 1. Funções delimitadas | Classificação de tags específicas, fallback fiscal e, se aprovados, rascunho de transação e comando de agenda. | Revisão, orçamento e autorização independentes por função. |
 | 2. Busca fundamentada (RAG) | Perguntas em linguagem natural sobre fontes que a pessoa selecionou; resposta com links para registros, período e ressalvas. Somente leitura. | Isolamento validado, fontes atualizáveis/apagáveis, busca avaliada com perguntas representativas. |
 | 3. Ferramentas de domínio | Consultar valores calculados pelo domínio e preparar rascunhos/propostas de ações por módulos. | Ferramenta allowlisted, política do módulo e confirmação proporcional ao efeito. |
 | 4. Assistência proativa | Resumos, lembretes ou sugestões iniciados por preferências configuradas pela pessoa. | Opt-in separado, frequência/quiet hours, explicação da origem, controle de custo e desligamento fácil. |

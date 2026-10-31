@@ -1,19 +1,19 @@
 ---
 id: ia-e-memoria
 title: IA para transações, tags, agenda e documentos fiscais
-description: Rascunhos de transações por texto, sugestões de tags, comandos de agenda e leitura fiscal somente como fallback.
+description: Rascunhos de transações por texto, classificação específica de tags, comandos de agenda e leitura fiscal somente como fallback.
 type: domain-plan
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, produtos-precos, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, assistente-pessoal-rag, migrations, enums
 source_refs: https://laravel.com/docs/13.x/ai-sdk
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Direção de produto
 
-No escopo planejado para o James 2.0, estão definidas duas funções: sugerir tags para transações e seus itens, podendo propor uma tag nova quando o catálogo não atender; e atuar como fallback na leitura de notas fiscais quando o XML, o QR ou um leitor determinístico disponível para a UF não resolver o documento. Uma tag nova só é criada após confirmação da pessoa. A IA não cria nem altera categorias financeiras.
+No escopo planejado para o James, estão definidas duas funções: classificar transações e seus itens com tags específicas, criando uma tag específica quando o catálogo não tiver uma adequada; e atuar como fallback na leitura de notas fiscais quando o XML, o QR ou um leitor determinístico disponível para a UF não resolver o documento. No modo Suggest, a pessoa aplica o resultado da classificação como um conjunto; tags novas necessárias são criadas junto com essa aplicação, sem confirmação individual por tag. No modo automático, isso só ocorre sob autorização explícita. A IA não cria nem altera categorias financeiras.
 
 Estão em avaliação duas funções adicionais e delimitadas: interpretar pedidos explícitos de agenda; e transformar uma descrição em linguagem natural em rascunho de transação sem documento fiscal. Essas propostas não habilitam um assistente conversacional geral, memória vetorial ou ações fora dos domínios descritos aqui.
 
@@ -27,13 +27,13 @@ Credenciais pessoais ficam criptografadas no servidor, mascaradas na UI e fora d
 
 Não alternar silenciosamente de provedor, chave ou modelo quando houver falha ou quota excedida. Uma conexão local pode ser suportada futuramente, mas endpoints arbitrários fornecidos por usuários exigem controle próprio de rede e não entram no primeiro formulário.
 
-## Sugestão de tags para transações e itens
+## Classificação de tags para transações e itens
 
 1. Aplicar regra local explícita por empresa/texto e opções já confirmadas.
 2. Se solicitado, enviar só a descrição, o tipo de registro e o contexto mínimo necessário, com a lista limitada de tags daquele espaço.
-3. Exigir resposta estruturada e validar novamente cada ID, limite de tamanho e pertença ao espaço. Nomes novos ficam separados das tags existentes e passam por verificação de duplicidade.
+3. Exigir resposta estruturada e validar novamente cada ID, limite de tamanho e pertença ao espaço. Tags existentes precisam descrever o registro com precisão; quando nenhuma servir, receber um nome específico candidato e verificar nomes canônicos, aliases e duplicidade.
 4. Registrar execução, provedor/modelo, versão do prompt, revisão do registro, uso e resultado sanitizado.
-5. Mostrar sugestões para aceitar ou recusar. Após validação do modo automático, o usuário pode autorizar aplicação de tags existentes, com revisão/escopo rechecados e possibilidade de desfazer. Criar uma tag nova exige confirmação explícita; escolhas manuais não são substituídas.
+5. No modo Suggest, mostrar o conjunto classificado para a pessoa aplicar ou descartar; ao aplicar, criar as tags específicas ausentes e atribuí-las na mesma operação. No modo AutomaticTags, aplicar sob a política autorizada, revalidando revisão/escopo e oferecendo desfazer. Não pedir confirmação separada para uma tag nova; preservar escolhas manuais.
 
 O resultado do modelo não pode definir `space_id`, categoria financeira, executar SQL, chamar ferramentas financeiras nem disparar pagamentos. Descrições e comprovantes são conteúdo não confiável, inclusive se contiverem instruções para a IA.
 
@@ -49,7 +49,7 @@ A pessoa pode escrever algo como “ontem gastei R$ 28 no Café Central” sem a
 
 Uma transação resumida pode não ter itens. Se a pessoa mencionar produtos sem dizer os preços/quantidades de cada linha, preservar o total no cabeçalho e deixar a transação sem itemização até ela complementar; não inventar uma divisão. Quando informados, os valores das linhas precisam reconciliar com o total antes de confirmar. O rascunho pode sugerir uma contraparte ou produtos existentes, mas só usa IDs do mesmo espaço e correspondências aceitas. Não cria nem mescla produtos, categorias ou tags sem a revisão apropriada.
 
-Pagador, conta, cartão, forma/data do pagamento e categoria não são presumidos. Mesmo que o texto diga “paguei”, a IA não registra pagamento efetivado nem movimenta saldo; o pagamento passa pelo editor financeiro e pelas regras do domínio. Sugestões de tags continuam na tarefa separada TagSuggestion. Uma transação de texto não é fallback fiscal e não cria comprovante fiscal fictício.
+Pagador, conta, cartão, forma/data do pagamento e categoria não são presumidos. Mesmo que o texto diga “paguei”, a IA não registra pagamento efetivado nem movimenta saldo; o pagamento passa pelo editor financeiro e pelas regras do domínio. A classificação de tags continua sendo uma tarefa separada (`TagClassification`). Uma transação de texto não é fallback fiscal e não cria comprovante fiscal fictício.
 
 Para encontrar um produto, primeiro distinguir o tipo do código: GTIN verificado resolve um identificador global; PLU/SKU/RCN local procura o cadastro vigente do estabelecimento e depois da empresa. Para descrição textual, usar o cadastro ou alias do lugar exato, depois da empresa e só então candidatos gerais. Se descrição e código divergirem, pedir revisão. O mesmo rótulo ou PLU pode designar produtos diferentes em lojas diferentes ou ser reutilizado ao longo do tempo. Em carnes, diferenciar GTIN de embalagem fixa, RCN/PLU local e etiqueta GS1 com atributos variáveis. Peso que varia por peça pertence à linha da compra. A decodificação do código é determinística e versionada; a IA não interpreta dígitos crus como peso/preço nem cria correspondência de corte por semelhança. Sem perfil/quantidade confiável, preserva descrição e payload e pede revisão. Quantidade, preço unitário e total precisam reconciliar. Uma linha manual só alimenta histórico de preços depois de confirmar produto, preço, quantidade/unidade e local quando conhecidos.
 
@@ -65,7 +65,7 @@ A autorização dessa função é separada de classificação e extração fisca
 
 ## Modos de aplicação
 
-O [ClassificationMode](doc:enum-classification-mode) distingue Suggest e AutomaticExistingTags. A automação de tags é uma proposta opt-in depois de avaliar exemplos representativos; aplica somente tags do catálogo autorizado. O sistema registra qual política autorizou a aplicação e não inventa um revisor humano. Desfazer só remove atribuições daquela execução, preservando mudanças humanas posteriores. Essa política não autoriza salvar ou alterar eventos.
+O [ClassificationMode](doc:enum-classification-mode) distingue Suggest e AutomaticTags. Suggest é o padrão e mantém a aplicação do conjunto sob controle da pessoa. AutomaticTags é opt-in depois de avaliar exemplos representativos; pode criar tags específicas ausentes como parte da classificação autorizada. O sistema registra qual política autorizou a aplicação e não inventa um revisor humano. Desfazer remove apenas atribuições daquela execução; uma tag criada só é arquivada se não tiver outros usos. Essa política não autoriza salvar ou alterar eventos.
 
 ## Custo e falhas
 

@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, agenda-tarefas, componentes-tecnicos, ia-e-memoria
-source_refs: https://support.apple.com/guide/iphone/iphc37be2016/27/ios, https://developers.google.com/workspace/calendar/api/v3/reference/events
-updated: 2026-10-28
+source_refs: https://support.apple.com/guide/iphone/iphc37be2016/27/ios, https://support.apple.com/guide/iphone/iph3d1110d4/27/ios, https://developers.google.com/workspace/calendar/api/v3/reference/events
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -44,7 +44,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 - `calendar_command_proposals.target_event_id` recebe FK para `calendar_events` neste pacote; o pacote 12 cria a proposta antes da tabela.
 - Exclusão gera tombstone suficiente para propagar remoção aos conectores e evitar que a sincronização recrie o evento.
 
-## Feed `.ics` por URL secreta — primeira integração iOS
+## Feed `.ics` por URL secreta — primeira integração de calendário
 
 O James oferece um feed de assinatura somente leitura, acessível por URL secreta. O iPhone busca esse feed periodicamente; mudanças feitas no James aparecem após a próxima atualização do Calendário. Alterações feitas na cópia assinada no iPhone não voltam ao James. O feed inclui apenas eventos ativos do espaço autorizado e não é indexável/publicamente listado, mas qualquer pessoa que obtenha a URL consegue ler os eventos.
 
@@ -56,7 +56,7 @@ URL do feed funciona como credencial, não como uma sessão autenticada do James
 
 ## Sincronização bidirecional — fase posterior
 
-Uma conta CalDAV do James pode ser adicionada no Calendário do iPhone como conta própria. Google Calendar usa OAuth e a API Google Calendar. Ambos podem estar conectados ao mesmo espaço se a pessoa os habilitar.
+Uma conta CalDAV do James pode ser adicionada no Calendário do iPhone como conta própria. Google Calendar usa OAuth e a API Google Calendar. Qualquer conexão só fica ativa se a pessoa habilitar.
 
 Antes de habilitar sincronização bidirecional, planejar a extensão destas tabelas:
 
@@ -66,7 +66,7 @@ Antes de habilitar sincronização bidirecional, planejar a extensão destas tab
 | `calendar_event_external_links` | `connection_id, calendar_event_id, external_event_id, external_revision, sync_state, last_synced_at`. UNIQUE por evento/conexão e por ID externo/conexão; identidade externa nunca é inferida só pelo título. |
 | `calendar_sync_runs` | `connection_id, direction, idempotency_key, cursor, status, started_at, completed_at, error_code`. Cursors/sync tokens pertencem à conexão e precisam ser atualizados atomicamente com os eventos aceitos. |
 
-As tabelas de conector só entram na migration física quando CalDAV/Google tiverem protótipo e regras aprovadas. Resolver edição concorrente com revisão/ETag e escolha explícita; não sobrescrever silenciosamente eventos alterados fora do James. Respeitar exclusão, escopo por usuário e revogação do conector.
+As tabelas de conector só entram na migration física quando CalDAV/Google tiverem protótipo e regras aprovadas. Resolver edição concorrente com revisão/ETag ou equivalente e escolha explícita; não sobrescrever silenciosamente eventos alterados fora do James. Respeitar exclusão, escopo por usuário e revogação do conector. O James não terá app iOS nem integração com EventKit ou Lembretes Apple.
 
 ## Conversão do James 1.x
 
@@ -74,7 +74,7 @@ Módulo novo. Datas financeiras aparecem como projeção/ligação; não copiar 
 
 ## Componentes previstos
 
-SaveCalendarEvent; UpdateCalendarEvent; CancelCalendarEvent; DeleteCalendarEvent; SplitCalendarSeries; CancelOccurrence; ReminderPlanner. Para fase de integração: IcsFeed, CalDavEndpoint, GoogleCalendarAdapter, CalendarSyncPlanner e CalendarConflictResolver.
+SaveCalendarEvent; UpdateCalendarEvent; CancelCalendarEvent; DeleteCalendarEvent; SplitCalendarSeries; CancelOccurrence; ReminderPlanner. Para fase de integração: IcsFeed, CalDavEndpoint, GoogleCalendarAdapter, CalendarSyncPlanner e CalendarConflictResolver. Os nomes são candidatos; não criam compromisso de implementação.
 
 ## Checklist de implementação
 

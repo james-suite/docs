@@ -1,14 +1,14 @@
 ---
 id: migration-12-ai
-title: Migration 12 — IA, credenciais e sugestões
-description: Contrato lógico de tabelas, FKs, índices e conversão: IA, credenciais e propostas.
+title: Migration 12 — IA, credenciais e classificações
+description: Contrato lógico de tabelas, FKs, índices e conversão: IA, credenciais e classificações.
 type: migration-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, assistente-pessoal-rag, agenda-tarefas, financas, componentes-tecnicos
 source_refs: https://platform.openai.com/docs/guides/embeddings, https://github.com/pgvector/pgvector
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -32,7 +32,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id, connection_id, enabled, classification_mode, policy_revision` | Seleção explícita de conexão; ClassificationMode com padrão Suggest e revisão da preferência para autoria da automação. |
-| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_suggestion`, `fiscal_extraction` e, se aprovadas, `calendar_command` e `transaction_draft`; orçamento aplicável por função/conexão. Futuramente, `assistant_answer`, `memory_indexing` e `assistant_action` recebem consentimentos separados. Cada função começa desativada até autorização explícita. |
+| `feature_permissions, budget_limit_minor, budget_currency` | Consentimentos separados para `tag_classification`, `fiscal_extraction` e, se aprovadas, `calendar_command` e `transaction_draft`; orçamento aplicável por função/conexão. Futuramente, `assistant_answer`, `memory_indexing` e `assistant_action` recebem consentimentos separados. Cada função começa desativada até autorização explícita. |
 
 ## `ai_runs`
 
@@ -46,10 +46,10 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `run_id, record_id, status` | SuggestionStatus e referência ao registro cuja transação ou item receberá sugestões de tags. |
-| `proposed_tags` | Tabela filha classification_suggestion_tags com tag_id; novo nome sugerido fica separado e exige confirmação. |
-| `proposed_new_tag_names` | Tabela filha `classification_suggestion_new_tags` com `proposed_name` e `normalized_name`, sem FK de tag até a aceitação. Confirmar explicitamente; então criar a tag e sua atribuição ao registro na mesma transação, verificando duplicidade. |
-| `reviewed_by_user_id, reviewed_at, accepted_policy_revision, reason` | Revisão humana ou aceite automático sob política autorizada; actor de sistema não finge revisão humana. Sem cadeia de pensamento do modelo. |
+| `run_id, record_id, status` | SuggestionStatus e referência ao registro cuja transação ou item receberá uma classificação específica de tags. |
+| `proposed_tags` | Tabela filha `classification_suggestion_tags` com `tag_id` para tags existentes; não aceitar tags genéricas quando uma opção específica é necessária. |
+| `proposed_new_tag_names` | Tabela filha `classification_suggestion_new_tags` com `proposed_name` e `normalized_name`, sem FK antes da aplicação. Ao aplicar a classificação autorizada, criar as tags ausentes e suas atribuições na mesma transação lógica, verificando aliases e duplicidade; sem confirmação separada por tag. |
+| `reviewed_by_user_id, reviewed_at, accepted_policy_revision, reason` | Revisão humana do resultado no modo Suggest ou política automática autorizada; actor de sistema não finge revisão humana. Sem cadeia de pensamento do modelo. |
 
 ## `calendar_command_proposals` — proposta para agenda
 
@@ -107,7 +107,7 @@ Campos candidatos: `run_id`, `tool_code` allowlisted, `target_record_id`, `targe
 
 ## Integridade, índices e comportamento
 
-- Adicionar ai_run_id nullable a tag_assignments após criar ai_runs. Comparar revisão e validar IDs na Action de aceite.
+- Adicionar `created_by_ai_run_id` nullable a tags e `ai_run_id` nullable a tag_assignments após criar ai_runs. A Action de aplicação compara revisão, valida IDs e cria tag/atribuições atomicamente; se uma tag equivalente surgir em concorrência, reutiliza-a.
 - Adicionar ai_run_id nullable a fiscal_document_extractions e uma FK composta após criar ai_runs. O job fiscal só anexa sua tentativa à execução do mesmo espaço e documento.
 - A migration 17 cria a FK de `calendar_command_proposals.target_event_id`; a Action também valida que o evento e a execução pertencem ao mesmo usuário/espaço.
 - User secret não entra em payload serializado de Job; o worker carrega conexão autorizada por ID. Não alterar config global mutável para trocar chaves entre usuários.
@@ -128,7 +128,7 @@ Não há IA no 1.x para migrar. Tags e escolhas humanas viram base de regras loc
 
 ## Componentes previstos
 
-SuggestClassification; ReviewSuggestion; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; DraftTransactionFromText; ReviewAiTransactionDraft; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas. Extensão futura: IndexAssistantMemory; RetrieveAssistantEvidence; AnswerWithSources; ReviewAssistantAction.
+ClassifyTags; ReviewClassification; ApplyTagClassification; CreateSpecificTagForClassification; DraftCalendarCommand; ReviewCalendarCommand; ApplyCalendarCommand; DraftTransactionFromText; ReviewAiTransactionDraft; ResolveAiConnection; ReserveAiBudget; AiProviderAdapter; reconciliar uso e falhas. Extensão futura: IndexAssistantMemory; RetrieveAssistantEvidence; AnswerWithSources; ReviewAssistantAction.
 
 ## Checklist de implementação
 

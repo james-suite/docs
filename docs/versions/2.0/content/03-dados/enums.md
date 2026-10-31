@@ -35,6 +35,7 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — FinancialAccountType](doc:enum-financial-account-type) — `financial_accounts`.
 - [Enum — InvoiceCycleState](doc:enum-invoice-cycle-state) — `credit_card_invoices`.
 - [Enum — TagAssignmentOrigin](doc:enum-tag-assignment-origin) — `tag_assignments`.
+- [Enum — TagCreationOrigin](doc:enum-tag-creation-origin) — `tags`.
 - [Enum — SuggestionStatus](doc:enum-suggestion-status) — `classification_suggestions`.
 - [Enum — RecurrenceFrequency](doc:enum-recurrence-frequency) — `financial_recurrences`.
 - [Enum — SplitMode](doc:enum-split-mode) — `settlement_groups`.
@@ -65,5 +66,4 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — CalendarCommandAction](doc:enum-calendar-command-action) — `calendar_command_proposals`.
 
 - [Enum — CardDebtDirection](doc:enum-card-debt-direction) — `card_charges`.
-- [Enum — HealthSyncStatus](doc:enum-health-sync-status) — `health_sync_runs` (extensão opcional).
 - [Enum — HealthDataOrigin](doc:enum-health-data-origin) — origem manual ou importada de observações e treinos.

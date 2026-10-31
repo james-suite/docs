@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, veiculos, componentes-tecnicos, enum-payment-payer-type
 source_refs:
-updated: 2026-10-26
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -29,7 +29,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | `created_at` | Instante real de registro/importação; não substitui a data financeira. |
 | `payer_type, payer_party_id` | Pagador usuário, contato ou desconhecido; contato obrigatório somente para o tipo Contact. |
 | `source_ledger_account_id, destination_ledger_account_id` | Instrumentos/contrapartidas autorizados conforme tipo; origem pessoal obrigatória só quando o usuário pagou e houve movimento na própria conta. |
-| `payment_method_id, reverses_payment_id, refunds_payment_id` | Método; referência à correção técnica ou à devolução comercial, com exclusividade conforme PaymentKind. |
+| `payment_method_id, reverses_payment_id, refunds_payment_id` | Método; referência à correção técnica ou à devolução comercial, com exclusividade conforme PaymentKind. Settlement recebe vínculo à liquidação do pacote 10. |
 | `idempotency_key, reason` | Chave única por espaço; motivo obrigatório para ajustes/estornos. |
 
 ## `financial_payment_allocations`
@@ -40,12 +40,16 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | `original_allocation_id` | FK para alocação afetada por reversão/devolução parcial; validar espaço, moeda e propósito. |
 | `UNIQUE(payment_id, transaction_id)` | Uma alocação agregada por par; granularidade por item só se requisito exigir. |
 
+`PaymentKind::Settlement` não usa esta tabela: a liquidação é alocada às obrigações em `settlement_payment_allocations` e ligada ao movimento de caixa por FK nullable no pacote 10. Assim, receber R$ 40 de um contato reduz o crédito a receber sem aparecer como renda nem como nova alocação da compra.
+
 ## `ledger_journals`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `payment_id, currency, effective_on, posted_at` | Lote interno com payment_id único; data efetiva e instante opcional herdados da operação. |
 | `reverses_journal_id, correlation_id` | Referência à reversão e correlação da operação. |
+
+O vínculo entre pagamento e journal é opcional quando o pagamento quita um documento, mas não movimenta conta pessoal acompanhada nem cria obrigação pessoal. Pagamento efetivo por contato pode liquidar a transação sem gerar posting pessoal; quando houver movimento de conta ou liquidação de obrigação acompanhada, a operação financeira gera seu journal balanceado.
 
 ## `ledger_postings`
 
@@ -62,6 +66,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 - Cada reversão/devolução parcial identifica a alocação original. A soma cumulativa de retornos não excede cada alocação nem o pagamento; validar sob bloqueio, inclusive quando um pagamento quitou vários documentos.
 - Pagamento pode quitar vários documentos e documento pode ter vários pagamentos. Não misturar valores de moedas diferentes sem operação de câmbio própria.
 - Pagamento efetivo por contato quita o documento sem fabricar débito em conta pessoal. Atribuição de pagador não cria por si só dívida, crédito, copropriedade ou rateio; obrigações exigem vínculo explícito a acerto.
+- Settlement ligado a conta pessoal gera posting contra ativo/passivo de acerto, não contra receita/despesa. Para recebimento, registrar `payer_type=Contact` e conta de destino pessoal; para pagamento, `payer_type=Self` e conta de origem. `payer_party_id` identifica quem enviou o dinheiro e pode diferir da Party das obrigações quitadas, que fica explícita nas alocações do acerto. Um SettlementPayment sem `financial_payment_id` pode representar acerto efetivo fora das contas acompanhadas, sem posting inventado.
 - Tipo Self exige origem pessoal quando o movimento sai da conta do usuário; Contact exige `payer_party_id` e não aponta para conta privada do contato; Unknown mantém a incerteza e não pode gerar lançamento bancário pessoal presumido.
 - Postings efetivados são imutáveis. Soft delete de rascunho não é mecanismo para retirar pagamento do saldo; reversão gera lote inverso. Essa exceção à convenção genérica de SoftDeletes precisa de ADR 2.0.
 - Índices UNIQUE(space_id, idempotency_key), por conta/data e por transaction_id. Requisição repetida com mesma chave e payload diferente é rejeitada.

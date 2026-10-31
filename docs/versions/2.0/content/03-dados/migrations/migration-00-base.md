@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -65,9 +65,7 @@ Tabela separada e opcional, criada após `spaces` no pacote 01 e ligada à submi
 - Não executar migrations do 1.x no banco novo. Baseline dos pacotes precede as extensões de domínio.
 - Auditoria funcional tem retenção vitalícia como na convenção atual; qualquer mudança nessa política exige decisão própria. Logs técnicos, arquivos temporários e respostas de IA têm retenção independente.
 - Contextos geográficos têm retenção e exclusão independentes do Activity Log. Definir o prazo/opções antes do schema final; expirar ou apagar a localização não apaga a autoria, ação ou diff funcional.
-- Obter coordenadas somente durante uma submissão/confirmação iniciada pela pessoa, com permissão do navegador; sem IP fallback, tracking em segundo plano ou posição inventada para jobs. Uma importação confirmada pode receber um contexto único, sem replicá-lo em cada item. Falha da geolocalização não impede o salvamento.
-- Contextos geográficos têm retenção e exclusão independentes do Activity Log. Definir o prazo/opções antes do schema final; expirar ou apagar a localização não apaga a autoria, ação ou diff funcional.
-- Obter coordenadas somente durante uma submissão iniciada pela pessoa, com permissão do navegador; sem IP fallback, tracking em segundo plano ou posição inventada para jobs/imports. Falha da geolocalização não impede o salvamento.
+- Obter coordenadas somente numa submissão iniciada pela pessoa, com permissão do navegador; sem IP fallback, tracking em segundo plano ou posição inventada para jobs. Uma confirmação de importação pode guardar uma posição para a ação de importação, nunca para os registros históricos importados. Falha da geolocalização não impede o salvamento.
 - Mídia e auditoria recebem as FKs de spaces no pacote 01, depois de a tabela existir. Não criar FK para tabela futura neste pacote.
 
 ## Conversão do James 1.x

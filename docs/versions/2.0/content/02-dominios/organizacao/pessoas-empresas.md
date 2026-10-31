@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, tags, financas, lugares-checkins, veiculos, migrations
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/Contact.php, https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-31
 ---
 
 ## Base proposta
@@ -24,6 +24,14 @@ Vincular pessoa a empresa com tipo e vigência (ex.: prestador, funcionário ou 
 Relações vindas de consulta pública ou base auxiliar guardam fonte, referência, data e estado de confirmação. O James pode sugerir um vínculo, mas nomes parecidos, CNPJ de matriz ou domínio de site não justificam fusão automática. Uma associação externa aceita continua distinguível da informação digitada pela pessoa e pode ser corrigida sem alterar compras históricas.
 
 Interações registram encontro, ligação, serviço ou observação com data e vínculos. Compras e serviços de veículo já fornecem eventos concretos; não duplicar esses eventos como interações manuais obrigatórias. Vínculos permitem encontrá-los pelo contato/empresa.
+
+## Party como dimensão de consulta
+
+Usar o mesmo `party_id` local quando uma pessoa ou empresa aparecer como fornecedor, prestador, participante de rateio, contraparte de obrigação ou pagador externo. O papel vem do relacionamento tipado, não de uma tag. Uma pessoa pode aparecer em mais de um papel sem duplicar seu cadastro.
+
+A ficha da Party pode reunir transações, serviços, consumo dividido, obrigações e liquidações, mantendo essas medidas separadas e com links para seus módulos. Relatórios podem filtrar por Party e cruzar a seleção com período, categoria, tags específicas, veículo ou produto. Um pagamento feito por alguém ou uma compra ligada a uma pessoa não cria, por si só, uma obrigação; saldos só mudam por operação explícita de acerto.
+
+Arquivar uma Party remove opções dos novos formulários, mas preserva nomes históricos e vínculos financeiros. Uma correspondência de nome não funde dois cadastros automaticamente; fusão precisa revalidar IDs, aliases e histórico de obrigações.
 
 ## Busca e aprendizado local
 

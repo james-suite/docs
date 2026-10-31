@@ -44,7 +44,7 @@ Números são identificadores editoriais. Dependências adicionais devem ser res
 
 A extensão opcional futura do pacote 12 para conversas, memória derivada e busca vetorial está descrita em [Migration 12 — IA](doc:migration-12-ai) e no [plano do assistente pessoal](doc:assistente-pessoal-rag); ela não adiciona tabelas obrigatórias à sequência acima.
 
-A conexão opcional com Apple Health estende a [Migration 19 — Saúde e treinos](doc:migration-19-health), sem novo pacote de domínio. O plano propõe sincronização iniciada pela pessoa e importação XML manual; nenhuma dessas opções é requisito da primeira migração do James.
+Uma importação manual do Apple Saúde, se aprovada após validar um XML real, estende a [Migration 19 — Saúde e treinos](doc:migration-19-health) com origem e lote de arquivo; não cria conexão HealthKit, app iOS nem sincronização. Ela não é requisito da primeira migração do James.
 
 ## Evolução sem tabelas prematuras
 

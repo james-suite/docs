@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, ia-e-memoria, assistente-pessoal-rag, agenda-tarefas, financas
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Contrato proposto
@@ -17,7 +17,7 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 
 | Case | Valor persistido | Significado |
 | --- | --- | --- |
-| `TagSuggestion` | `tag_suggestion` | Sugerir tags para uma transação ou um item de transação; pode propor nome novo, sempre sujeito à confirmação antes de criar a tag. |
+| `TagClassification` | `tag_classification` | Classificar separadamente uma transação ou item com tags específicas; quando não houver tag adequada, propor uma nova para criação e atribuição junto com a aplicação autorizada do resultado. |
 | `FiscalExtraction` | `fiscal_extraction` | Extrair candidatos estruturados de documento fiscal quando um leitor determinístico não atender e o usuário permitir o envio |
 | `CalendarCommand` | `calendar_command` | Interpretar um pedido explícito de agenda e preparar uma operação tipada de compromisso, sujeita à autorização da função e às confirmações do domínio |
 | `TransactionDraft` | `transaction_draft` | Interpretar uma descrição natural sem documento fiscal e criar um rascunho financeiro para revisão, sem efetivar pagamentos |
@@ -34,7 +34,7 @@ Não fazem parte da enum inicial nem devem ser persistidos antes da fase de [Ass
 
 ## Regras e transições
 
-TagSuggestion e FiscalExtraction são as funções definidas. CalendarCommand e TransactionDraft são propostas adicionais em avaliação e exigem permissões separadas. TransactionDraft só cria estado Draft em `financial_transactions`; não escolhe nem efetiva pagamento, não cria documento fiscal e não altera categorias. A enum inicial não habilita chat geral, extração de fatos pessoais nem ações autônomas fora dos comandos tipados. As cases candidatas de assistente só entram após aprovar os respectivos contratos, controles e avaliações. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
+TagClassification e FiscalExtraction são as funções definidas. CalendarCommand e TransactionDraft são propostas adicionais em avaliação e exigem permissões separadas. TransactionDraft só cria estado Draft em `financial_transactions`; não escolhe nem efetiva pagamento, não cria documento fiscal e não altera categorias. A enum inicial não habilita chat geral, extração de fatos pessoais nem ações autônomas fora dos comandos tipados. As cases candidatas de assistente só entram após aprovar os respectivos contratos, controles e avaliações. FiscalExtraction só processa a nota vinculada à execução, sob permissão e orçamento próprios; não confirma compra, pagador ou pagamento.
 
 ## Persistência
 

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, tags
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-31
 ---
 
 ## Contrato proposto
@@ -19,7 +19,7 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 | --- | --- | --- |
 | `Manual` | `manual` | Escolha humana |
 | `Rule` | `rule` | Regra determinística |
-| `Ai` | `ai` | IA aceita por revisão ou política automática explicitamente autorizada |
+| `Ai` | `ai` | Classificação aplicada pela pessoa ou por política automática explicitamente autorizada; inclui tag criada e atribuída na mesma operação |
 | `Import` | `import` | Informação importada |
 
 ## Regras e transições

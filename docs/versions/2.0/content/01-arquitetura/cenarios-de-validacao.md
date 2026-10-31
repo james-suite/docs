@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, validação
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0, assistente-pessoal-rag
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 Estes casos são critérios para revisar o plano e, na implementação, criar testes de domínio e integração. Não representam testes já executados ou recursos implementados. Os números abaixo usam reais e nenhuma conversão de moeda.
@@ -32,7 +32,10 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Caso | Resultado esperado |
 | --- | --- |
 | Usuário paga R$ 120 para três contatos; cada um consome R$ 40 e o usuário não consome. | Saída de caixa R$ 120, crédito a receber R$ 120 e despesa pessoal zero. Não dividir por quatro. |
-| Um contato devolve R$ 40 desse rateio. | Caixa aumenta R$ 40, crédito cai para R$ 80 e receita pessoal permanece zero. |
+| Ana devolve R$ 40 desse rateio. | Uma liquidação vinculada à obrigação da Ana reduz o saldo dela a zero; os outros R$ 80 continuam atribuídos aos outros contatos. Caixa aumenta R$ 40 se ligado a conta, receita pessoal permanece zero, e o gráfico por pessoa funciona sem tag “reembolso”. |
+| Ana envia R$ 80 e, com registro explícito, quita sua obrigação de R$ 40 e parte da obrigação de R$ 40 do Bruno. | Uma liquidação registra Ana como pagadora e aloca os valores às duas obrigações; os saldos de Ana e Bruno atualizam separadamente. Não inferir que o pagador e os devedores são sempre a mesma pessoa. |
+| Carlos paga uma compra compartilhada de R$ 80; eu consumi R$ 40 e ele R$ 40. Depois pago minha parte a Carlos pela conta bancária. | A compra original registra pagador Carlos; meu consumo é R$ 40 e minha obrigação a pagar é R$ 40. O pagamento de acerto reduz caixa e dívida, sem criar outra compra/despesa nem alterar quem consumiu. |
+| A loja devolve R$ 40 de uma compra de R$ 120. | Documento de devolução e `PaymentKind::Refund` ligam o retorno à compra original; não criar `SettlementPayment` nem confundir com pagamento de contato. |
 | Usuário só organiza um rateio entre contatos, sem pagar nem consumir. | Rateio e saldos entre contatos são consultáveis; nenhuma obrigação ou movimentação pessoal é criada. |
 | Alterar um rateio que já possui liquidação. | Propor ajuste/revisão que preserve as obrigações liquidadas; não excluir e recriar os filhos antigos. |
 | Uma transação tem dois itens de R$ 60 e R$ 40, mesma tag no cabeçalho e nos itens. | Busca e relatório dessa tag somam R$ 100, sem multiplicar os valores pela quantidade de vínculos. |
@@ -78,6 +81,7 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Comprar óleo para um veículo em uma data e trocar semanas depois. | Compra ligada ao veículo sem serviço concluído na primeira data; evento de troca usa a data/quilometragem real e pode referenciar o item comprado. |
 | Registrar “ouvi um ruído ao frear” no diário do veículo. | Nota aparece na linha do tempo, sem criar despesa, manutenção concluída ou mudança de odômetro. |
 | Oficina realiza óleo R$ 80 e mão de obra R$ 40 em uma visita. | Um evento com dois itens e despesa total R$ 120 ligada a uma transação, sem gerar R$ 240 ao consultar pelos dois módulos. |
+| Uma oficina de R$ 120 é ligada ao veículo e dividida em R$ 60 para mim e R$ 60 para outra pessoa. | Custo do veículo continua R$ 120; consumo pessoal é R$ 60; obrigação da contraparte é R$ 60. O gráfico por veículo e o gráfico por pessoa usam o mesmo fato sem duplicar a despesa. |
 | Tanque cheio no km 1.000; parcial de 5 L no km 1.100; cheio com 15 L no km 1.250. | Intervalo completo considera 250 km e 20 L, resultando 12,5 km/L; não usar só os últimos 15 L nem o volume do abastecimento inicial. |
 | Marcar checklist de manutenção concluído sem registrar o serviço. | Checklist muda de estado, mas odômetro/base do plano não são atualizados como se o serviço tivesse ocorrido. |
 | Registrar 82.450 km na ficha do veículo sem abastecer nem pagar nada. | Uma leitura independente aparece na linha do tempo e atualiza as consultas futuras de distância; não cria evento de abastecimento ou transação. |
@@ -88,7 +92,8 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Ativar captura ao salvar e criar ou editar um registro no site. | Uma posição pontual é associada ao evento por correlation_id; contexto, precisão e horário aparecem no histórico do registro. |
 | Uma gravação cria uma transação, itens e alocações com vários eventos de auditoria. | Todos usam o mesmo contexto de localização da ação; não há cópias por item nem várias posições. |
 | Negar localização, exceder o tempo limite, usar navegador sem suporte ou falhar o serviço de mapas. | Salvar e consultar o registro/histórico textual normalmente; não usar IP como substituto nem criar ponto sem coordenadas. |
-| Job de recorrência, importação ou execução de IA altera registros. | Auditoria identifica origem automática sem atribuir a posição atual do navegador ou de uma ação humana anterior. |
+| Job de recorrência, processamento assíncrono de importação ou execução de IA altera registros. | Auditoria identifica origem automática sem atribuir a posição atual do navegador ou de uma ação humana anterior. |
+| A pessoa confirma uma importação no site com captura de localização habilitada e permissão concedida. | Um contexto pode registrar a posição daquela confirmação; não copiar coordenadas para os registros históricos importados. |
 | Abrir mapa com tiles OpenStreetMap. | Exibir atribuição visível, filtros e agrupamento; mapa mostra precisão reportada e não envia metadados do registro ao provedor. |
 | Expirar/apagar contexto geográfico associado a um evento. | Remover a posição do mapa mantendo ação, autoria, data e diff funcional no Activity Log. |
 | Editar texto íntimo do diário. | Revisão protegida no diário; Activity Log registra autoria/evento sem copiar todo o texto para diffs comuns. |

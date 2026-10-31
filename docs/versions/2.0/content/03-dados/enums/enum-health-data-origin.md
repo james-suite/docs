@@ -13,18 +13,17 @@ updated: 2026-10-31
 
 ## Contrato proposto
 
-Enum string da forma pela qual o dado entrou no James. O provedor/aplicativo que originalmente produziu a amostra fica em campos de proveniência separados; várias fontes externas podem alimentar o Apple Health.
+Enum string da forma pela qual o dado entrou no James. O aplicativo/aparelho que originalmente produziu a amostra fica em campos de proveniência separados quando o arquivo fornece essa informação.
 
 | Case | Valor persistido | Significado |
 | --- | --- | --- |
 | `Manual` | `manual` | Registro criado diretamente no James. |
-| `HealthKit` | `healthkit` | Amostra enviada pelo cliente iOS depois de consultar o HealthKit. |
 | `HealthExport` | `health_export` | Amostra importada de um arquivo exportado no app Saúde. |
 
 ## Regras
 
-Manter registros manuais separados de valores importados. O valor de origem identifica o caminho de entrada, não a precisão clínica nem se a pessoa autorizou todos os tipos. O app/aparelho produtor e o identificador externo ficam em campos separados quando disponíveis.
+Manter registros manuais separados de valores importados. O valor de origem identifica o caminho de entrada, não a precisão clínica. O app/aparelho produtor e o identificador externo ficam em campos separados quando o arquivo os fornecer.
 
 ## Persistência
 
-Aplicar a `health_observations` e `workout_sessions` na extensão da [Migration 19](doc:migration-19-health). Um conector direto adicional pode exigir outro case; não criar enum por fornecedor enquanto a origem funcional continuar sendo HealthKit.
+Aplicar a `health_observations` e `workout_sessions` na [Migration 19](doc:migration-19-health). Sem uma fonte de importação validada, manter apenas os registros manuais; não criar cases para integrações que dependam de app iOS.

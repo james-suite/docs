@@ -47,6 +47,8 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 Itens financeiros são opcionais. Uma transação simples sem nota pode guardar descrição, data e total sem inventar produto ou resumo sintético; quando houver itens, os totais precisam reconciliar com o cabeçalho. `is_legacy_summary` permanece reservado a linhas sintéticas de importação do 1.x.
 
+Tags são atribuídas ao `record_id` da transação ou de cada item por `tag_assignments`. Preservar esses dois níveis de forma independente. Uma transação sem itens continua tendo tags de cabeçalho; em compras detalhadas, tags de cabeçalho dão contexto geral e tags de item classificam linhas específicas. A busca pode consultar ambas, mas não replicar assignments nem contar o total da transação uma vez por item.
+
 ## `fiscal_documents`
 
 | Campo ou grupo | Contrato |
@@ -79,6 +81,7 @@ Após aceitar a leitura, os valores confirmados ficam em `financial_transactions
 - Linhas fiscais podem receber product_id, product_listing_id e base_quantity/base_unit por FKs adicionadas no pacote 21. A observação de preço só nasce após confirmar a identidade do produto, a compra e a quantidade/unidade comparável. Se uma etiqueta/código de balança também for lido, associá-lo à linha fiscal correspondente; não criar uma segunda compra nem uma segunda observação para o mesmo item.
 - Só aplicar desconto geral ao preço unitário de combustível automaticamente quando há um único item de combustível e quantidade identificável. Nota com vários itens exige atribuição explícita do desconto; valor total e linhas precisam reconciliar antes de confirmar.
 - Sem itens no legado, criar um resumo identificado com valor conhecido, sem fabricar produto ou quantidade. Substituir o resumo por itens detalhados exige reconciliação e histórico.
+- Vínculos a veículos usam `vehicle_financial_links` no pacote 15: transação inteira para despesa integralmente destinada ao veículo, item quando apenas aquela linha da compra pertence ao veículo. Não gravar `vehicle_id` ou tag sintética no núcleo financeiro.
 - Cancelar documento confirmado exige nenhum pagamento efetivo. Devolução comercial preserva o documento original e cria outro relacionado; reversão técnica é uma operação diferente.
 - Não armazenar financial_account_id como único destino da transação: formas de pagamento passam pelo pacote 07.
 - Estado de quitação é projeção de pagamentos válidos. Estorno de uma compra cria documento de devolução relacionado e operação inversa; não reabrir cobrança como se fosse falta de pagamento.
@@ -86,7 +89,7 @@ Após aceitar a leitura, os valores confirmados ficam em `financial_transactions
 
 ## Conversão do James 1.x
 
-Preservar amount, description, date, status, itens e NFC-e. Valores decimais convertidos por texto para unidades mínimas. Datas e tags dos itens não são inferidas a partir do cabeçalho quando já existem. O conversor distingue documento fiscal já importado de captura por imagem e nunca inventa pagador, desconto por item, produto de catálogo ou veículo. Emitente e filial importados são candidatos até uma correspondência segura.
+Preservar amount, description, date, status, itens e NFC-e. Valores decimais convertidos por texto para unidades mínimas. Migrar tags do cabeçalho e dos itens como vínculos separados; não inferir tags dos itens a partir do cabeçalho. O conversor distingue documento fiscal já importado de captura por imagem e nunca inventa pagador, desconto por item, produto de catálogo ou veículo. Emitente e filial importados são candidatos até uma correspondência segura.
 
 ## Componentes previstos
 

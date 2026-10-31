@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, migracao-2-0, compatibilidade-legado, migrations, enums
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialCreditCardInvoice.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialCreditCard.php
-updated: 2026-10-25
+updated: 2026-10-31
 ---
 
 ## Melhorias propostas
@@ -33,7 +33,7 @@ Pagamento excedente precisa de destino explícito: crédito do cartão ou rejei�
 
 Modelar plano de parcelas, número, valor, datas previstas e vínculo de cada parcela à fatura. Valor total e soma das parcelas devem coincidir; o arredondamento usa regra determinística. Distinguir compra parcelada de parcelamento/financiamento da fatura, que cria obrigação e encargos próprios.
 
-O plano deve definir o limite comprometido considerando parcelas futuras e créditos, e deixar esse critério visível. Uma compra parcelada não pode ser contada novamente toda vez que uma parcela entra na fatura. Estornos parciais mantêm referência à compra e à parcela; reembolso posterior ao fechamento pode aparecer em outro ciclo sem apagar o histórico.
+O plano deve definir o limite comprometido considerando parcelas futuras e créditos, e deixar esse critério visível. Uma compra parcelada não pode ser contada novamente toda vez que uma parcela entra na fatura. Estornos parciais mantêm referência à compra e à parcela; uma devolução comercial posterior ao fechamento pode aparecer em outro ciclo sem apagar o histórico.
 
 ## Entrega em etapas
 

@@ -23,26 +23,31 @@ updated: 2026-10-31
 - Planejar módulos existentes no roadmap, empresas/relacionamentos, check-ins, diário e veículos com vários itens de serviço/checklist.
 - Fazer check-ins pelo próprio site; não criar API ou automação externa para iOS/Android. A posição atual pode ser preenchida pelo navegador mediante ação e permissão da pessoa.
 - Poder registrar a posição do navegador junto a cada criação/edição/ação manual feita no site e consultar essas posições no histórico e num mapa. A captura é pontual ao salvar, nunca contínua ou em segundo plano; o sistema ainda precisa da permissão do navegador.
+- Não haverá aplicativo iOS para o James nem API móvel de ingestão para iOS/Android. O site permanece a interface para registros e check-ins.
 - Registrar odômetro sem exigir abastecimento; usar o QR/XML da nota para identificar, quando os dados permitirem, o posto/filial e associá-lo ao abastecimento.
 - Guardar produtos com códigos e histórico de preços de compras em lugares/datas diferentes, com possibilidade de uma cesta pessoal “Minha inflação”.
 - Reutilizar/avaliar o scraper de notas do RS existente e prever fallback por LLM quando não houver leitor por UF, sempre com autorização, revisão e preenchimento manual disponível.
 - Preparar relações empresariais e referências a bases auxiliares com fonte/proveniência; dados privados de notas não alimentam base compartilhada.
 - Separar o produto pessoal comparável do listing/cadastro de cada loja; nomes e códigos locais podem diferenciar produtos de lojas ou filiais distintas, e uma etiqueta de peso variável não deve transformar o peso da peça em atributo permanente do produto.
-- Funções iniciais de IA: sugerir tags para transações/itens e usar extração fiscal como fallback; tag nova requer confirmação. Comandos delimitados para agenda e rascunhos de transação estão em avaliação; assistente pessoal do James está planejado para fases posteriores, começando por busca fundamentada.
+- Funções iniciais de IA: classificar transações e itens com tags específicas, criando a tag quando não houver uma adequada, e usar extração fiscal como fallback. Comandos delimitados para agenda e rascunhos de transação estão em avaliação; assistente pessoal do James está planejado para fases posteriores, começando por busca fundamentada.
+- Tags da transação e dos itens são independentes; itens sem detalhamento continuam classificados no cabeçalho. Um vínculo financeiro com veículo aparece como contexto e filtro semelhante a uma tag, mas permanece uma relação tipada, fora do catálogo de tags.
+- Não haverá tags padrão ou globais. Cada conta começa com catálogo vazio; tags são criadas pela pessoa, importadas do próprio legado ou criadas por uma classificação de IA autorizada quando faltar uma tag específica.
+- Não usar uma tag “reembolso” para acertos entre pessoas/empresas. A contraparte associada à obrigação/liquidação será uma dimensão de filtro e gráfico; liquidação de acerto, devolução comercial e receita terão fluxos diferentes.
 - Quero planejar uma evolução do James como assistente pessoal que consulta dados autorizados e ajuda a agir entre módulos; primeiro lançamento continua com funções delimitadas, e a evolução começa por busca fundamentada com fontes.
-- Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV e Google Calendar por OAuth ficam como possibilidades posteriores. A agenda interna continua funcionando sem conectores.
-- Na área de saúde, Apple Health/HealthKit é prioridade sobre Strava; Strava não faz parte da primeira integração. A ideia é reutilizar fontes que já sincronizam com o app Saúde e só avaliar conectores diretos quando faltar dado relevante.
+- Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV do James e Google Calendar por OAuth ficam como possibilidades posteriores. Não planejar EventKit ou recursos que dependam de app iOS do James; a agenda interna funciona sem conectores.
 
 ## Propostas técnicas para revisar
 
 | Proposta | Motivo e ponto de revisão |
 | --- | --- |
 | Documento + pagamentos + alocações | Atende múltiplas formas, datas e quitações sem duplicar transação. |
-| Livro interno balanceado | Ajuda transferências, passivos de cartão e reembolsos; validar custo com protótipo antes de aprovar. |
+| Livro interno balanceado | Ajuda transferências, passivos de cartão e liquidações de obrigações sem tratá-las como receita/despesa; validar custo com protótipo antes de aprovar. |
+| Pagamentos de acertos ligados a caixa | Tipo `Settlement` pode movimentar uma conta pessoal e limpar receber/pagar; não cria alocação da compra original. Registro de acerto sem conta acompanhada não inventa posting. |
 | Espaço pessoal 1:1 com usuário | Limite consistente de dados; sem membership/colaboração agora. |
 | Record registry e vínculos tipados | Conecta diário, empresas, compras e veículos; validar que não complica os Models nem duplica entidades. |
-| Categoria exclusiva + tags múltiplas | Relatórios sem dupla contagem e tags transversais; confirmar UX e conversão de is_primary. |
-| Combobox com nomes pendentes | Criar tag durante o formulário sem deixar órfãs ao cancelar. |
+| Categoria financeira + tags específicas em dois níveis | Usar a categoria para agregação ampla e tags para descrever o registro com precisão; preservar tags no cabeçalho e em cada item sem duplicação nem dupla contagem. |
+| TagPicker com criação manual e automática | A pessoa pode criar tags no formulário; a IA cria e aplica uma tag específica ausente durante uma classificação autorizada, sem confirmação individual, com proveniência, auditoria e opção de desfazer. |
+| Vínculo financeiro com veículo | Mostrar o veículo como chip contextual/filtro sem cadastrá-lo como tag; permitir vínculo de transação inteira ou de item quando a compra for mista. |
 | Chave de IA pessoal + conexão da instalação opcional | Separa custos e permite serviço oferecido pelo administrador com consentimento/quota; não é decisão comercial fechada. |
 | Comandos de agenda por linguagem natural | Interpretar pedidos explícitos para criar/editar/cancelar/excluir eventos; considerar auto-salvar criações inequívocas com opt-in, exigir confirmação para alterar/excluir e manter desfazer/auditoria. Não vira assistente geral. |
 | Transação simples por linguagem natural | Preparar compra sem nota como FinancialTransaction Draft; revisar dados e itens antes de confirmar; não escolher categoria, pagador ou conta nem efetivar pagamento. Confirmar a identidade de produto com escopo de empresa/estabelecimento. |
@@ -55,7 +60,7 @@ updated: 2026-10-31
 | Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
 | Importação inicial em domínios vazios | Reduz mistura ambígua de dois históricos; mesclagem incremental requer projeto próprio. |
 | Histórico efetivado imutável | Corrigir por inversão; exceção explícita ao SoftDeletes genérico em postings/tentativas. |
-| Apple HealthKit como primeira integração de saúde | Reutiliza o hub do app Saúde para medidas, atividades, frequência cardíaca e rotas de treino. Importação somente de leitura, por tipo autorizado; HealthKit requer um cliente iOS e não pode ser consultado diretamente pelo site. XML enviado pelo navegador é alternativa manual. Rota GPS permanece opcional e distinta de check-in. |
+| Importação de saúde por arquivo | Avaliar XML exportado pelo app Saúde e enviado no navegador; não requer app do James. Formato, tamanho, cobertura de amostras e rotas precisam ser conferidos antes de aprovar o importador. Sem HealthKit, sincronização ou envio automático. |
 
 ## Pendências antes do schema definitivo
 
@@ -77,8 +82,7 @@ updated: 2026-10-31
 16. Definir prazo padrão e opções de retenção para coordenadas de auditoria, precisão apresentada no mapa e provedor de tiles para produção. A retenção não herda a vida útil do Activity Log.
 17. Para o assistente futuro, definir quais módulos a pessoa pode incluir, retenção de conversas/índice, execução local ou envio a provedores, modelo de embeddings, orçamento e métricas mínimas de groundedness/recall.
 18. Definir níveis de confirmação para ferramentas de escrita, comportamento proativo e se voz terá valor; nenhuma dessas capacidades é necessária para a busca somente leitura.
-19. Decidir se manter um app iOS complementar e um endpoint de ingestão autenticado, limitado ao HealthKit, vale o custo frente à importação manual do XML pelo navegador.
-20. Aprovar tipos de saúde e granularidade: altura/peso, resumo de atividade, séries de frequência cardíaca e rotas devem ter permissões, retenção, exportação e exclusão próprias; definir se a sincronização é sempre iniciada pela pessoa.
+19. Obter um XML real exportado pelo app Saúde para confirmar estrutura, tamanho, tipos de registro incluídos e se rotas/séries de frequência cardíaca podem ser importadas com fidelidade suficiente. Só então decidir se a importação manual vale o custo.
 
 ## Regra editorial
 

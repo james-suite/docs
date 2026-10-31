@@ -8,12 +8,14 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, ia-e-memoria, produtos-precos, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php, https://brasilapi.com.br/docs
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Proposta central
 
 Manter a experiência de registrar uma transação com descrição, data, valor, itens, tags e anexos. Internamente, separar três conceitos: o que aconteceu (`financial_transactions`), como o valor se divide (`financial_transaction_items`) e como foi pago (`financial_payments` e alocações). Uma compra poderá receber vários pagamentos, de várias contas ou instrumentos, em datas diferentes.
+
+Tags podem ser associadas ao cabeçalho da transação e, separadamente, aos itens. Transações simples sem itens continuam classificáveis no cabeçalho; em compras detalhadas, tags dos itens descrevem cada linha e as do cabeçalho descrevem a compra como um todo. A interface pode exibir o contexto combinado, mas não copia tags do cabeçalho para linhas nem duplica valores em relatórios.
 
 Exemplo: uma compra de R$ 150 tem um pagamento de R$ 50 por Pix e outro de R$ 100 no cartão. Continua sendo uma compra de R$ 150, com duas alocações. Pagar depois a fatura de R$ 100 movimenta banco e dívida do cartão; não cria outra despesa de R$ 100.
 
@@ -31,7 +33,7 @@ Exemplo: uma compra de R$ 150 tem um pagamento de R$ 50 por Pix e outro de R$ 10
 
 O usuário pode capturar uma NFC-e/XML ou imagem e revisar os campos extraídos antes de salvar. A leitura preenche contraparte, data e linhas com descrição, quantidade, preço, desconto e total; mantém o arquivo de origem e uma extração identificada por versão. O registro começa como rascunho. Uma nota não deve efetivar sozinha um pagamento, escolher uma conta bancária ou inferir um veículo.
 
-Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o usuário pagou, o instrumento pessoal é obrigatório e o caixa muda. Quando um contato pagou, o custo pode ficar registrado sem criar débito pessoal; eventual dívida, reembolso ou rateio nasce somente de uma decisão explícita no módulo de [acertos](doc:acertos). Custo do bem, consumo do usuário e fluxo da conta são dimensões diferentes.
+Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o usuário pagou, o instrumento pessoal é obrigatório e o caixa muda. Quando um contato pagou, o custo pode ficar registrado sem criar débito pessoal; eventual obrigação nasce somente de uma decisão explícita no módulo de [acertos](doc:acertos). Custo do bem, consumo do usuário, contraparte e fluxo da conta são dimensões diferentes.
 
 ## Entrada simples sem documento fiscal
 
@@ -51,13 +53,21 @@ Se não houver adaptador compatível ou ele falhar/incompletar os campos, oferec
 
 ## Associações com bens e serviços
 
-Uma linha financeira pode ser associada a um veículo como compra destinada a ele, mesmo sem evento de serviço. Ao trocar depois o óleo comprado, o usuário cria o evento com a data real e pode relacionar o item adquirido. O vínculo entre finanças e veículo não cria um segundo documento ou pagamento, nem transforma uma compra em manutenção concluída.
+Uma transação financeira pode ser associada a um veículo mesmo sem ter itens ou evento de serviço. A interface mostra o veículo como chip contextual e permite filtrar as finanças por veículo, para funcionar visualmente como uma tag; no modelo continua sendo uma relação tipada em `vehicle_financial_links`, não uma tag do catálogo. Para uma compra inteira destinada a um veículo, vincular a transação; para uma compra mista, vincular os itens correspondentes, inclusive a veículos diferentes. O vínculo não cria segundo documento ou pagamento nem transforma a compra em manutenção concluída. Ao trocar depois o óleo comprado, criar o evento com a data real e relacionar o item adquirido.
 
 ## Correção técnica e devolução comercial
 
 Reverter um pagamento lançado errado pode reabrir saldo a pagar. Receber uma devolução de uma compra válida cria um documento relacionado e novo fluxo inverso, sem voltar a cobrar o fornecedor como se a compra estivesse impaga. Para pagamentos que cobrem vários documentos, o retorno identifica as alocações originais e respeita o limite cumulativo de cada uma.
 
 Um documento confirmado só é cancelado sem pagamentos efetivos; se estava pago, a reversão técnica deve ser concluída antes. Compras pagas e depois devolvidas continuam no histórico com sua devolução vinculada.
+
+## Integração financeira com acertos
+
+A compra original continua sendo uma única `FinancialTransaction`. O rateio aponta para ela quando existe, distribui cotas de consumo e identifica quem pagou ao fornecedor. Minha parcela é consumo pessoal; o que adiantei por outras pessoas fica a receber, e o que outra pessoa pagou por mim fica a pagar. A relação com `Party` permite filtrar e gerar gráficos por contato ou empresa sem atribuir tag de pessoa.
+
+Quando alguém paga uma obrigação, criar uma `SettlementPayment` e alocá-la à obrigação. Se o valor passar por uma conta pessoal acompanhada, ligar um `FinancialPayment` do tipo `Settlement`; esse pagamento lança caixa contra receber/pagar. Ele não recebe alocação à transação original e não altera a situação de quitação da compra. Liquidação registrada em dinheiro ou fora das contas acompanhadas pode ficar sem `FinancialPayment` e sem posting pessoal.
+
+Gráficos de acertos devem oferecer medidas separadas: consumo por participante, valores adiantados, saldo aberto por contraparte, pagamentos recebidos e pagos. O filtro por pessoa pode cruzar essas medidas com transações, produtos e veículos relacionados, mas o relatório deve deixar claro se mostra consumo, dívida ou caixa. Não somar os três como “gasto por pessoa”.
 
 ## Controle de saldo proposto
 
@@ -67,7 +77,7 @@ Compra no cartão aumenta seu passivo; transferência entre bancos altera os doi
 
 ## Relatórios
 
-Oferecer visões com nomes claros: consumo/despesas pessoais, fluxo de caixa, compromissos futuros, dívidas de cartão e valores de terceiros. Não somar caixa de reembolso como nova renda pessoal nem contar pagamento de fatura como segunda despesa. Cada indicador deve declarar sua base e período.
+Oferecer visões com nomes claros: consumo/despesas pessoais, fluxo de caixa, compromissos futuros, dívidas de cartão e valores de terceiros. Liquidação de acerto não é receita ou despesa; devolução comercial tem vínculo à compra original; pagamento de fatura não é uma segunda despesa. Cada indicador deve declarar sua base, contraparte e período.
 
 Transações financeiras de terceiros podem ser acompanhadas nos acertos sem inflar o consumo pessoal. Um gasto de R$ 100 pago pelo usuário, com R$ 100 devidos por contatos, representa saída de caixa e crédito a receber; a despesa pessoal é zero.
 
@@ -83,7 +93,7 @@ Ao cadastrar uma conta, a instituição brasileira pode ser pesquisada pelo cat�
 
 Preservar descrição, datas, valores, itens, recorrências, anexos e IDs de origem. O status legado `draft` vira rascunho; `pending` vira documento confirmado com pagamento pendente; `posted` exige analisar se representa movimento de banco ou compra de cartão. Transferências pareadas devem virar uma operação única com duas pernas, sem duplicar valor.
 
-Não reconstruir uma compra parcelada inteira agrupando textos parecidos. Preservar cada parcela legada e sua data; permitir agrupamento posterior confirmado pelo usuário. O relatório de importação deve comparar os saldos e os relatórios antigos com os novos antes de liberar automações.
+Não reconstruir uma compra parcelada inteira agrupando textos parecidos. Preservar cada parcela legada e sua data. Migrar separadamente tags do cabeçalho e dos itens, sem inferir tags de item a partir da transação. Permitir agrupamento posterior confirmado pelo usuário. O relatório de importação deve comparar os saldos e os relatórios antigos com os novos antes de liberar automações.
 
 ## Casos de aceite
 

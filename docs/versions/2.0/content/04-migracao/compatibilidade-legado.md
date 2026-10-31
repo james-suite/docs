@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migracao-2-0, financas, cartoes, acertos, tags, migration-20-imports
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-31
 ---
 
 ## Princípio
@@ -28,7 +28,7 @@ O pacote de exportação preserva a forma original e os vínculos. Uma linha pod
 | FinancialTransactionItem | Item com valores exatos, classificação e origem | Quantidade, preço, total, tags próprias e identificação da parte de terceiro quando demonstrável. |
 | transfer_pair_id | Transferência única | Validar pares, direção, valor e moeda; não importar as duas linhas como duas despesas. |
 | FinancialRecurrence | Regra, template e ocorrências já geradas | Datas nominais/chaves de ocorrência sem reexecução do passado. |
-| FinancialTag e financial_taggables | Tags e proposta de categorias | Preservar aliases, cores/ícones, is_primary e usos por item; códigos especiais substituem IDs mágicos. |
+| FinancialTag e financial_taggables | Tags e proposta de categorias | Preservar aliases, cores/ícones, is_primary e usos por item; códigos especiais substituem IDs mágicos. A tag especial “reembolso” só vira vínculo de acerto se a contraparte e os movimentos puderem ser conciliados; senão fica identificada como legado para revisão. |
 | Settlement e SettlementGroup | Obrigações, rateios, cotas, contribuições e liquidações | Traduzir TheyOwe/IOwe/TheyPaid/IPaid, preservar datas e valores; não recalcular rateio legado pelo algoritmo novo. |
 | ContactSettlementArchive | Arquivamento contextual de acertos | Não arquivar o contato inteiro quando só o saldo foi arquivado. |
 | media | Anexos privados com mapa de IDs | Validar hash, tipo, tamanho, dono e entidade referenciada; registrar arquivo ausente. |
@@ -47,6 +47,8 @@ Antes de importar, o exportador deve guardar contagens, saldo por conta conforme
 O 1.x pode mover compras para a conta e marcar posted ao quitar uma fatura; o importador não pode acrescentar outro débito bancário para a mesma quitação. Pagamento parcial pode estar agregado em uma transação mutável. O conversor usa a versão do formato e a topologia de referências, não somente o status.
 
 O saldo dos acertos antigos usa uma regra que limita acumuladores por dia. O novo modelo de obrigações pode evidenciar diferenças. Preservar os eventos antigos e mostrar um diagnóstico; não gerar ajuste silencioso para forçar igualdade.
+
+Tags antigas de “reembolso” não bastam para inferir uma pessoa, uma obrigação ou uma entrada de caixa. Reconciliar transação, contato, pagamento e saldo legado antes de criar `SettlementPayment`; manter o rótulo original disponível no relatório de migração quando faltar evidência. Uma devolução de comerciante só vira `Refund` quando houver documento ou vínculo claro com a compra.
 
 Quando não existir detalhe suficiente para reconstruir novos conceitos, guardar granularidade legada identificada e bloquear a conversão ambígua. O relatório deve dizer o que se sabe e o que não pode ser recuperado. Não agrupar parcelas históricas só porque compartilham descrição.
 

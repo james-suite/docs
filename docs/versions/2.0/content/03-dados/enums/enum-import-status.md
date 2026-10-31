@@ -31,7 +31,7 @@ uploaded → validating → ready → running → completed. Cancelar permitido 
 
 ## Persistência
 
-Aplicar em `import_runs` conforme [migrations](doc:migrations). Persistir string com cast Eloquent e restrição de valores quando apropriado. Não usar texto traduzido como valor de banco. Valores derivados ou exibidos como filtro não devem ser persistidos novamente sem necessidade.
+Aplicar em `import_runs` e, se criado após validar o arquivo de origem, `health_import_batches`. Persistir string com cast Eloquent e restrição de valores quando apropriado. Não usar texto traduzido como valor de banco. Valores derivados ou exibidos como filtro não devem ser persistidos novamente sem necessidade.
 
 ## Checklist
 

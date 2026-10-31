@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, tags, componentes-tecnicos
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -23,8 +23,9 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `id, space_id, display_name` | Catálogo pessoal; nomes normalizados são reservados na tabela tag_names para garantir unicidade também entre aliases. |
+| `id, space_id, display_name` | Catálogo pessoal; espaço novo não recebe tags semeadas, exemplos compartilhados ou defaults. Nomes normalizados são reservados na tabela tag_names para garantir unicidade também entre aliases. |
 | `description, color, icon, archived_at` | Apresentação e arquivamento; valores de estilo validados. |
+| `creation_origin, created_by_user_id, created_by_ai_run_id` | TagCreationOrigin e autoria; o ID de execução é nullable e sua FK entra após criar `ai_runs` no pacote 12. |
 
 ## `tag_names`
 
@@ -38,8 +39,8 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `record_id, tag_id` | FKs compostas; UNIQUE(space_id, record_id, tag_id). |
-| `origin, confirmed_by_user_id` | TagAssignmentOrigin e responsável pelo aceite. |
-| `source_revision` | Revisão da fonte utilizada pela automação. |
+| `origin, applied_by_user_id, automatic_policy_revision` | TagAssignmentOrigin, autor se houver ação manual e política que autorizou aplicação automática; não inventar revisor humano. |
+| `source_revision, ai_run_id` | Revisão usada na classificação e, após o pacote 12, execução que originou a atribuição. |
 
 ## `financial_categories`
 
@@ -58,19 +59,22 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 ## Integridade, índices e comportamento
 
-- As sugestões de IA e a FK opcional ai_run_id das atribuições entram no pacote 12, depois de ai_runs existir.
+- A FK opcional `created_by_ai_run_id` em `tags`, `ai_run_id` em `tag_assignments` e o registro dos resultados de classificação entram no pacote 12, depois de `ai_runs` existir.
 - Normalização de nomes tem algoritmo definido e versionado; índice é garantia final contra concorrência.
+- Provisionar um espaço sem criar linhas em `tags` ou `tag_names`. Seeders de desenvolvimento/teste podem usar factories isoladas; nenhum seeder de produção carrega tags padrão. Importação do 1.x preserva somente o catálogo daquele usuário.
 - Índice único parcial por tag onde is_canonical é verdadeiro impede dois nomes canônicos; criação/renomeação/fusão garante exatamente um na mesma transação. Label e nome canônico não podem divergir.
-- Uma categoria por item; várias tags. Uso herdado é calculado, sem duplicar assignments invisíveis.
+- Categoria financeira ampla é separada de tags específicas. Cabeçalho da transação e itens podem ter atribuições independentes; tags herdadas são apenas uma projeção de leitura e nunca criam assignments duplicados.
+- Quando a classificação autorizada por IA não encontra uma tag específica adequada, criar a tag e atribuí-la no mesmo commit lógico. Sem etapa de confirmação individual; registrar `creation_origin=ai`, `ai_run_id`, atribuição e auditoria. Se um alias/termo normalizado equivalente existir, reutilizá-lo sob restrição única e concorrência.
+- Uma transação sem itens mantém tags e categoria no próprio cabeçalho; os relatórios não inventam itemização nem duplicam totais.
 - Fusão de tags redireciona vínculos, guarda alias e é auditada. Não apagar tag referenciada sem plano de transferência.
 
 ## Conversão do James 1.x
 
-Preservar financial_tags e financial_taggables. is_primary é traduzido para categoria proposta com metadado legado; funções especiais viram códigos de operação, não IDs fixos.
+Preservar `financial_tags` e `financial_taggables`, incluindo separação entre tags da transação e tags dos itens. `is_primary` pode gerar uma categoria correspondente com metadado legado; funções especiais viram códigos de operação, não IDs fixos.
 
 ## Componentes previstos
 
-SaveTagsForRecord; MergeTags; ApplyClassificationRules; TagPicker com vários IDs e nomes pendentes resolvidos no salvamento.
+SaveTagsForRecord; MergeTags; ApplyClassificationRules; ApplyAiTagClassification; CreateSpecificTagForClassification; TagPicker com IDs existentes e criação manual inline.
 
 ## Checklist de implementação
 

@@ -42,6 +42,6 @@ As notas de domínio seguem pastas por contexto: [finanças](doc:financas), [org
 
 ## Princípios
 
-Manter o produto reconhecível; separar fato econômico e pagamento; não contar fatura ou reembolso duas vezes; permitir parcela própria zero; classificar sem criar tags duplicadas; preservar datas e procedência; não criar usuários a partir de contatos; usar IA de forma opcional e revisável; não armazenar indiscriminadamente tudo em JSON ou copiar o banco inteiro para um modelo.
+Manter o produto reconhecível; separar fato econômico, pagamento e acerto; não contar fatura, liquidação ou devolução comercial duas vezes; permitir parcela própria zero; usar contatos e veículos como dimensões tipadas sem transformá-los em tags; preservar datas e procedência; não criar usuários a partir de contatos; usar IA de forma opcional e revisável; não armazenar indiscriminadamente tudo em JSON ou copiar o banco inteiro para um modelo.
 
 As notas de migrations e enums são contratos propostos. O livro interno e o registro comum de vínculos passam por protótipo antes de se tornarem decisões definitivas. O formato de migração deve ser estável antes do primeiro lançamento, e não acrescentado só no fim.

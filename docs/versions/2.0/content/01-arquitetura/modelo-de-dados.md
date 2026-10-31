@@ -6,7 +6,7 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: migrations, enums, financas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
+related: migrations, enums, financas, acertos, pessoas-empresas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
 source_refs:
 updated: 2026-10-31
 ---
@@ -49,13 +49,13 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Transação 1:N itens; transação N:N pagamentos por alocações; pagamento atribui usuário/contato/desconhecido como pagador.
 - Documento fiscal 1:N tentativas de extração; leitura revisada preenche campos tipados da transação antes da confirmação.
 - Cartão 1:N faturas e débitos; débito 1:N parcelas; fatura N:N pagamentos.
-- Rateio 1:N participantes, cotas e contribuições; obrigação N:N liquidações.
+- Rateio 1:N participantes, cotas e contribuições; rateio pode apontar à transação de origem; obrigação N:N liquidações. `Party` associado à obrigação identifica contraparte para filtros/gráficos, sem tag de contato.
 - Record 1:1 entidade vinculável; Record N:N tags e vínculos tipados com outros Records.
 - Notificação 1:N intenções de entrega; intenção 1:N tentativas.
 - Uma submissão humana pode gerar vários eventos de Activity Log e no máximo um `ActivityLocationContext` por `correlation_id`; coordenadas ficam fora do JSON de auditoria e expiram independentemente.
 - Conexão de IA 1:N execuções; execução gera sugestões sujeitas à revisão da fonte.
 - O futuro índice de memória da IA deriva trechos/embeddings dos Records escolhidos, sempre guarda espaço, record_id e revisão da fonte, e pode ser apagado/recriado sem alterar o registro de domínio.
-- Veículo 1:N leituras, abastecimentos e eventos; finanças N:N veículo/itens por `vehicle_financial_links`; evento real, despesa e compra destinada ao veículo não são o mesmo fato.
+- Veículo 1:N leituras, abastecimentos e eventos; finanças N:N por `vehicle_financial_links`, que pode ligar transação inteira ou item específico e aparece como chip/filtro semelhante a tag sem ser uma tag; evento real, despesa e compra destinada ao veículo não são o mesmo fato.
 - Asset pode apontar para no máximo um veículo, mas veículo não depende de Asset; tarefa/checklist acompanha e não comprova serviço.
 - Documento fiscal pode apontar à empresa emitente e à filial/lugar separadamente; identificadores da unidade ajudam a reconhecer posto e mercado sem inferir check-in.
 - Leitura de odômetro é observação independente e pode existir sem abastecimento, serviço ou transação.

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos, assistente-pessoal-rag
 source_refs:
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 ## Linguagem do produto
@@ -22,11 +22,15 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 | Jornada | Comportamento proposto |
 | --- | --- |
 | Registrar compra | Descrição e valor primeiro; itens e vários pagamentos em painéis progressivos; mostrar valor pago e restante. |
-| Escolher tags | Busca + múltiplas seleções + Criar no próprio formulário; salvar nomes pendentes transacionalmente. |
-| Aceitar IA | Sugestões de tags em transações/itens com aceitar/recusar; tag nova exige confirmação, escolhas manuais são preservadas e falha da IA não bloqueia o formulário. Fallback fiscal também exige revisão dos campos extraídos. |
+| Escolher tags | Busca + múltiplas seleções + criar no próprio formulário; salvar nomes pendentes transacionalmente. Catálogo de conta nova começa vazio, sem lista padrão; tags descrevem o registro com precisão e evitam rótulos vagos. |
+| Classificar com IA | Classificar separadamente as tags do cabeçalho e dos itens; aplicar ou descartar o conjunto no modo Suggest. Tags específicas ausentes são criadas junto com a aplicação, sem confirmação individual. Preservar escolhas manuais; falha da IA não bloqueia o formulário. Fallback fiscal também exige revisão dos campos extraídos. |
+| Associar veículo | Vincular o veículo ao registro financeiro inteiro ou a itens determinados; exibir chip e filtro de veículo na área de tags, mantendo um vínculo tipado separado das tags. |
 | Perguntar ao assistente pessoal (fase futura) | Responder com trechos e links para os registros usados, intervalo de tempo e ressalva de cobertura; permitir abrir/corrigir fonte e avaliar resposta. Ferramentas de escrita abrem uma proposta revisável pelo módulo dono do dado. |
 | Pagar fatura | Histórico de pagamentos e contas de origem; distinguir fechamento, dívida, atraso e quitação. |
 | Dividir despesa | Perguntar quem consumiu e quem pagou; “eu” opcional, parcela zero permitida. |
+| Registrar acerto | Mostrar contato/empresa, valor em aberto, pagamento parcial e conta usada quando acompanhada; a liquidação atualiza o saldo sem criar receita/despesa nem uma tag de reembolso. |
+| Analisar gastos por pessoa | Escolher a medida: consumo, valor adiantado, saldo a receber/pagar ou caixa recebido/pago. O contato/empresa é dimensão de relatório derivada dos vínculos; não precisa virar tag. |
+| Marcar despesa para alguém | Associar a transação ou rateio à Party e definir consumo/pagador; um vínculo não presume dívida, e uma dívida não presume que houve movimentação na minha conta. |
 | Arquivar instrumento | Mostrar saldo, faturas e recorrências afetadas; ocultar seletores usuais, manter histórico e quitações antigas. |
 | Notificações | Pendências acionáveis e resumos; ler, arquivar ou adiar sem confundir com status de transporte. |
 | Importar arquivo | Upload no navegador, progresso, prévia e confirmação para a própria conta, sem seletor de proprietário. |
@@ -35,13 +39,12 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 | Ler nota em mercado/posto | Mostrar empresa, possível filial/endereço, itens, produtos sugeridos e confiança; pedir confirmação do lugar/produto quando houver homônimos ou campos incompletos. |
 | Conferir preços | No detalhe do produto, mostrar preço por embalagem e por unidade-base, data e lugar; permitir montar uma cesta pessoal e explicar sua cobertura. |
 | Diário/check-in | Formulário responsivo no próprio site, com seleção de lugar e botão opcional para usar a localização atual após permissão do navegador. |
-| Localização ao salvar | Preferência por usuário para capturar posição uma vez em cada criação/edição manual; mostrar estado/precisão e permitir ignorar naquele salvamento. Falha/recusa nunca bloqueia o registro. |
 | Histórico no mapa | Abrir eventos auditados num mapa privado, com filtro por módulo/período, agrupamento de pontos próximos e link para o registro. Atribuição OpenStreetMap permanece visível; mapa indisponível não afeta o histórico textual. |
-| Salvamento com posição | Com a preferência ativa e permissão do navegador, tentar capturar uma posição por ação no envio do formulário; exibir a precisão quando fornecida e oferecer “salvar sem localização” em caso de demora/erro. |
+| Localização ao salvar | Preferência por usuário, desligada inicialmente; com ela ativa e permissão do navegador, tentar capturar uma posição por submissão manual no site. Mostrar precisão, permitir “salvar sem localização” e nunca bloquear o registro por recusa, demora ou falha. A posição da importação, se capturada, pertence somente à ação de importar, não aos dados históricos importados. |
 
 ## Componentes próprios
 
-TagPicker, CategoryPicker, PaymentEditor, SplitEditor, InvoicePaymentsHistory, ArchiveInstrumentDialog, NotificationInbox, ImportWizard, VehicleServiceEditor, ChecklistEditor, PrivateFileUpload e AuditHistory. Reusar componentes reais existentes antes de criar wrappers que apenas mudam nome de um componente Flux.
+TagPicker, CategoryPicker, AiTagClassifier, VehicleFinancialLinkPicker, PaymentEditor, SplitEditor, SettlementPaymentEditor, PartySettlementSummary, InvoicePaymentsHistory, ArchiveInstrumentDialog, NotificationInbox, ImportWizard, VehicleServiceEditor, ChecklistEditor, PrivateFileUpload e AuditHistory. Reusar componentes reais existentes antes de criar wrappers que apenas mudam nome de um componente Flux.
 
 Todos têm teclado, foco visível, erro por campo, loading por ação e prevenção funcional de duplicatas no servidor. Seletores pesquisam somente dados da pessoa. Filtros e paginação sobrevivem à visita ao detalhe e retorno. Tabelas de gestão recebem versão móvel útil; o check-in funciona no navegador do celular sem aplicativo ou configuração externa.
 

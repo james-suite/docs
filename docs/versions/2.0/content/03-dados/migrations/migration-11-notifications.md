@@ -6,9 +6,9 @@ type: migration-reference
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, dados
-related: planejamento-2-0, migrations, modelo-de-dados, enums, notificacoes, componentes-tecnicos
+related: planejamento-2-0, migrations, modelo-de-dados, enums, notificacoes, componentes-tecnicos, enum-delivery-status
 source_refs:
-updated: 2026-10-25
+updated: 2026-10-31
 ---
 
 ## Estado e ordem
@@ -58,6 +58,7 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 ## Integridade, índices e comportamento
 
+- Não persistir um segundo estado na outbox: derivar pendência, processamento, retry e término de `scheduled_at`, lease/`claimed_at`, `finalized_at` e da última tentativa. Ao resolver ou dispensar uma entrega ainda não enviada, registrar uma tentativa `Skipped`; tentativas guardam o histórico de transporte.
 - Persistir intenção na transação de domínio e enviar após commit. Worker e varredura da outbox retomam intenções órfãs; afterCommit sozinho não garante entrega.
 - Uma tentativa nova não cria outra notificação. UNIQUE por destinatário/tipo/origem/ocorrência garante deduplicação.
 - Leitura interna é diferente de aceitação externa. Mensagem antiga não concede acesso ao alvo atual.

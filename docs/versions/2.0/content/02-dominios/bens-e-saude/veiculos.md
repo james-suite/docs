@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, pessoas-empresas, agenda-tarefas, patrimonio, migration-15-vehicles, migration-18-assets, enum-vehicle-event-type
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-28
+updated: 2026-10-31
 ---
 
 ## Veículo e patrimônio são registros independentes
@@ -35,7 +35,7 @@ Para leitura, tentar XML/dados estruturados e adaptadores determinísticos por U
 
 ## Quem pagou
 
-A nota fiscal comprova a compra, mas não necessariamente quem entregou o dinheiro nem de qual conta saiu. A confirmação registra se pagou o usuário, um contato ou se o pagador ainda é desconhecido. Só o pagamento feito com uma conta pessoal movimenta o saldo dessa conta. Pagamento por contato não cria débito bancário pessoal e também não cria automaticamente uma dívida: eventual acerto/reembolso exige vínculo explícito no módulo de [finanças e acertos](doc:acertos).
+A nota fiscal comprova a compra, mas não necessariamente quem entregou o dinheiro nem de qual conta saiu. A confirmação registra se pagou o usuário, um contato ou se o pagador ainda é desconhecido. Só o pagamento feito com uma conta pessoal movimenta o saldo dessa conta. Pagamento por contato não cria débito bancário pessoal e também não cria automaticamente uma dívida: eventual acerto exige vínculo explícito no módulo de [finanças e acertos](doc:acertos).
 
 Uma transação pode ter vários pagamentos e pagadores, cada um com sua própria data e instrumento. Isso permite guardar o custo real do veículo mesmo quando o usuário não pagou, sem misturar custo de uso, parcela pessoal e fluxo de caixa.
 
