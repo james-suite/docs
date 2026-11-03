@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, migration-19-health, saude-treinos
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-01
 ---
 
 ## Contrato proposto
@@ -24,6 +24,4 @@ Enum string da forma pela qual o dado entrou no James. O aplicativo/aparelho que
 
 Manter registros manuais separados de valores importados. O valor de origem identifica o caminho de entrada, não a precisão clínica. O app/aparelho produtor e o identificador externo ficam em campos separados quando o arquivo os fornecer.
 
-## Persistência
-
-Aplicar a `health_observations` e `workout_sessions` na [Migration 19](doc:migration-19-health). Sem uma fonte de importação validada, manter apenas os registros manuais; não criar cases para integrações que dependam de app iOS.
+Sem uma fonte de importação validada, manter apenas registros manuais; não criar cases para integrações que dependam de app iOS.

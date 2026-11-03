@@ -8,12 +8,10 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, modelo-de-dados
 source_refs:
-updated: 2026-10-26
+updated: 2026-11-03
 ---
 
 ## Contrato proposto
-
-Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases usam TitleCase e valores persistidos estáveis. A implementação e as versões dos pacotes serão escolhidas em 2027.
 
 | Case | Valor persistido | Significado |
 | --- | --- | --- |
@@ -39,18 +37,8 @@ Esta nota planeja uma enum string; a classe PHP ainda não existe no 2.0. Cases 
 | `WorkoutSession` | `workout_session` | Sessão de treino |
 | `MetricObservation` | `metric_observation` | Medição |
 | `Product` | `product` | Produto do catálogo pessoal |
+| `Document` | `document` | Documento pessoal e ponto de entrada para suas versões e vínculos |
 
 ## Regras e transições
 
 Registro de tipos mantido em código. Resolver somente Models permitidos, nunca nome de classe recebido do cliente. Um tipo novo exige integração com busca, Policy, exportação e exclusão.
-
-## Persistência
-
-Aplicar em `records` conforme [migrations](doc:migrations). Persistir string com cast Eloquent e restrição de valores quando apropriado. Não usar texto traduzido como valor de banco. Valores derivados ou exibidos como filtro não devem ser persistidos novamente sem necessidade.
-
-## Checklist
-
-- [ ] Revisar os cases no fluxo de [domínio](doc:modelo-de-dados) e remover capacidades ainda não implementadas da UI.
-- [ ] Criar enum, rótulos e cast no Model correspondente.
-- [ ] Proteger transições na operação de domínio e no banco quando houver invariante local.
-- [ ] Validar autorização, valores desconhecidos, concorrência e conversão de dados legados quando aplicável.

@@ -6,16 +6,16 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, módulos
-related: planejamento-2-0, escopo-2-0, arquitetura-2-0, financas, acertos, pessoas-empresas, agenda-tarefas, veiculos, patrimonio, produtos-precos, lugares-checkins, diario, saude-treinos, migration-19-health, assistente-pessoal-rag
+related: planejamento-2-0, escopo-2-0, arquitetura-2-0, financas, acertos, pessoas-empresas, agenda-tarefas, veiculos, patrimonio, produtos-precos, lugares-checkins, diario, saude-treinos, migration-19-health, documentos-arquivos, assistente-pessoal-rag
 source_refs: https://support.apple.com/en-euro/guide/iphone/iph5ede58c3d/ios
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Como avaliar uma nova área
 
 O James já tem um conjunto amplo de módulos previstos. Uma nova área só deve ganhar tabelas e navegação próprias quando representar um fluxo recorrente com regras, histórico e consultas que não cabem bem em um módulo existente. Se for apenas uma nova forma de encontrar ou resumir registros, deve começar como integração ou visão agregada.
 
-As propostas abaixo são **candidatas de descoberta**, não fazem parte do primeiro lançamento migrável. Elas não justificam migrations, enums ou telas definitivas antes de validar casos reais e prioridade. Os módulos existentes continuam sendo a fonte de verdade para seus fatos.
+As propostas abaixo são **candidatas de descoberta**, não fazem parte automaticamente do primeiro lançamento migrável. A base documental é necessária desde o primeiro fluxo de upload do núcleo: o pacote mínimo de documentos/vínculos entra junto à infraestrutura de anexos, enquanto a biblioteca completa, prazos e OCR podem ser entregues depois. Os demais candidatos não justificam migrations ou enums antes de validar casos e prioridade. Os módulos existentes continuam sendo a fonte de verdade para seus fatos.
 
 ## Integrações com maior valor
 
@@ -35,6 +35,7 @@ As propostas abaixo são **candidatas de descoberta**, não fazem parte do prime
 | Diário e histórico | Diário ↔ eventos de outros módulos | A entrada mantém sua narrativa; links para consultas, viagens, serviços ou compromissos não copiam nem reescrevem os registros de origem. |
 | Tarefas e eventos | Domínios → tarefas/agenda → notificações | Um lembrete organiza o próximo passo. Concluir a tarefa não registra abastecimento, serviço, treino, pagamento ou consulta médica como realizado; uma ação explícita pode criar o evento real a partir da tarefa. |
 | Saúde e treinos | Exportação XML do Apple Saúde → saúde/treinos | Avaliar importação manual pelo navegador. Sem app iOS, consulta HealthKit e sincronização automática não fazem parte do plano; cobertura de amostras e rotas precisa ser validada com um arquivo real. |
+| Documentos | Biblioteca documental ↔ anexos de finanças, acertos, bens, veículos, diário, agenda e pessoas | Um documento tem um original e pode ser ligado a vários registros. O upload feito dentro de um módulo também aparece na biblioteca; remover uma ligação não apaga o documento nem as demais ligações. |
 | Tags, contatos e filtros | Todos os módulos → busca e relatórios | Tags específicas classificam contexto. Contato, empresa, veículo, produto, lugar e evento são dimensões tipadas; podem aparecer como chips/filtros e agrupar gráficos sem serem cadastrados como tags. |
 | Notificações úteis | Finanças, acertos, agenda, tarefas, documentos e veículos → central de atenção | Lembretes apontam para saldo, fatura, obrigação ou manutenção de origem. Resolver/adiar atua no módulo dono do dado e não transforma leitura do aviso em quitação. |
 | Visão do dia e relatórios | Finanças, acertos, agenda, tarefas, veículos e notificações → consultas agregadas | Painéis mostram bases separadas (consumo, caixa, crédito a receber, dívida a pagar, vencimentos); não viram uma segunda fonte de status nem somam medidas incompatíveis. Cada ação abre o módulo dono do dado. |
@@ -57,19 +58,28 @@ Na ficha do contato ou empresa, mostrar consumo atribuído, quem pagou ao fornec
 - **Histórico de produto e estabelecimento:** unir descrições locais da loja, identificadores, nota fiscal, preço por unidade e filial. A tela do produto mostra diferenças e cobertura; o cadastro comercial permanece ligado à empresa/lugar.
 - **O que preciso fazer em seguida:** cruzar tarefa, recorrência, fatura, obrigação a pagar e manutenção prevista numa central de atenção. Cada item oferece ação no domínio correspondente e muda de estado apenas quando esse domínio confirma o resultado.
 - **Linha do tempo pessoal:** diário pode apontar para evento de agenda, check-in, serviço, treino ou transação; filtros por data/lugar mostram registros relacionados sem fundi-los numa narrativa automática.
+- **Arquivo pessoal:** buscar um comprovante, escritura, certidão, contrato, nota ou garantia por nome, tipo, data, titular, emissor, validade, tags específicas e registros relacionados.
 - **Saúde e rotina:** observações e treinos importados podem ser vistos junto de diário e agenda no mesmo período, mantendo origem, unidade e precisão. Importação ou proximidade temporal não prova causalidade entre treino, sono, humor ou despesa.
 
 Essas consultas devem ser protótipos de leitura sobre os registros existentes antes de receber tabelas ou um módulo novo. Para qualquer gráfico, definir o fato contado, o papel do vínculo, a moeda e a janela de tempo; nunca somar consumo, dívida e movimento de caixa numa métrica única.
 
 ## Módulos candidatos para descoberta
 
-### Documentos, contratos e prazos
+### Documentos e comprovantes
 
-Uma área para encontrar documentos pessoais e acompanhar validade, renovação, garantia, cancelamento e reajuste de contratos ou assinaturas. Exemplos: apólice, contrato de serviço, documento de um bem, garantia de compra e prazo de renovação.
+Uma biblioteca pessoal para documentos que podem existir sozinhos ou estar relacionados a fatos dos módulos: comprovantes, escrituras, certidões, contratos, apólices, garantias e notas fiscais. Imagens entram como formatos de documento/anexo, por exemplo a foto de um comprovante; organizar uma galeria de fotos não é o objetivo. Incluir data de emissão, titular/emissor e validade quando fizer sentido; não exigir esses campos para um arquivo simples.
 
-Ela reutilizaria o armazenamento privado de arquivos e apontaria para a versão canônica do documento financeiro, veículo, bem, empresa ou lugar. Um contrato poderia se relacionar a uma recorrência financeira existente e gerar lembrete de renovação; a recorrência continuaria responsável pelos valores e pagamentos. O vencimento de uma garantia não criaria despesa nem evento de manutenção.
+Os anexos atuais de transações e acertos devem passar a usar esse mesmo registro documental. A pessoa continua podendo anexar durante o cadastro/edição; cada envio cria um documento e o liga ao registro de origem. A área Documentos lista também esses anexos. Nos formulários, deve ser possível enviar um arquivo novo ou localizar e vincular um documento existente. Assim, uma nota pode aparecer na biblioteca, na transação e no abastecimento sem criar três cópias. Finanças continua sendo dona dos valores e pagamentos; veículo/bem guarda o histórico físico; documento é o arquivo comprobatório.
 
-O principal ganho seria responder “qual documento vence?”, “onde está o comprovante?” e “qual serviço/empresa está ligado a este contrato?” sem tratar anexos como uma nova cópia. Antes de planejar tabelas, definir criptografia e acesso a dados sensíveis, histórico de versões, exportação e exclusão dos arquivos.
+Organizar primeiro por busca e filtros: título, tipo de documento, data, emissor/titular, vencimento e módulo/registros vinculados. Pastas ou coleções pessoais podem existir como agrupamentos opcionais, sem impor uma árvore única. Não criar tags padrão; se tags forem usadas, continuam no catálogo privado já planejado, específicas e criadas pela pessoa ou por IA autorizada. Detectar arquivo idêntico pode avisar sobre duplicata, mas não mesclar nem apagar automaticamente.
+
+Versões anteriores precisam permanecer acessíveis quando a pessoa substitui um contrato ou atualiza uma certidão; registrar quem enviou a nova versão e quando. Trocar o PDF de um documento não apaga a evidência usada por uma transação antiga. Um documento pode ter prazo de validade e gerar lembrete; clicar no push abre primeiro o `show` da notificação, de onde se pode abrir o documento após autorização.
+
+OCR e extração pesquisável ficam para uma fase posterior: processamento assíncrono, resultado revisável e trecho/página de origem visível. O original não muda; OCR não comprova pagamento, autoria, identidade nem execução de serviço. Escrituras e certidões podem conter dados sensíveis: nenhuma IA ou serviço externo processa conteúdo sem ação e autorização explícitas, e o texto completo não vai para auditoria. A área deve permitir visualizar metadados, baixar o original e ver onde o documento está ligado.
+
+Uma certidão pode existir sem outro registro; um comprovante normalmente aponta para uma transação ou liquidação; um contrato pode apontar para um bem, empresa e recorrência. Um vínculo não move o documento nem altera o registro relacionado. Excluir uma ligação remove a associação escolhida, não o arquivo. Exclusão definitiva de documento deve mostrar as ligações afetadas e nunca apagar a transação, bem ou contato associado.
+
+O núcleo de documentos e vínculos deve existir junto ao suporte de anexos do primeiro marco financeiro, ainda que a tela completa da biblioteca e OCR sejam entregues depois. Assim, o 2.0 não precisa migrar novamente de arquivos presos diretamente aos Models para uma biblioteca posterior. O escopo detalhado e a conversão do legado estão em [Documentos e arquivos](doc:documentos-arquivos).
 
 ### Casa e manutenção
 
@@ -92,7 +102,7 @@ O módulo não deve virar outro gerenciador genérico de tarefas. Sua justificat
 ## Ordem de descoberta sugerida
 
 1. Consolidar primeiro os vínculos e a visão agregada do dia, sem criar domínio novo.
-2. Prototipar documentos e prazos porque conectam empresas, arquivos, bens, veículos, recorrências e notificações.
+2. Entregar a base de documentos compartilhada pelos uploads e, depois, prototipar a biblioteca, validade e notificações; isso conecta pessoas, transações, bens, veículos, diário e recorrências sem duplicar os arquivos.
 3. Validar manutenção da casa após o módulo de patrimônio e tarefas, reaproveitando os eventos e vínculos comprovados em veículos.
 4. Tratar viagens como agrupamento de agenda, lugares, diário e finanças; só adicionar reservas próprias se o agrupamento não atender.
 5. Reavaliar projetos e objetivos com casos reais; não aprovar antes de distinguir seu valor de tarefas, tags e relatórios existentes.

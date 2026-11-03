@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, validação
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0, assistente-pessoal-rag
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 Estes casos são critérios para revisar o plano e, na implementação, criar testes de domínio e integração. Não representam testes já executados ou recursos implementados. Os números abaixo usam reais e nenhuma conversão de moeda.
@@ -55,7 +55,11 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Fonte indexada é editada, removida ou excluída das permissões de IA. | Chunks, vetores, resumo e cache correspondentes são invalidados; revisão antiga não é usada para responder. |
 | Índice HNSW retorna poucos candidatos depois do filtro por espaço/módulo. | Métrica compara recall com busca exata; ajusta-se o índice/consulta ou mantém busca exata, sem relaxar isolamento. |
 | Chave pessoal falha e existe chave da instalação. | Falha identificada sem trocar de chave/provedor automaticamente. Salvar sem IA continua disponível. |
-| Job de vencimento é repetido e o Telegram falha uma vez. | Uma notificação, uma intenção de entrega e tentativas distintas. Não duplicar o aviso por reenvio do transporte. |
+| Um endpoint Web Push expirou; há outro endpoint ativo para o mesmo usuário. | Registrar falha e desativar só a assinatura expirada; entregar ao endpoint ativo conforme a preferência e manter uma única notificação interna. |
+| Job de vencimento é repetido enquanto a entrega Web Push falha uma vez. | Uma notificação, uma intenção por endpoint e tentativas distintas. Reprocessar transporte não duplica o aviso. |
+| Usuário no iOS ainda não adicionou o James à Tela de Início ou negou a permissão de push. | Não criar assinatura nem insistir no prompt; avisos continuam na central e podem usar e-mail se estiver habilitado. |
+| Usuário Android usa navegador compatível, ainda sem instalar o James como PWA, e aceita o push. | Registrar assinatura do navegador e entregar conforme preferência; a instalação PWA não é pré-requisito geral. |
+| Pessoa toca em qualquer notificação push, inclusive quando o registro de origem já mudou de estado. | Abrir sempre o `show` da notificação; mostrar o estado atual e só então oferecer ação autorizada para o registro relacionado. |
 | Fatura é paga antes do lembrete agendado. | Lembrete pendente é resolvido/cancelado; aviso antigo leva ao estado atual e não oferece cobrança já concluída. |
 
 ## Portabilidade e isolamento
@@ -68,6 +72,19 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Uma linha antiga vira documento, pagamento e alocação; duas linhas de transferência viram uma operação. | Mapas suportam 1:N e N:1 por papel de conversão, mantendo referências e idempotência. |
 | Compra em junho quitada em julho; o 1.x alterou o saldo na data da compra. | Conferir série mensal, mostrar diferença de regra temporal e preservar datas/proveniência. Saldo final igual não mascara mudança de relatório. |
 | Pacote contém arquivo ausente, hash inválido, caminho ../ ou volume expandido além do limite. | Validação bloqueia a publicação e fornece diagnóstico; nenhum arquivo sai do staging privado. |
+
+## Documentos e anexos
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Enviar um comprovante no formulário de transação. | Criar Document, primeira versão privada e vínculo à transação; o mesmo arquivo aparece na biblioteca sem novo upload. |
+| Selecionar esse comprovante no serviço do veículo relacionado. | Criar somente outro vínculo ao mesmo Document; uma versão/original, com finanças como fonte de valores e veículo como fonte do serviço. |
+| Remover o anexo da tela de transação quando ainda está vinculado ao veículo. | Remover apenas o vínculo com a transação; o documento continua na biblioteca e no serviço. Excluir o Document deve avisar sobre os vínculos restantes. |
+| Anexar escritura ou certidão sem transação/bem correspondente. | Salvar na biblioteca como documento independente com campos opcionais; nenhuma relação financeira é inventada. |
+| Enviar dois arquivos byte a byte iguais em transações diferentes. | Checksum pode avisar; manter dois documentos/vínculos até ação explícita da pessoa, sem mesclar os fatos automaticamente. |
+| Importar `media` da coleção `attachments` do 1.x. | Criar uma versão e um vínculo por upload, preservar bytes/hash/ordem/origem e indicar ausências. Avatar de contato fica na coleção de perfil. |
+| Usuário de outro espaço tenta consultar ou baixar documento por ID ou link conhecido. | Policy nega biblioteca, preview e original; possuir um vínculo ou URL assinada expirada não contorna o espaço proprietário. |
+| Aviso de validade de uma certidão ou garantia chega por Web Push. | Abrir o `show` da notificação; de lá a ação abre o documento após nova autorização. |
 
 ## Veículos, diário e contexto
 

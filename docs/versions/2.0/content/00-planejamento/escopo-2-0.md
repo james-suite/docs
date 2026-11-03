@@ -6,14 +6,14 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: financas, tags, veiculos, diario, migrations, enums, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes, saude-treinos
+related: financas, tags, veiculos, diario, documentos-arquivos, migrations, enums, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes, saude-treinos
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Núcleo que deve migrar
 
-[Finanças](doc:financas), [cartões](doc:cartoes), [tags](doc:tags), [acertos](doc:acertos), [pessoas/contatos](doc:pessoas-empresas), [notificações](doc:notificacoes) e [auditoria](doc:auditoria-2-0). Preservar funcionalidades e dados úteis do 1.x, registrando mudanças que alterem relatórios ou regras.
+[Finanças](doc:financas), [cartões](doc:cartoes), [tags](doc:tags), [acertos](doc:acertos), [pessoas/contatos](doc:pessoas-empresas), [documentos e arquivos](doc:documentos-arquivos), [notificações](doc:notificacoes) e [auditoria](doc:auditoria-2-0). Preservar funcionalidades e dados úteis do 1.x, registrando mudanças que alterem relatórios ou regras. A biblioteca visual completa pode vir depois, mas os anexos e vínculos entram na migração do núcleo.
 
 Melhorias centrais: vários pagamentos por transação, pagamentos de fatura independentes, arquivamento de instrumentos, tags específicas em transações e itens com criação automática pela IA quando necessário, vínculos financeiros com veículos e central de atenção útil.
 
@@ -25,6 +25,7 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 | [Produtos e preços](doc:produtos-precos) | Catálogo pessoal por código/apresentação, preços normalizados vindos de compras e comparação por lugar; cesta “Minha inflação” como evolução posterior. |
 | [Agenda e tarefas](doc:agenda-tarefas) | Compromissos, checklists, pendências e lembretes; não duplica fatos financeiros. Inclui feed `.ics` para assinatura no Calendário do iPhone; CalDAV e Google Calendar podem ser avaliados depois. |
 | [Diário](doc:diario) | Texto, revisões, anexos e contexto da vida; conecta fatos reais e preserva narrativa original. |
+| [Documentos e arquivos](doc:documentos-arquivos) | Biblioteca pessoal sobre o mesmo documento usado como anexo em transações, acertos, bens, veículos e diário; versões e prazos, com OCR em fase posterior. |
 | [Lugares e check-ins](doc:lugares-checkins) | Check-in manual no site, com posição opcional obtida pelo navegador após ação e permissão. |
 | [Patrimônio](doc:patrimonio) | Bens, avaliações e documentos sem duplicar ativos financeiros ou veículos. |
 | [Saúde e treinos](doc:saude-treinos) | Rotinas, sessões e medições tipadas e privadas; importação manual de arquivo do Apple Saúde pelo navegador é candidata posterior, sujeita à validação do formato. |
@@ -32,7 +33,7 @@ Melhorias centrais: vários pagamentos por transação, pagamentos de fatura ind
 
 Consultas opcionais da BrasilAPI complementam os formulários de empresa, endereço, instituição financeira, item fiscal, veículo e agenda. São pesquisas pontuais com resultado revisável, nunca requisito para o James funcionar; usos e limites estão nos [componentes técnicos](doc:componentes-tecnicos).
 
-As conexões entre os módulos existentes e as ideias de novas áreas — documentos e prazos, manutenção da casa, viagens e projetos pessoais — estão em [Módulos candidatos e integrações](doc:modulos-e-integracoes). São propostas para descoberta posterior e não aumentam o escopo do primeiro lançamento.
+As conexões entre os módulos existentes e as ideias de novas áreas — manutenção da casa, viagens e projetos pessoais — estão em [Módulos candidatos e integrações](doc:modulos-e-integracoes). Documentos e arquivos formam um módulo planejado, com sua base de anexos no núcleo; a biblioteca completa e OCR ainda exigem priorização.
 
 ## Corte do primeiro lançamento
 

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migracao-2-0, financas, cartoes, acertos, tags, migration-20-imports
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Princípio
@@ -20,7 +20,7 @@ O pacote de exportação preserva a forma original e os vínculos. Uma linha pod
 | Origem | Destino proposto | Preservação e cuidado |
 | --- | --- | --- |
 | User | Conta autenticada e seu Space | Não restaurar login, senha, sessão, 2FA ou administração; autoria antiga vira referência histórica mapeada. |
-| Contact, ContactGroup e pivô | Party(Person), PartyGroup e membros | Nome, notas, métodos de contato, grupos, lixeira e mídia. Não classificar como empresa automaticamente. |
+| Contact, ContactGroup e pivô | Party(Person), PartyGroup e membros | Nome, notas, métodos de contato, grupos e lixeira. Avatar preserva coleção de perfil e não vira documento. Não classificar como empresa automaticamente. |
 | FinancialAccount e pix_keys | FinancialAccount e identificadores | Tipo, nome, saldo reconciliado e chaves privadas; lixeira não vira arquivamento sem regra explícita. |
 | FinancialCreditCard | CreditCard e regra de ciclo | Conta pagadora passa a padrão opcional, limite e datas preservados. |
 | FinancialCreditCardInvoice | Invoice, parcelas disponíveis e pagamentos legados | Fechamento/vencimento reais, amount_paid, paid_at, referências a juros e pagamento agregado. Não inventar datas de parcelas parciais perdidas. |
@@ -31,7 +31,7 @@ O pacote de exportação preserva a forma original e os vínculos. Uma linha pod
 | FinancialTag e financial_taggables | Tags e proposta de categorias | Preservar aliases, cores/ícones, is_primary e usos por item; códigos especiais substituem IDs mágicos. A tag especial “reembolso” só vira vínculo de acerto se a contraparte e os movimentos puderem ser conciliados; senão fica identificada como legado para revisão. |
 | Settlement e SettlementGroup | Obrigações, rateios, cotas, contribuições e liquidações | Traduzir TheyOwe/IOwe/TheyPaid/IPaid, preservar datas e valores; não recalcular rateio legado pelo algoritmo novo. |
 | ContactSettlementArchive | Arquivamento contextual de acertos | Não arquivar o contato inteiro quando só o saldo foi arquivado. |
-| media | Anexos privados com mapa de IDs | Validar hash, tipo, tamanho, dono e entidade referenciada; registrar arquivo ausente. |
+| media em `attachments` | Document + versão + vínculo ao Record de origem | Converter cada upload contextual em um único documento; validar hash, tipo, tamanho, espaço e dono. Não mesclar bytes iguais em contextos diferentes; avatares ficam fora da biblioteca documental. |
 | notifications | Histórico pessoal compatível | Preservar leitura onde houver e não reenviar canais. Payload não suportado fica disponível no relatório/artefato legado. |
 | activity_log | Histórico legado identificado | Preservar data/autoria disponível e sujeito mapeado; não reapresentar cada registro como ação recém-executada pelo importador. |
 | cache, jobs, sessões e tokens | Não importar para execução | Infraestrutura efêmera e segredos não são dados de negócio migráveis. A omissão é explicitada no manifesto. |

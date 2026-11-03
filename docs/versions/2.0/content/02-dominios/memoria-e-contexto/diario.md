@@ -8,12 +8,12 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, lugares-checkins, ia-e-memoria, tags, migrations
 source_refs:
-updated: 2026-10-25
+updated: 2026-11-03
 ---
 
 ## Experiência inicial
 
-Permitir texto livre em Markdown, título opcional, data do acontecimento, data de escrita, fuso, tags e anexos privados. Uma entrada pode falar de um dia inteiro ou de um instante. Distinguir essa precisão em vez de inventar horário meia-noite para todo registro.
+Permitir texto livre em Markdown, título opcional, data do acontecimento, data de escrita, fuso, tags e vínculos a documentos privados. Uma entrada pode falar de um dia inteiro ou de um instante. Distinguir essa precisão em vez de inventar horário meia-noite para todo registro. Enviar um arquivo pelo diário cria um Document; ele aparece também na biblioteca.
 
 Vincular pessoas, empresas, lugares, visitas, tarefas, compras e eventos de veículo sem copiar seus dados para dentro do texto. Oferecer captura rápida pelo celular e revisão posterior no desktop. Humor e contexto podem ser catálogos opcionais; não exigir formulários longos para escrever uma nota.
 

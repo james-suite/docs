@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, ia-e-memoria, produtos-precos, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php, https://brasilapi.com.br/docs
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Proposta central
@@ -31,7 +31,7 @@ Exemplo: uma compra de R$ 150 tem um pagamento de R$ 50 por Pix e outro de R$ 10
 
 ## Leitura de nota fiscal e pagador
 
-O usuário pode capturar uma NFC-e/XML ou imagem e revisar os campos extraídos antes de salvar. A leitura preenche contraparte, data e linhas com descrição, quantidade, preço, desconto e total; mantém o arquivo de origem e uma extração identificada por versão. O registro começa como rascunho. Uma nota não deve efetivar sozinha um pagamento, escolher uma conta bancária ou inferir um veículo.
+O usuário pode capturar uma NFC-e/XML ou imagem e revisar os campos extraídos antes de salvar. A leitura preenche contraparte, data e linhas com descrição, quantidade, preço, desconto e total; o arquivo original fica como Document e FiscalDocument guarda a extração identificada por versão. O registro começa como rascunho. Uma nota não deve efetivar sozinha um pagamento, escolher uma conta bancária ou inferir um veículo.
 
 Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o usuário pagou, o instrumento pessoal é obrigatório e o caixa muda. Quando um contato pagou, o custo pode ficar registrado sem criar débito pessoal; eventual obrigação nasce somente de uma decisão explícita no módulo de [acertos](doc:acertos). Custo do bem, consumo do usuário, contraparte e fluxo da conta são dimensões diferentes.
 

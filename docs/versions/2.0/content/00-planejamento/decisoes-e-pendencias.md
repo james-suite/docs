@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Confirmado pelo usuário
@@ -35,6 +35,7 @@ updated: 2026-10-31
 - Não usar uma tag “reembolso” para acertos entre pessoas/empresas. A contraparte associada à obrigação/liquidação será uma dimensão de filtro e gráfico; liquidação de acerto, devolução comercial e receita terão fluxos diferentes.
 - Quero planejar uma evolução do James como assistente pessoal que consulta dados autorizados e ajuda a agir entre módulos; primeiro lançamento continua com funções delimitadas, e a evolução começa por busca fundamentada com fontes.
 - Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV do James e Google Calendar por OAuth ficam como possibilidades posteriores. Não planejar EventKit ou recursos que dependam de app iOS do James; a agenda interna funciona sem conectores.
+- Quero guardar documentos pessoais como comprovantes, escrituras e certidões. Uploads feitos nos outros módulos devem ser localizáveis numa área de documentos; fotos entram como anexos quando necessário, sem tornar galeria de fotos o objetivo.
 
 ## Propostas técnicas para revisar
 
@@ -55,6 +56,7 @@ updated: 2026-10-31
 | Leitura determinística de etiquetas variáveis | Separar GTIN/RCN/PLU de peso e preço da peça; só automatizar perfis de loja depois de obter amostras reais e validar formato, unidade, precisão e reconciliação. |
 | Captura da localização ao salvar | Preferência por usuário, desligada por padrão e ligada somente em gravações iniciadas no site; falha/recusa não bloqueia o registro. Uma posição por ação/correlation_id, separada do local comercial e do check-in. |
 | Mapa privado com base OpenStreetMap | Atribuição visível, provedor de tiles configurável e consultas sob demanda; o servidor público de tiles tem capacidade/política próprias e não é API ilimitada gratuita. |
+| Registro documental compartilhado pelos anexos | Upload feito dentro de um módulo cria um documento e um vínculo; a biblioteca e os formulários consultam o mesmo original. Confirmar o menor contrato que permita versões e ligações múltiplas desde o núcleo, deixando OCR e navegação avançada para depois. |
 | RAG e assistente pessoal do James em fases posteriores | Manter a fonte de verdade nos módulos; começar com busca somente leitura, filtros pessoais e citações antes de habilitar ferramentas de escrita, proatividade ou voz. |
 | PostgreSQL/pgvector como protótipo do índice semântico | Evita outro serviço enquanto o volume é pequeno; começar com busca exata, medir qualidade e latência, só usar HNSW/particionamento se necessário. A extensão não é requisito do lançamento inicial. |
 | Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
@@ -83,6 +85,8 @@ updated: 2026-10-31
 17. Para o assistente futuro, definir quais módulos a pessoa pode incluir, retenção de conversas/índice, execução local ou envio a provedores, modelo de embeddings, orçamento e métricas mínimas de groundedness/recall.
 18. Definir níveis de confirmação para ferramentas de escrita, comportamento proativo e se voz terá valor; nenhuma dessas capacidades é necessária para a busca somente leitura.
 19. Obter um XML real exportado pelo app Saúde para confirmar estrutura, tamanho, tipos de registro incluídos e se rotas/séries de frequência cardíaca podem ser importadas com fidelidade suficiente. Só então decidir se a importação manual vale o custo.
+20. Definir quota, formatos, versões, retenção e restauração dos documentos antes do schema. Validar a fase de OCR, busca textual e coleções; qualquer processamento externo exige autorização explícita por arquivo.
+21. Definir os tipos de vínculo documental que devem ser suportados e quais campos opcionais (titular, emissor, data e validade) entram na biblioteca sem obrigar preenchimento nos anexos simples.
 
 ## Regra editorial
 

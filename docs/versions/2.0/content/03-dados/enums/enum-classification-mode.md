@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, ia
 related: planejamento-2-0, enums, tags, ia-e-memoria, migration-12-ai
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-01
 ---
 
 ## Contrato proposto

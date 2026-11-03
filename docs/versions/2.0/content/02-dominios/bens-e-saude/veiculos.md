@@ -8,12 +8,12 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, pessoas-empresas, agenda-tarefas, patrimonio, migration-15-vehicles, migration-18-assets, enum-vehicle-event-type
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Veículo e patrimônio são registros independentes
 
-O cadastro de veículo existe por si só para guardar abastecimentos, quilometragem, serviços, documentos e notas. Criar um veículo não obriga a incluí-lo no módulo de patrimônio. Quando fizer sentido acompanhar seu valor patrimonial, um bem pode apontar para aquele veículo; essa relação é opcional e única. Sem o vínculo, o veículo continua completo para uso e histórico.
+O cadastro de veículo existe por si só para guardar abastecimentos, quilometragem, serviços, documentos e notas. Arquivos enviados em serviços ou abastecimentos são Documents da biblioteca comum, ligados ao evento e/ou transação sem cópias. Criar um veículo não obriga a incluí-lo no módulo de patrimônio. Quando fizer sentido acompanhar seu valor patrimonial, um bem pode apontar para aquele veículo; essa relação é opcional e única. Sem o vínculo, o veículo continua completo para uso e histórico.
 
 Se for vinculado como bem, a avaliação entra uma vez no patrimônio. O mesmo veículo não pode aparecer de novo como um segundo bem sem vínculo. Compra, manutenção e venda continuam sendo fatos financeiros próprios, não avaliações patrimoniais.
 
@@ -23,7 +23,7 @@ No cadastro, a consulta FIPE pode ajudar a selecionar tipo, marca, modelo, ano/c
 
 ## Nota fiscal e abastecimento
 
-O fluxo deve aceitar uma NFC-e/XML ou imagem da nota. A leitura extrai candidatos para emitente, data, itens, quantidade, preço, descontos e total, preservando o arquivo original e a procedência. O resultado começa como rascunho para conferência: reconhecer a nota não efetiva pagamento nem adivinha o veículo quando houver dúvida. A chave fiscal ou uma impressão digital evita cadastrar o mesmo documento duas vezes.
+O fluxo deve aceitar uma NFC-e/XML ou imagem da nota. A leitura extrai candidatos para emitente, data, itens, quantidade, preço, descontos e total, preservando o arquivo original como Document e registrando a procedência da extração. O resultado começa como rascunho para conferência: reconhecer a nota não efetiva pagamento nem adivinha o veículo quando houver dúvida. A chave fiscal ou uma impressão digital evita cadastrar o mesmo documento duas vezes.
 
 Quando a nota contém um único item de combustível com quantidade identificável, o desconto desse item reduz o preço efetivo por litro: total líquido dividido pelos litros, com precisão decimal e arredondamento monetário definido. Se houver vários itens, o sistema não distribui automaticamente um desconto geral entre combustível e outros produtos; pede uma alocação explícita ou mantém o desconto sem atribuição ao combustível. Os valores brutos, desconto, líquido e quantidade permanecem consultáveis.
 
@@ -55,7 +55,7 @@ O registro de odômetro também é uma ação independente, disponível na ficha
 
 O histórico do veículo serve também como um diário simples de acontecimentos: instalar acessório, notar barulho, emprestar o carro, trocar pneu ou registrar qualquer outra coisa relevante. Um evento do tipo `Note` aceita título, texto livre, data e quilometragem opcionais. Ele não é automaticamente uma despesa, ordem de serviço ou manutenção concluída.
 
-Serviços e reparos usam eventos próprios com vários itens realizados e observações. Anexos, prestador, nota fiscal e leitura de odômetro são opcionais. A pessoa pode registrar uma ação sem custo conhecido, ou um custo sem declarar que houve serviço naquele dia.
+Serviços e reparos usam eventos próprios com vários itens realizados e observações. Vínculos a Documents, prestador, nota fiscal e leitura de odômetro são opcionais. A pessoa pode registrar uma ação sem custo conhecido, ou um custo sem declarar que houve serviço naquele dia.
 
 ## Checklist e manutenção futura
 

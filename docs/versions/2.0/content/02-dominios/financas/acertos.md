@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, pessoas-empresas, compatibilidade-legado, migrations, migration-10-settlements, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Services/SettlementGroupService.php, https://github.com/james-suite/james/blob/master/app/Services/SettlementBalanceCalculator.php, https://github.com/james-suite/james/blob/master/app/Http/Requests/StoreSettlementGroupRequest.php
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Caso confirmado
@@ -42,7 +42,7 @@ Cada liquidação identifica o pagador como usuário (`Self`), contato conhecido
 
 O contato/empresa relacionado à obrigação fornece a dimensão para filtros e gráficos. A tela pode agrupar por pessoa sem criar uma tag: consumo por participante vem das cotas; quem pagou ao fornecedor vem das contribuições; adiantamentos e pendências vêm das obrigações e alocações de liquidação; caixa recebido/pago vem dos pagamentos financeiros efetivados ou da liquidação registrada fora das contas. Exibir cada métrica separada e permitir abrir seus registros de origem.
 
-Separar três situações: (1) uma pessoa devolve dinheiro de um adiantamento — liquidação de acerto, sem receita; (2) uma loja devolve valor de uma compra — devolução comercial ligada ao documento original, com `PaymentKind::Refund`; (3) uma empresa paga um adiantamento devido — liquidação de obrigação com uma organização como contraparte. Só registrar receita quando não houver uma obrigação anterior e a natureza do valor tiver sido confirmada como receita.
+Separar três situações: (1) uma pessoa devolve dinheiro de um adiantamento — liquidação de acerto, sem receita; (2) uma loja devolve valor de uma compra — devolução comercial ligada ao documento original, com `PaymentKind::Refund`; (3) uma empresa paga um adiantamento devido — liquidação de obrigação com uma organização como contraparte. Comprovantes anexados a uma liquidação ou rateio também viram Documents e podem ser consultados na biblioteca. Só registrar receita quando não houver uma obrigação anterior e a natureza do valor tiver sido confirmada como receita.
 
 ## Fonte única de saldos e integração
 

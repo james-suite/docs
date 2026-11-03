@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, produtos-precos, migration-21-products
 source_refs:
-updated: 2026-10-26
+updated: 2026-11-01
 ---
 
 ## Contrato proposto
@@ -25,7 +25,3 @@ Enum string proposta; ainda não existe classe PHP no 2.0.
 ## Regras
 
 A origem informa como a observação foi produzida, não sua qualidade. Toda observação aponta para uma linha financeira e a captura fiscal mantém também seu próprio método e processador.
-
-## Persistência
-
-Aplicar em product_price_observations conforme Migration 21.

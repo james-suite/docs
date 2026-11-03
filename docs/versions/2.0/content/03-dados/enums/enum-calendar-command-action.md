@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, ia-e-memoria, agenda-tarefas
 source_refs:
-updated: 2026-10-28
+updated: 2026-11-01
 ---
 
 ## Contrato proposto
@@ -26,11 +26,4 @@ Esta nota planeja uma enum string para a operação que uma proposta de agenda p
 
 `Update`, `Cancel` e `Delete` exigem um alvo único e confirmação após mostrar o evento escolhido. Uma proposta com mais de um possível alvo solicita esclarecimento. `Create` inequívoco pode ser salvo automaticamente somente com preferência explícita habilitada; o resultado deve oferecer desfazer.
 
-## Persistência
-
-Aplicar em `calendar_command_proposals` conforme [migrations](doc:migrations). Revalidar autorização, revisão do evento, fuso, campos e disponibilidade antes de aplicar a operação de domínio.
-
-- [ ] Revisar os cases no fluxo de [agenda](doc:agenda-tarefas) e [IA](doc:ia-e-memoria).
-- [ ] Criar enum, rótulos e cast no Model correspondente.
-- [ ] Proteger transições e exclusão reversível.
-- [ ] Cobrir alvos ambíguos, revisão concorrente e confirmação expirada.
+Antes de aplicar, revalidar autorização, revisão do evento, fuso, campos e disponibilidade.

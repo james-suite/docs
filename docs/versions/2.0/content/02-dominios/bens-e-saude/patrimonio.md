@@ -8,12 +8,12 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, veiculos, financas, migrations
 source_refs:
-updated: 2026-10-25
+updated: 2026-11-03
 ---
 
 ## Contrato
 
-Guardar bem, categoria configurável, estado de posse, datas de aquisição/alienação, preço de aquisição e avaliações datadas com fonte. Associar empresa/pessoa da compra, anexos e transação existente. O veículo pode existir e ter histórico completo sem ser cadastrado como patrimônio; se o usuário quiser acompanhar seu valor, pode vinculá-lo a um único bem, sem duplicar cadastro nem custo.
+Guardar bem, categoria configurável, estado de posse, datas de aquisição/alienação, preço de aquisição e avaliações datadas com fonte. Associar empresa/pessoa da compra, Documents e transação existente; anexos enviados pelo patrimônio também aparecem na biblioteca documental. O veículo pode existir e ter histórico completo sem ser cadastrado como patrimônio; se o usuário quiser acompanhar seu valor, pode vinculá-lo a um único bem, sem duplicar cadastro nem custo.
 
 Avaliação patrimonial é uma observação; valorização ou depreciação não representa entrada/saída de dinheiro. O total patrimonial precisa declarar se usa custo ou avaliação e sua data. Contas de investimento já incluídas no financeiro não devem aparecer de novo como bem equivalente.
 

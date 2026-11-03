@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, componentes-tecnicos, compatibilidade-legado, decisoes-e-pendencias, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Ordem proposta
@@ -17,7 +17,7 @@ updated: 2026-10-31
 - [ ] **01 — Provas de modelagem:** validar documento/pagamento/alocação, livro interno e records com compra mista, fatura parcial, liquidação de acerto, devolução comercial e rateio sem parcela própria. Definir fonte única dos saldos antes de escrever todas as migrations.
 - [ ] **02 — Fundação:** starter kit de 2027, Flux 2 gratuito, identidade, espaço pessoal, Policies, tipos monetários, mídia privada e auditoria. [Pacotes 00–02](doc:migrations).
 - [ ] **03 — Pessoas e classificação:** contatos/empresas/grupos, tags/categorias, aliases, combobox com criação e regras locais. [Pessoas](doc:pessoas-empresas) e [tags](doc:tags).
-- [ ] **04 — Financeiro:** documentos e itens, leitura revisável de XML/QR/imagem, adaptadores fiscais por UF (avaliar o scraper existente do RS), pagador explícito, múltiplos pagamentos, transferências, estornos, relatórios e arquivamento. Provar idempotência e somas sob concorrência. [Finanças](doc:financas).
+- [ ] **04 — Financeiro:** documentos/itens e uploads por meio do registro documental compartilhado, leitura revisável de XML/QR/imagem, adaptadores fiscais por UF (avaliar o scraper existente do RS), pagador explícito, múltiplos pagamentos, transferências, estornos, relatórios e arquivamento. Comprovantes enviados nesta tela também aparecem na biblioteca; a mesma regra será reutilizada nos demais módulos. Provar idempotência e somas sob concorrência. [Finanças](doc:financas) e [documentos](doc:documentos-arquivos).
 - [ ] **05 — Cartões e recorrências:** ciclos congelados, parcelas, várias contas por fatura, limite e ocorrências sem duplicatas. [Cartões](doc:cartoes).
 - [ ] **06 — Acertos:** participantes/pagadores distintos, parcela própria zero, obrigações e liquidações com integração financeira. [Acertos](doc:acertos).
 - [ ] **07 — Comunicação:** central de atenção, preferências individuais, outbox e tentativas, resumos e lembretes que acompanham o domínio. [Notificações](doc:notificacoes).

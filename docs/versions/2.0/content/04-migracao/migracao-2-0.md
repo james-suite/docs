@@ -59,7 +59,7 @@ Pagamentos agregados e datas ausentes são preservados com sua precisão real. A
 
 ## Efeitos externos
 
-Importação não manda e-mail/Telegram, não chama IA e não materializa recorrências. Ativar automações só após reconciliação e configuração dos canais na nova conta. O James atual permanece disponível até o aceite; mudanças posteriores no antigo não são sincronizadas automaticamente.
+Importação não envia notificações externas, não chama IA e não materializa recorrências. Ativar automações só após reconciliação e configuração dos canais na nova conta. O James atual permanece disponível até o aceite; mudanças posteriores no antigo não são sincronizadas automaticamente.
 
 ## Componentes e persistência
 

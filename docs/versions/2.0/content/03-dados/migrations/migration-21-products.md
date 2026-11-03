@@ -8,14 +8,12 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, produtos-precos, financas, migration-03-parties, migration-06-transactions, migration-13-places, enum-price-observation-source
 source_refs: https://ref.gs1.org/standards/genspecs/, https://ref.gs1.org/guidelines/2d-in-retail/
-updated: 2026-10-31
+updated: 2026-11-01
 ---
 
-## Estado, ordem e dependências
+## FKs posteriores e proveniência
 
-Contrato proposto, sem migration PHP executável. O número identifica uma etapa lógica, não um arquivo timestampado. Dependências lógicas: 02 (registros), 03 (partes), 06 (transações e itens) e 13 (lugares e filiais).
-
-Adicionar as FKs de produto ao item financeiro e ao catálogo de preços após as tabelas-base. A FK do emitente fiscal para places é parte da extensão do pacote 13. Valores de notas continuam sendo fonte do fato financeiro; catálogo e observações são relações e projeções rastreáveis.
+Adicionar as FKs de produto ao item financeiro e ao catálogo de preços após as tabelas-base. A FK do emitente fiscal para `places` é parte da extensão do pacote 13. Valores de notas continuam sendo fonte do fato financeiro; catálogo e observações são relações e projeções rastreáveis.
 
 ## Tabela measurement_units
 

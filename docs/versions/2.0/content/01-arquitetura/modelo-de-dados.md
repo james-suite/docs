@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migrations, enums, financas, acertos, pessoas-empresas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Estado do desenho
@@ -51,6 +51,8 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Cartão 1:N faturas e débitos; débito 1:N parcelas; fatura N:N pagamentos.
 - Rateio 1:N participantes, cotas e contribuições; rateio pode apontar à transação de origem; obrigação N:N liquidações. `Party` associado à obrigação identifica contraparte para filtros/gráficos, sem tag de contato.
 - Record 1:1 entidade vinculável; Record N:N tags e vínculos tipados com outros Records.
+- Document 1:N versões imutáveis; cada versão tem um original privado em `media`. O Document é um Record e pode se relacionar com vários registros por `record_links`; um upload contextual cria o documento e o vínculo, enquanto selecionar outro já existente cria só o vínculo.
+- Anexo removido de uma transação ou serviço significa desvincular. O arquivo/documento permanece na biblioteca até exclusão explícita, com aviso dos demais vínculos; dados da transação, contato ou bem não são apagados junto.
 - Notificação 1:N intenções de entrega; intenção 1:N tentativas.
 - Uma submissão humana pode gerar vários eventos de Activity Log e no máximo um `ActivityLocationContext` por `correlation_id`; coordenadas ficam fora do JSON de auditoria e expiram independentemente.
 - Conexão de IA 1:N execuções; execução gera sugestões sujeitas à revisão da fonte.
@@ -63,6 +65,8 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Conector de saúde opcional 1:N execuções de sincronização; cada observação/atividade importada preserva identificador e origem externos para idempotência e reconciliação. Sessões podem ter amostras de métricas e uma rota privada opcional; rota não é visita nem contexto de auditoria.
 - Resumos de métricas e séries ponto a ponto são níveis distintos. Importar só a granularidade necessária; alterações/remoções da fonte não sobrescrevem observações manuais.
 - Party 1:N referências externas versionadas; vínculos empresariais guardam origem e revisão. Catálogos auxiliares não recebem dados fiscais privados de outras contas.
+- Arquivo e registro documental são conceitos distintos: o binário fica na Media Library, a versão preserva histórico/proveniência e `record_links` associa o documento às áreas. Não criar uma tabela de upload por domínio.
+- Documentos sem outro registro (como certidão pessoal) são válidos; validade e titular/emissor são opcionais. Fotos entram como arquivo/anexo quando úteis, sem biblioteca fotográfica como objetivo.
 
 ## Exclusão e histórico
 

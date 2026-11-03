@@ -8,14 +8,18 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, componentes-tecnicos
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 ## Critério
 
 Usar enum para estados e famílias fechadas que mudam comportamento. Tags, categorias, nomes de combustível, tipos de relação com empresa, métodos específicos de pagamento e exercícios são catálogos, não enums gigantes. Arquivamento usa timestamp; atraso e quitação podem ser projeções, sem virar estado único que mistura várias dimensões.
 
-Os cases são propostos; não são classes implementadas. Estados de funcionalidades futuras não habilitam recursos na interface. A implementação deve preservar os valores legados onde ainda tenham o mesmo significado.
+## Convenções compartilhadas
+
+Todas as notas abaixo são propostas, não classes implementadas. Na implementação, usar enums PHP com cases em TitleCase e valores persistidos estáveis em `snake_case`; rótulos de interface são traduções separadas. A tabela deste catálogo indica onde cada valor será persistido; a migration correspondente define coluna, nulabilidade, índice e constraint. Não duplicar valores derivados nem transformar a presença de um case em funcionalidade habilitada. Preservar valores legados quando ainda tiverem o mesmo significado.
+
+Checklist comum de implementação: validar o fluxo e as transições no domínio; criar enum, cast e rótulos; aplicar autorização e invariantes na operação de domínio e no banco quando couber; cobrir valores desconhecidos, concorrência e conversões legadas relevantes. As notas individuais mantêm apenas regras específicas daquele enum.
 
 ## Catálogo
 
@@ -47,6 +51,7 @@ Os cases são propostos; não são classes implementadas. Estados de funcionalid
 - [Enum — AiTask](doc:enum-ai-task) — `ai_runs`.
 - [Enum — AiConnectionScope](doc:enum-ai-connection-scope) — `ai_connections`.
 - [Enum — CaptureSource](doc:enum-capture-source) — `visits`.
+- [Enum — DocumentVersionOrigin](doc:enum-document-version-origin) — `document_versions`.
 - [Enum — JournalState](doc:enum-journal-state) — `journal_entries`.
 - [Enum — VehicleEventType](doc:enum-vehicle-event-type) — `vehicle_events`.
 - [Enum — VehicleFinancialLinkPurpose](doc:enum-vehicle-financial-link-purpose) — `vehicle_financial_links`.

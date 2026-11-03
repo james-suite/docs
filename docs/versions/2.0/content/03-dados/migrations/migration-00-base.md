@@ -8,16 +8,8 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-03
 ---
-
-## Estado e ordem
-
-Contrato proposto, sem migration PHP executável. O número é uma ordem lógica de planejamento, não timestamp de arquivo. Na implementação, gerar migrations com Artisan e separar responsabilidades; DDL e conversão dos dados não ficam no mesmo arquivo.
-
-Dependências lógicas: starter kit e pacotes selecionados em 2027. Consulte a [ordem de migrations](doc:migrations) para resolver FKs adicionadas depois.
-
-Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](doc:modelo-de-dados). As tabelas abaixo são propostas de persistência, não funcionalidades disponíveis.
 
 ## `users`
 
@@ -45,8 +37,10 @@ Campos comuns, escopo, tipos e política de exclusão seguem [Modelo de dados](d
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `Estrutura do pacote` | Arquivos privados, autorização pelo registro e espaço; conteúdo binário fora do banco. |
-| `space_id` | Coluna adicional e índice; garantir mesmo proprietário do Model associado. |
+| `Estrutura do pacote` | Binários privados e metadados de mídia ficam fora do domínio. Em documentos, cada objeto é propriedade de uma `document_version`; outras coleções específicas, como avatar de perfil, podem manter seu próprio Model. |
+| `space_id` | Coluna adicional e índice; deve corresponder ao espaço do Model proprietário do arquivo. |
+| `Entrega e portabilidade` | Download sempre autorizado no servidor, sem URL pública permanente; nomes físicos opacos, validação de tipo/tamanho e exportação com metadados. Backup de banco não substitui backup de originais. |
+| `Contrato completo` | A [Migration 22 — Documentos e anexos](doc:migration-22-documents) cria o registro documental e versões; módulos e formulários usam esse serviço comum para todos os uploads contextuais. |
 
 ## `activity_log`
 
@@ -75,12 +69,3 @@ Não importar senhas, sessões, tokens, 2FA ou flags de administração da insta
 ## Componentes previstos
 
 Policies de arquivos/auditoria; helpers de moeda e data; jobs com contexto explícito; integração dos pacotes.
-
-## Checklist de implementação
-
-- [ ] Revisar nomes, cardinalidades e invariantes com o fluxo de domínio.
-- [ ] Gerar migrations, FKs, índices e constraints; verificar banco vazio e ordem real de criação.
-- [ ] Criar Models, casts, factories e seeders estritamente necessários.
-- [ ] Implementar a operação, Policy e validação dos IDs do mesmo espaço.
-- [ ] Cobrir concorrência, transições e reconciliação aplicáveis com testes funcionais.
-- [ ] Integrar auditoria, exportação/importação e estados da interface.
