@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, produtos-precos, financas, migration-03-parties, migration-06-transactions, migration-13-places, enum-price-observation-source
 source_refs: https://ref.gs1.org/standards/genspecs/, https://ref.gs1.org/guidelines/2d-in-retail/
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## FKs posteriores e proveniência
@@ -62,13 +62,14 @@ Para etiquetas de peso variável, guardar payload bruto e resultado da tentativa
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| product_id, transaction_item_id | Uma observação por produto e linha de compra; o item financeiro é obrigatório e único para evitar duplicar a mesma linha. |
+| product_id, transaction_item_id, source_revision | Uma observação corrente por linha, com versões históricas para correções. O item financeiro é obrigatório. |
 | place_id, occurred_on, currency | Filial/local opcional, data da compra e moeda. |
-| gross_minor, discount_minor, surcharge_minor, net_minor | Snapshot reconciliável da linha; gross menos discount mais surcharge é igual a net. |
+| gross_minor, discount_minor, surcharge_minor, net_minor | Snapshot do bruto e dos descontos/acréscimos conhecidos, incluindo alocações globais da revisão. gross menos discount mais surcharge é igual a net. Preservar a decomposição e as referências da origem. |
 | purchased_quantity, base_quantity, base_unit_code | Quantidade original e quantidade normalizada, quando conhecida. |
-| source, supersedes_id, reviewed_at | PriceObservationSource, correção versionada e revisão. |
+| source, supersedes_id, superseded_at, reviewed_at | PriceObservationSource, encadeamento de correções, fechamento da versão anterior e revisão. |
+| adjustment_revision, adjustments_complete | Revisão das alocações usada e snapshot da cobertura de descontos/acréscimos potencialmente aplicáveis à linha. Preço com cobertura pendente é exibido como conhecido até o momento e fica fora da cesta de inflação. |
 
-net_minor deve coincidir com o valor líquido da linha financeira. Preço por unidade-base é cálculo exato sobre net_minor e base_quantity; arredondar só para apresentação. Sem unidade ou quantidade confiável, preservar preço total e sinalizar a observação como não comparável. Mudança de correção não apaga observação anterior.
+net_minor deve coincidir com o líquido analítico da linha financeira na revisão usada, incluindo os ajustes globais já atribuídos. Preço por unidade-base é cálculo exato sobre net_minor e base_quantity; arredondar só para apresentação. Sem unidade ou quantidade confiável, preservar preço total e sinalizar a observação como não comparável. Mudança de correção não apaga observação anterior.
 
 ## Tabelas price_baskets e price_basket_items
 
@@ -89,20 +90,12 @@ As FKs de filiais usam places e place_identifiers do pacote 13. Fontes auxiliare
 - Primeiro identificar o tipo do código. GTIN verificado resolve o produto global; PLU/SKU/RCN procura listing vigente do Place exato e depois da Party. Para descrição textual, procurar listing/alias do Place, depois Party e só então catálogo geral. Se código e descrição indicarem entidades diferentes, apresentar conflito para revisão. Dois produtos com o mesmo rótulo em lojas diferentes continuam entidades distintas.
 - Não usar o payload completo de uma etiqueta variável como chave permanente de produto: peso, preço, lote ou outros atributos podem mudar entre peças. Salvar o payload original, identidade estável, atributos decodificados, simbologia e versão do parser. Sem formato validado, guardar o payload como não interpretado e permitir revisão manual.
 - Validar dígito verificador quando aplicável, sintaxe e identificadores de aplicação GS1, separadores, escala decimal, unidade, sinal, limites plausíveis e coerência entre dados codificados e legíveis na etiqueta. Não assumir que RCN é GTIN nem generalizar um perfil local. A política de arredondamento precisa ser explícita; divergência fora da tolerância não é corrigida automaticamente.
-- Quantidade × preço unitário deve reconciliar com o total líquido da linha dentro da regra monetária. Se a etiqueta traz preço total e peso, tratar o total como valor da linha e não multiplicá-lo novamente; se peso ou unidade estiverem ausentes, não produzir comparação por kg. Desconto de cabeçalho ou fidelidade só compõe o preço unitário quando atribuível à linha; registrar preço de etiqueta e preço efetivamente pago separadamente se ambos forem necessários.
-- Nota fiscal e etiqueta podem descrever a mesma compra. Associá-las à mesma linha financeira e garantir uma observação de preço por linha; repetição de captura/importação deve ser idempotente.
+- Quantidade × preço unitário original deve reconciliar com o bruto da linha dentro da regra fiscal. O preço unitário efetivo é calculado do líquido analítico após descontos/acréscimos, preservando ambos. Se a etiqueta traz preço total e peso, tratar o total como valor da linha e não multiplicá-lo novamente; se peso ou unidade estiverem ausentes, não produzir comparação por kg. Desconto de cabeçalho ou fidelidade só compõe o preço unitário quando atribuível à linha; registrar preço de etiqueta e preço efetivamente pago separadamente se ambos forem necessários.
+- Nota fiscal e etiqueta podem descrever a mesma compra. Associá-las à mesma linha financeira e garantir uma observação corrente de preço por linha, preservando revisões anteriores; repetição de captura/importação deve ser idempotente.
 - Uma alteração posterior de produto, listing, alias ou perfil não reescreve identidade, quantidade e valores já confirmados. Correção da linha cria revisão/auditoria e invalida apenas projeções recalculáveis, como comparações futuras.
 - Aliases e identificadores são únicos somente dentro do catálogo pessoal e podem ser desativados/corrigidos com histórico; não fundir registros entre contas.
 - occurred_on vem do documento/compra; data de extração e data de revisão ficam nos campos de proveniência fiscal.
 - Cestas só contam produtos com unidade/moeda comparáveis. Apresentar quantidade de observações e cobertura ao lado do índice pessoal.
-
-## Conversão do James 1.x
-
-Preservar linhas, documentos e arquivos fiscais conforme o pacote 20. Não criar produto de catálogo automaticamente a partir de descrições incompletas ou itens sintéticos legados. A importação pode apresentar candidatos quando XML/documento trouxer código e quantidade inequívocos; a pessoa confirma o catálogo e a filial.
-
-## Componentes previstos
-
-MatchFiscalProducts; ReviewProductIdentity; ResolveIssuerPlace; MatchProductListing; DecodeVariableMeasureCode; ReviewProductCodeDecoding; RecordPriceObservation; CompareProductPrices; BuildPersonalPriceBasket. A decodificação automática é fase posterior à coleta de amostras e validação dos perfis suportados.
 
 ## Checklist
 
@@ -111,3 +104,31 @@ MatchFiscalProducts; ReviewProductIdentity; ResolveIssuerPlace; MatchProductList
 - [ ] Criar migrations físicas separadas para tabelas, FKs posteriores, índices e constraints.
 - [ ] Cobrir isolamento, códigos repetidos em Places diferentes, reutilização temporal de PLU, leitura ambígua, duplicidade de observação, reconciliação e atualização histórica.
 - [ ] Incluir produto/filial e procedência na auditoria, exportação e importação.
+
+## Revisões e seleção para comparações
+
+UNIQUE parcial por (space_id, transaction_item_id) onde superseded_at é nulo garante uma observação corrente. Outra UNIQUE por item/source_revision resolve reprocessamento da mesma revisão. Corrigir produto, quantidade ou ajuste publica a substituta e encerra a anterior na mesma transação. A substituta aponta para a anterior por supersedes_id.
+
+A cesta declara a regra de seleção entre várias observações do mesmo período, estabelecimento e produto. Começar com média ponderada pela quantidade-base das linhas válidas no período. Excluir linhas canceladas, preços sem cobertura e versões substituídas. Informar devoluções e cobertura. A consulta usa um snapshot/revisão de cesta para repetir o cálculo.
+
+A equivalência entre apresentações diferentes pode ser revisada para uma comparação por unidade-base, mantendo marca/variante e a política de cesta explícitas. Uma troca de identidade comparável inicia nova revisão e conserva a série anterior.
+
+## Integridade e cobertura da cesta
+
+UNIQUE(basket_id, product_id) impede repetir o mesmo componente. Quantidade de referência é positiva e a revisão da cesta fixa unidade, moeda e identidade comparável do produto. O custo-base precisa ser positivo.
+
+Além da contagem de produtos, expor cobertura ponderada pelo custo-base. Calcular o custo-base dos componentes comparáveis no período atual dividido pelo custo-base de toda a cesta. Se faltar preço no próprio período-base, marcar a base incompleta e exigir revisão antes de publicar índice. O limite mínimo de cobertura para apresentação do indicador continua uma decisão de produto.
+
+## Compra, devolução e preço zero
+
+As observações de preço de compra usam linhas confirmadas de Expense/Standard com produto e quantidade-base positivos. Valor líquido zero pode representar promoção integral e aparece explicitamente como preço zero conhecido. Documentos de Refund pertencem ao histórico da devolução relacionada e recebem tratamento próprio na quantidade/cobertura da compra.
+
+Relatórios conservam preço observado na compra e eventos posteriores de devolução. O indicador escolhe o tratamento de compras devolvidas em sua política de cesta e informa essa política no manifesto. A mesma devolução permanece fora da lista de novas compras observadas.
+
+## Conversão do James 1.x
+
+Preservar linhas, documentos e arquivos fiscais conforme o pacote 20. Não criar produto de catálogo automaticamente a partir de descrições incompletas ou itens sintéticos legados. A importação pode apresentar candidatos quando XML/documento trouxer código e quantidade inequívocos; a pessoa confirma o catálogo e a filial.
+
+## Componentes previstos
+
+MatchFiscalProducts; ReviewProductIdentity; ResolveIssuerPlace; MatchProductListing; DecodeVariableMeasureCode; ReviewProductCodeDecoding; RecordPriceObservation; CompareProductPrices; BuildPersonalPriceBasket. A decodificação automática é fase posterior à coleta de amostras e validação dos perfis suportados.

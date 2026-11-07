@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, agenda-tarefas, ia-e-memoria, migrations, migration-19-health, modulos-e-integracoes, enum-health-data-origin
 source_refs: https://support.apple.com/en-euro/guide/iphone/iph5ede58c3d/ios
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Primeira fatia
@@ -34,13 +34,13 @@ Antes de definir tabelas e telas, obter um arquivo real e validar tamanho, estru
 | Medidas corporais | Peso, altura e outras medidas incluídas no arquivo | `HealthObservation` tipada, com unidade, instante/data, origem e aparelho/app de origem quando fornecidos. Valor manual e valor importado permanecem distinguíveis. |
 | Atividades | Tipo, início/fim, duração, distância e energia, conforme conteúdo real do arquivo | Criar ou atualizar uma `WorkoutSession` importada; não inventar séries/repetições de musculação quando a fonte não as forneceu. |
 | Movimento diário | Passos, distância caminhando/correndo e energia ativa, se presentes e úteis | Importar somente a granularidade disponível no arquivo e conservar origem; não somar amostras sobrepostas de Apple Watch, iPhone e apps terceiros. |
-| Séries de atividade | Frequência cardíaca durante o treino e, quando disponíveis e desejadas, ritmo, cadência ou elevação | Guardar amostras com intervalo e unidade ligadas à sessão. Começar com resumo e gráficos sob demanda; detalhamento ponto a ponto é uma opção de sincronização, não requisito para toda conta. |
+| Séries de atividade | Frequência cardíaca durante o treino e, quando disponíveis e desejadas, ritmo, cadência ou elevação | Guardar amostras com intervalo e unidade ligadas à sessão. Começar com resumo e gráficos sob demanda; o detalhamento ponto a ponto depende da importação manual validada e da escolha da pessoa. |
 | Rota do treino | Pontos GPS ligados a um treino, se exportados em formato aproveitável | Não prometer nem persistir até validar a estrutura. Uma rota pertence àquela sessão, não ao histórico de check-ins nem ao contexto geográfico do salvamento. |
 | Sono e recuperação (posterior) | Sono, frequência cardíaca de repouso e variabilidade, conforme fontes e tipos acessíveis | Adicionar apenas após definir períodos, origem, visualizações e retenção; não inferir diagnóstico ou qualidade clínica do sono. |
 
 Não pedir acesso a todas as categorias de uma vez. Um catálogo de extensões futuras pode avaliar nutrição, respiração e outras medidas depois que houver telas e perguntas úteis para elas. Prontuários e dados clínicos não fazem parte desse escopo de atividade e exigem avaliação própria.
 
-### Sincronização, origem e correções
+### Importação, origem e correções
 
 O fluxo é iniciado pela pessoa ao enviar o XML. A tela mostra período, contagem e amostra de registros interpretados antes de confirmar. Repetir o mesmo arquivo não duplica observações; usar hash dos dados normalizados quando o arquivo não trouxer identificador estável. Uma linha manual nunca é sobrescrita por uma importação. Uma exportação posterior pode trazer dados novos ou removidos; propor duplicatas e diferenças para revisão, sem apagar valores anteriores automaticamente.
 

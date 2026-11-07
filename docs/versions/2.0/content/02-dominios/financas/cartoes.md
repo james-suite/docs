@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, migracao-2-0, compatibilidade-legado, migrations, enums
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialCreditCardInvoice.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialCreditCard.php
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Melhorias propostas
@@ -44,3 +44,13 @@ Primeiro: ciclos corretos, várias contas/pagamentos, arquivamento, parcelas e e
 O James atual possui `amount_paid`, `paid_at`, `payment_transaction_id` e `interest_transaction_id`. Um pagamento parcial agregado não contém necessariamente as datas individuais originais. Importar o agregado como pagamento legado, declarar a precisão disponível e não inventar histórico.
 
 Quando a fatura foi integralmente paga, o 1.x pode ter efetivado suas compras na conta pagadora. A conversão precisa remover a dupla representação do caixa ao criar os pagamentos de fatura; reconciliar o total debitado antigo com o novo livro antes de confirmar. Inconsistências vão para relatório e não são compensadas silenciosamente com um ajuste de saldo.
+
+## Compra mista e detalhamento
+
+Uma transação de R$ 300 pode financiar somente R$ 180 neste cartão. A linha da tela do cartão mostra R$ 180 financiados, o total de R$ 300 da compra e acesso aos itens e outros pagamentos. Dois cartões na compra produzem duas linhas de pagamento e dois CardCharges com seus planos de parcelas.
+
+Parcelas pertencem ao financiamento e conservam vínculo à compra original. Edição de itens ou classificação usa a transação de origem. Fatura apresenta parcelas, encargos, créditos e pagamentos separados, com consulta ao fato que originou cada linha.
+
+## Arquivamento
+
+O diálogo mostra dívida atual, parcelas futuras, crédito disponível, pagamentos e recorrências pendentes. A ficha arquivada mantém faturas, parcelas e ações de pagar/estornar fatos existentes. Novas compras exigem reativação ou fluxo histórico explícito para fatos anteriores ao arquivamento. Exportações mantêm o instrumento e archived_at.

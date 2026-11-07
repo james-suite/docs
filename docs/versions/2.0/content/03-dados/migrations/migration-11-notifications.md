@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, notificacoes, componentes-tecnicos, enum-delivery-status
 source_refs: https://developer.apple.com/documentation/usernotifications/sending-web-push-notifications-in-web-apps-and-browsers, https://www.rfc-editor.org/rfc/rfc8030, https://www.rfc-editor.org/rfc/rfc8291, https://www.rfc-editor.org/rfc/rfc8292
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `notifications`
@@ -32,7 +32,7 @@ updated: 2026-11-01
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `id, user_id, channel, encrypted_configuration` | Um destino por endpoint; Web Push guarda a assinatura e suas chaves cifradas. Permitir vários endpoints Web Push por usuário. |
-| `subscription_fingerprint, device_label, last_seen_at, expires_at` | Fingerprint com UNIQUE por usuário/canal para impedir a mesma assinatura duplicada, nome opcional do dispositivo e vigência; não registrar a URL em logs. |
+| `subscription_fingerprint, device_label, last_seen_at, expires_at` | Fingerprint com unicidade entre assinaturas Web Push ativas da instalação. A assinatura ativa pertence a um usuário por vez, com dispositivo e vigência identificados. A URL permanece fora dos logs. |
 | `verified_at, revoked_at` | Verificação e revogação pelo usuário ou pelo sistema após endpoint inválido. |
 
 ## `notification_deliveries`
@@ -59,6 +59,14 @@ updated: 2026-11-01
 - Uma conta pode ter várias assinaturas Web Push. Revogação no James remove o endpoint; erros permanentes do serviço, como assinatura expirada/inválida, desativam somente aquele endpoint e ficam registrados na tentativa.
 - Cifrar endpoint e chaves de assinatura em repouso; manter a chave privada VAPID em segredo de instalação. Push apresenta conteúdo imediatamente e leva só título/contexto mínimo e o identificador da notificação. Todo clique abre a tela `show` dessa notificação; nunca enviar o link direto ao registro de origem no push. A tela consulta o aviso e oferece a ação relacionada após autenticar e autorizar novamente a pessoa e o alvo.
 - Timeout e retry_after compatíveis, backoff e limite de tentativas. Eventos resolvidos cancelam lembretes ainda não enviados.
+
+## Dispositivo compartilhado e entrega em andamento
+
+Ao sair da conta, revogar a assinatura atual no servidor e solicitar unsubscribe no navegador. Troca de usuário no mesmo navegador exige associação explícita da assinatura à nova sessão, revogando o vínculo anterior. A entrega revalida dono, preferências e revoked_at imediatamente antes de enviar. Históricos podem conservar o ID do endpoint revogado com sua configuração secreta eliminada.
+
+A unicidade ativa pode ser implementada por índice parcial em (channel, subscription_fingerprint) para Web Push com revoked_at nulo. Reativação ou troca de dono usa operação transacional autorizada e mantém as tentativas antigas ligadas ao destinatário original.
+
+Uma falha depois da aceitação pelo provedor pode deixar confirmação ambígua. Repetir preserva a mesma notificação interna e o identificador visual por aviso ajuda a agrupar duplicatas no cliente. Corridas entre envio e resolução podem produzir aviso atrasado, e o show consulta o estado atual. Uma mensagem já exibida mantém o payload mínimo, com acesso aos detalhes condicionado à sessão correta.
 
 ## Conversão do James 1.x
 

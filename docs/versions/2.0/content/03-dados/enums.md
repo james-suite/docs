@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, componentes-tecnicos
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Critério
@@ -62,7 +62,7 @@ Checklist comum de implementação: validar o fluxo e as transições no domíni
 - [Enum — ImportStatus](doc:enum-import-status) — `import_runs`.
 - [Enum — ImportItemStatus](doc:enum-import-item-status) — `import_items`.
 
-- [Enum — PaymentMethodFamily](doc:enum-payment-method-family) — `payment_methods`.
+- [Enum — PaymentMethod](doc:enum-payment-method) — `financial_payments.method, settlement_payments.method`.
 - [Enum — PriceObservationSource](doc:enum-price-observation-source) — `product_price_observations`.
 
 - [Enum — TimePrecision](doc:enum-time-precision) — `financial_payments, journal_entries, vehicle_events`.
@@ -72,3 +72,7 @@ Checklist comum de implementação: validar o fluxo e as transições no domíni
 
 - [Enum — CardDebtDirection](doc:enum-card-debt-direction) — `card_charges`.
 - [Enum — HealthDataOrigin](doc:enum-health-data-origin) — origem manual ou importada de observações e treinos.
+
+- [Enum — FinancialAdjustmentDirection](doc:enum-financial-adjustment-direction) — `financial_transaction_adjustments.direction`.
+
+- [Enum — ExportStatus](doc:enum-export-status) — `data_exports.status`.

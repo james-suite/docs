@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, migracao-2-0, documentos-arquivos, migration-22-documents, componentes-tecnicos
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## `import_runs`
@@ -35,12 +35,13 @@ updated: 2026-11-03
 | `space_id, source_instance_id, source_table, source_id, output_role, output_index` | Chave única de conversão: uma origem pode produzir documento, pagamento, alocação e parcela. Papéis/índices são determinísticos por versão do conversor. |
 | `target_kind, target_id, import_run_id, source_metadata` | Destino por mapa fechado; várias origens podem apontar ao mesmo destino (transferência consolidada). Metadados seguros preservam datas e precisão relevantes. |
 
-## `data_exports (backport separado no 1.x)`
+## `data_exports` no 1.x e 2.0
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `requested_by_user_id, export_id, format_version, source_instance_id` | Solicitação via navegador; schema implementado posteriormente no repositório 1.x por migration nova. |
-| `private_path, package_sha256, status, expires_at` | Geração em fila, download autenticado e expiração. |
+| `requested_by_user_id, space_id, export_id, format_version, source_instance_id` | Solicitação da própria conta via navegador. Contrato adaptado à identidade do 1.x no backport e ao Space no 2.0. |
+| `private_path, package_sha256, status, expires_at` | ExportStatus, geração em fila, download autenticado e expiração. |
+| `scope, snapshot_at, manifest, completed_at` | Pacote pessoal completo ou relatório filtrado, snapshot consistente, cobertura e conclusão verificada. Filtros são metadados autorizados do escopo de relatório. |
 
 ## Integridade, índices e comportamento
 
@@ -53,6 +54,28 @@ updated: 2026-11-03
 - A FK opcional spaces.active_import_run_id é adicionada depois de import_runs existir. A liberação da guarda em sucesso/falha é recuperável; não depender de um processo vivo para destravar a conta.
 - Reconciliação inclui séries por mês/conta e não só saldo final. Alterações temporais causadas pela nova regra de cartões são mostradas e exigem aceite explícito.
 - Não marcar completed antes de conferir saldos, dívidas, cotas, tags e documentos/versões/vínculos. Não disparar IA, recorrências ou notificações externas durante a importação.
+
+## Exportação contínua no 2.0
+
+Manter data_exports também no 2.0, com user_id/space_id resolvidos no servidor, export_id, format_version, snapshot_at, scope, filtros permitidos, manifest, status, private_path, package_sha256, completed_at e expires_at. scope distingue pacote pessoal completo e relatório filtrado. A entidade registra falhas e contagens sanitizadas. O mesmo usuário pode consultar andamento e baixar o resultado autorizado.
+
+O catálogo de exportadores cobre todos os módulos e suas relações, incluindo arquivados, lixeira e versões ainda retidas. A especificação em [Portabilidade e backup](doc:portabilidade-backup) define a fronteira entre pacote pessoal, relatório e recuperação administrativa da instalação.
+
+## Lease, atomicidade e preservação de arquivos
+
+import_runs guarda lease_expires_at, heartbeat_at e lease_generation. O worker renova a concessão, e cada tentativa de publicação compara a geração vigente sob bloqueio do Space. Um worker antigo perde autoridade após recuperação da operação. A rotina de recuperação pode retomar a mesma run ou registrar falha e liberar a guarda de modo transacional.
+
+As etapas de parser, validação e preparação de arquivos podem usar lotes. A publicação financeira inicial ocorre numa transação de domínio única dentro dos limites de tamanho aceitos. Falha durante essa publicação restaura o destino anterior. Repetir a confirmação pode reutilizar staging válido. Aumento de volume que exija publicação distribuída por lotes requer outro protocolo e novo gate.
+
+Durante exportação, fixar as versões e hashes do snapshot e manter referências de retenção temporária aos bytes. A limpeza respeita essas referências até conclusão/falha/expiração recuperável da exportação. Alteração ou purge concorrente interrompe a finalização quando faltar um original obrigatório.
+
+Arquivos de migração e XML de saúde pertencem a staging técnico privado com expiração, separado dos documentos pessoais da biblioteca. Ao importar pacote pessoal, desativar chaves de feed, assinaturas push e conexões externas até configuração explícita na conta de destino.
+
+## Expiração e módulos suportados
+
+uploaded_media_id do ImportRun e referências técnicas equivalentes podem ficar nulos após limpeza autorizada do staging. O registro conserva hash, versão, contagens e resultado. DataExport expirado conserva manifesto e estado, com private_path eliminado. A limpeza de arquivo pessoal continua sujeita ao contrato de documentos e evidências.
+
+Um pacote completo informa quais módulos/schema precisa no destino. A prévia bloqueia a publicação quando faltar adaptador ou módulo necessário. O fluxo pode orientar habilitação ou atualização do destino. Importação parcial, se vier a ser aprovada, terá escopo e resultado próprios, com exclusões declaradas.
 
 ## Conversão do James 1.x
 

@@ -32,13 +32,15 @@
           "planejamento-2-0",
           "escopo-2-0",
           "decisoes-e-pendencias",
-          "fases-2-0"
+          "fases-2-0",
+          "modulos-e-integracoes"
         ]
       },
       {
         "label": "Arquitetura e experiência",
         "items": [
           "arquitetura-2-0",
+          "integracoes-e-consistencia",
           "modelo-de-dados",
           "componentes-tecnicos",
           "ui-ux-2-0",
@@ -55,11 +57,11 @@
           },
           {
             "label": "Organização pessoal",
-            "items": ["tags", "pessoas-empresas", "notificacoes", "agenda-tarefas"]
+            "items": ["tags", "pessoas-empresas", "notificacoes", "agenda-tarefas", "documentos-arquivos"]
           },
           {
             "label": "Memória e contexto",
-            "items": ["diario", "lugares-checkins", "ia-e-memoria"]
+            "items": ["diario", "lugares-checkins", "ia-e-memoria", "assistente-pessoal-rag"]
           },
           {
             "label": "Bens e saúde",
@@ -78,13 +80,18 @@
               "enum-ai-run-status",
               "enum-ai-task",
               "enum-calendar-event-state",
+              "enum-calendar-command-action",
               "enum-capture-source",
               "enum-card-debt-direction",
               "enum-checklist-item-status",
               "enum-classification-mode",
               "enum-delivery-status",
+              "enum-document-version-origin",
               "enum-entry-side",
               "enum-financial-account-type",
+              "enum-financial-adjustment-direction",
+              "enum-export-status",
+              "enum-health-data-origin",
               "enum-fiscal-capture-method",
               "enum-fiscal-extraction-status",
               "enum-import-item-status",
@@ -98,7 +105,7 @@
               "enum-obligation-direction",
               "enum-party-kind",
               "enum-payment-kind",
-              "enum-payment-method-family",
+              "enum-payment-method",
               "enum-payment-payer-type",
               "enum-payment-status",
               "enum-price-observation-source",
@@ -107,6 +114,7 @@
               "enum-split-mode",
               "enum-suggestion-status",
               "enum-tag-assignment-origin",
+              "enum-tag-creation-origin",
               "enum-task-status",
               "enum-time-precision",
               "enum-transaction-kind",
@@ -141,14 +149,16 @@
               "migration-18-assets",
               "migration-19-health",
               "migration-20-imports",
-              "migration-21-products"
+              "migration-21-products",
+              "migration-22-documents"
             ]
           }
         ]
       },
       {
-        "label": "Migração do James atual",
+        "label": "Exportação e migração",
         "items": [
+          "portabilidade-backup",
           "migracao-2-0",
           "compatibilidade-legado"
         ]

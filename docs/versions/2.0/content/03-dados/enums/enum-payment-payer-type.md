@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, financas, acertos
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Contrato proposto
@@ -21,6 +21,6 @@ updated: 2026-11-01
 
 ## Regras e transições
 
-O pagador não determina quem consumiu, quem é dono do veículo nem se existe dívida entre pessoas. `Self` exige a conta de origem quando houve saída de saldo pessoal. `Contact` não aceita uma conta privada do contato nem debita uma conta do usuário. Criar ou liquidar uma obrigação exige vínculo explícito a um acerto.
+O pagador não determina quem consumiu, quem é dono do veículo nem se existe dívida entre pessoas. `Self` exige a origem financeira conhecida, conta de ativo ou cartão, conforme a operação. `Contact` não aceita uma conta privada do contato nem debita uma conta do usuário. Criar ou liquidar uma obrigação exige vínculo explícito a um acerto.
 
 Uma nota fiscal não escolhe o pagador: a interface pergunta ao revisar a captura. Vários pagamentos do mesmo documento podem ter pagadores e datas diferentes.

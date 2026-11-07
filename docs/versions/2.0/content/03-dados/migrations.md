@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, modelo-de-dados, enums, componentes-tecnicos, fases-2-0, compatibilidade-legado
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Como usar este catálogo
@@ -37,10 +37,10 @@ Os números são identificadores editoriais, não timestamps nem ordem obrigató
 | [13 — Lugares e check-ins](doc:migration-13-places) | Lugares | 02, 03 |
 | [14 — Diário e revisões](doc:migration-14-journal) | Diário | 02, 04, 22 |
 | [15 — Veículos, serviços e combustível](doc:migration-15-vehicles) | Veículos | 02, 03, 06, 13, 22 |
-| [16 — Tarefas e checklists](doc:migration-16-tasks) | Organização | 02, 15 |
-| [17 — Agenda e séries](doc:migration-17-calendar) | Organização | 02, 12, 13, 16 |
-| [18 — Bens e avaliações](doc:migration-18-assets) | Patrimônio | 02, 03, 06, 15, 22 |
-| [19 — Saúde e treinos](doc:migration-19-health) | Saúde | 02, 16 |
+| [16 — Tarefas e checklists](doc:migration-16-tasks) | Organização | 02. Extensão de manutenção após 15 |
+| [17 — Agenda e séries](doc:migration-17-calendar) | Organização | 02, 13. Extensões de IA/tarefas após 12/16 |
+| [18 — Bens e avaliações](doc:migration-18-assets) | Patrimônio | 02, 03, 06, 22. Vínculo opcional de veículo após 15 |
+| [19 — Saúde e treinos](doc:migration-19-health) | Saúde | 02. Organização por tarefas pode usar 16 |
 | [20 — Exportação, importação e mapeamento legado](doc:migration-20-imports) | Portabilidade | 00–11, 22 |
 | [21 — Catálogo de produtos e preços observados](doc:migration-21-products) | Produtos e preços | 02, 03, 06, 13 |
 | [22 — Documentos, versões e anexos compartilhados](doc:migration-22-documents) | Documentos e anexos | 00, 02, 03 |
@@ -63,3 +63,9 @@ Uma importação manual do Apple Saúde, se aprovada após validar um XML real, 
 A sequência não obriga construir módulos futuros antes de entregar a base financeira migrável. A preferência e o contexto geográfico por ação são previstos na base/identidade; lugares e visitas/check-ins têm seu contrato de domínio no pacote 13. Veículos, agenda, patrimônio e saúde recebem migrations quando seus marcos começarem. O núcleo de `Document`/versões/vínculos é necessário desde os uploads do financeiro e a conversão do legado (pacote 22); a tela completa da biblioteca, lembretes e OCR podem ser priorizados depois. Conversas, embeddings e memória derivada do assistente do James ficam como extensão futura opcional, sem tabelas ou extensão pgvector obrigatórias no primeiro lançamento.
 
 Referências cruzadas: [Enums](doc:enums), [componentes técnicos](doc:componentes-tecnicos) e [compatibilidade com o 1.x](doc:compatibilidade-legado).
+
+## Dependências opcionais e contratos comuns
+
+Módulos opcionais acrescentam suas FKs quando ambas as pontas existirem. Agenda manual funciona antes de IA, tarefas genéricas antes de veículos e patrimônio antes do vínculo opcional com veículo. O pacote de importação/exportação registra todos os módulos habilitados no manifesto.
+
+Revisões, fonte de verdade e efeitos de correção seguem [Integrações e consistência](doc:integracoes-e-consistencia). O schema mínimo deve ser validado também sem módulos opcionais instalados.

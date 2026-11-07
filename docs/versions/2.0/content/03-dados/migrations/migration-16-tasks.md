@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, agenda-tarefas, componentes-tecnicos
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `tasks`
@@ -16,7 +16,7 @@ updated: 2026-11-01
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `record_id, title, status, due_at, completed_at` | TaskStatus e marcos; prazo opcional. |
-| `related_record_id, maintenance_plan_id` | Alvo autorizado e plano de manutenção opcional. |
+| `related_record_id, maintenance_plan_id` | Alvo autorizado e plano de manutenção opcional. A FK maintenance_plan_id é uma extensão criada após o pacote 15, quando veículos estiver habilitado. |
 | `priority, notes` | Prioridade validada e contexto. |
 
 ## `checklist_templates / checklist_template_items`
@@ -34,7 +34,7 @@ updated: 2026-11-01
 
 ## Integridade, índices e comportamento
 
-- Concluir uma tarefa de manutenção não registra automaticamente um serviço; a Action deve exigir o evento quando se tratar de execução real.
+- Concluir tarefa registra o estado de organização. A ação explícita Registrar serviço e concluir cria o evento real e atualiza tarefa/checklist na mesma operação autorizada.
 - Template alterado não muda checklist já executado. Item não aplicável pode exigir motivo.
 - Índices por espaço/status/prazo; relógio usa timezone da pessoa e persiste instantes UTC.
 

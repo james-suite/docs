@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migration-00-base, notificacoes, ia-e-memoria, compatibilidade-legado
 source_refs:
-updated: 2026-10-29
+updated: 2026-11-07
 ---
 
 ## Preservar e adaptar
@@ -23,7 +23,7 @@ Operações financeiras efetivadas registram estorno e substituição com refer�
 
 Quando a preferência da pessoa permitir, uma ação de criação/edição iniciada no site pode capturar uma posição pontual do navegador. Guardar esse contexto geográfico numa relação própria por `correlation_id`, fora de `properties` e `attribute_changes`: uma submissão pode gerar vários eventos de auditoria, mas usa uma posição só. O histórico pode mostrar a posição junto à ação; ela não prova que a pessoa esteve no lugar associado ao registro.
 
-Não capturar posição para jobs ou eventos do sistema. Importação confirmada pela pessoa no site pode ter um contexto para a confirmação, nunca um contexto copiado para cada linha importada. Se um job decorrer de uma ação web, a localização só pode ser atribuída à ação humana se compartilhar o `correlation_id` original; não usar localização no momento em que o job rodou.
+Não capturar posição para jobs ou eventos do sistema. Importação confirmada pela pessoa no site pode ter um contexto para a confirmação, nunca um contexto copiado para cada linha importada. Se um job decorrer de uma ação web, guardar a correlação da causa para navegar à submissão humana. O evento do job mantém autoria de sistema. A posição permanece associada somente à ação humana que a capturou.
 
 ## Consulta
 

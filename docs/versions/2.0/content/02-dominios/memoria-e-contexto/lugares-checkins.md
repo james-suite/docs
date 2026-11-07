@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, pessoas-empresas, diario, ia-e-memoria, migrations
 source_refs: https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition, https://brasilapi.com.br/docs, https://operations.osmfoundation.org/policies/tiles/, https://www.openstreetmap.org/copyright
-updated: 2026-10-29
+updated: 2026-11-07
 ---
 
 ## Começar por eventos compreensíveis
@@ -39,7 +39,7 @@ Cada ação de formulário tem no máximo uma observação de localização liga
 
 O histórico geográfico fica em armazenamento próprio, referenciado pela correlação da ação e separado das propriedades do Activity Log. A auditoria funcional tem retenção vitalícia no plano atual, mas isso não pode impor retenção vitalícia a coordenadas. A pessoa precisa poder consultar, exportar e apagar dados de localização; definir o prazo padrão e opções de retenção antes de fechar o schema. A posição não entra em IA por padrão nem fica acessível a administradores da instalação.
 
-Um deslocamento importado não é visita, check-in, presença no estabelecimento ou local de uma ação de auditoria. Pode aparecer em uma linha do tempo/mapa separado, com trilha quando os pontos estiverem no arquivo; associar a um veículo apenas após seleção/revisão. Não criar automaticamente uma visita mesmo quando o destino coincide com um `Place`. Repetir a mesma exportação não deve duplicar trajetos.
+Uma rota opcional de treino pertence à sessão de saúde importada e mantém o contrato específico desse módulo. Uma visita é registrada pela pessoa no site e a posição de uma ação pertence à submissão que a capturou.
 
 ### Mapa com OpenStreetMap
 

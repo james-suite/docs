@@ -8,14 +8,14 @@ visibility: public
 tags: james/2.0, planejamento, dados, documentos
 related: planejamento-2-0, migrations, modelo-de-dados, enums, enum-document-version-origin, documentos-arquivos, migration-00-base, migration-02-records, migration-06-transactions, migration-20-imports
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## `documents`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `record_id` | PK/FK única para `records`; kind `Document`, espaço do mesmo usuário. |
+| `id, space_id, record_id` | PK id simples e record_id único para records com kind Document, no mesmo espaço. FKs para documents usam documents.id. |
 | `title, document_type_label` | Título pesquisável; tipo local opcional, sem lista global obrigatória e sem usar tags como tipo. |
 | `document_date, expires_on` | Datas civis opcionais de emissão/assinatura e validade, sem inventar hora. Validade atual é calculada, não copiada em estado mutável. |
 | `issuer_party_id, holder_party_id` | FKs opcionais para Party no mesmo espaço, acrescentadas após Migration 03; só por seleção/confirmação humana. |
@@ -25,11 +25,11 @@ updated: 2026-11-03
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `id, space_id, document_id, version_number` | Dono e ordem sequencial; UNIQUE(document_id, version_number), espaço igual ao documento. |
+| `id, space_id, document_id, version_number` | Dono e numeração crescente de revisão; UNIQUE(document_id, version_number), espaço igual ao documento. |
 | `sha256, origin, uploaded_by_user_id, created_at` | Integridade, origem via [DocumentVersionOrigin](doc:enum-document-version-origin) e autoria/data conhecidas. Hash não implica mesclagem. |
 | Relação com `media` | Um objeto `media` privado pertence a uma versão por relação de Media Library. Metadados físicos vêm desse objeto; conteúdo nunca fica no banco relacional. Cada versão tem um original. |
 
-Uma versão não é editada depois de criada. Enviar outra digitalização do mesmo documento cria a próxima versão e a define como corrente pela maior `version_number`; obter um documento renovado, com nova identidade ou validade, cria outro `Document` ligado por `record_links`. Não adicionar boolean `is_current` redundante sem prova de necessidade.
+Uma versão publicada conserva seus bytes. Enviar outra digitalização do mesmo documento cria uma versão com número crescente, sob bloqueio do Document e UNIQUE(document_id, version_number). A versão corrente é a de maior número com published_at preenchido. Falhas podem deixar intervalos na numeração. Obter um documento renovado, com nova identidade ou validade, cria outro `Document` ligado por `record_links`. Não adicionar boolean `is_current` redundante sem prova de necessidade.
 
 ## Vínculos com os módulos
 
@@ -37,7 +37,7 @@ Reutilizar `records` e `record_links` da Migration 02. O registro do documento p
 
 Para uploads no contexto de uma tela, criar documento/versão e vínculo na mesma operação lógica. Selecionar um documento existente cria somente um novo `record_link`. Desvincular um documento nunca apaga o binário, outra versão ou os demais vínculos. Remoção definitiva é operação do módulo Documentos, mostra todos os vínculos afetados e respeita lixeira/retenção.
 
-`fiscal_documents` mantém campos fiscais e de extração, com `source_document_record_id` opcional/único para o arquivo original. O próprio documento tem vínculo com a transação. A nota fiscal estruturada e o seu arquivo são conceitos relacionados, não duas cópias de mídia.
+`fiscal_documents` mantém campos fiscais e de extração, com `source_document_version_id` opcional para a versão exata do arquivo original. O próprio documento tem vínculo com a transação. A nota fiscal estruturada e o seu arquivo são conceitos relacionados, não duas cópias de mídia.
 
 ## Integridade, índices e comportamento
 
@@ -50,6 +50,18 @@ Para uploads no contexto de uma tela, criar documento/versão e vínculo na mesm
 - Remover um `record_link` preserva o documento. Exclusão de documento arquivado/em lixeira não cascata para registros de finanças ou bens; definir purge de versões e binários em política própria e auditável.
 - Auditoria guarda metadados mínimos: ids, ação e contexto. Não guardar binários, conteúdo de OCR, números completos de documentos civis, nomes de arquivo íntimos ou texto de certidão em diff/push/log.
 - Proteger contra documentos com conteúdo ativo no preview; forçar download seguro para tipos não suportados. Staging temporário e conversões têm expiração própria.
+
+## Evidência histórica e publicação de arquivos
+
+Acrescentar published_at e upload_key único por espaço às versões. O download exige versão publicada. O estado pendente pertence à operação de upload e permite retomar a mesma versão após falha.
+
+Um vínculo contextual de consulta pode acompanhar a versão corrente. Um comprovante, contrato usado em operação ou fonte fiscal fixa a versão escolhida. A extensão comum document_link_versions guarda id, space_id, record_link_id único e document_version_id. Validar que a origem do RecordLink é o Document proprietário daquela versão. Todos os módulos usam essa mesma extensão.
+
+Adicionar versão nova conserva os vínculos fixos. O download de uma evidência abre os bytes usados na operação, com opção de navegar às versões posteriores. FiscalDocument e suas tentativas de extração fixam source_document_version_id e hash da entrada. Resolver uma extração repetida sempre usa essa referência.
+
+Upload começa em staging privado com dono, chave idempotente e expiração. Preparar o original, verificar seu hash e persistir documento/versão/vínculos de modo recuperável. Publicar somente após confirmar a disponibilidade do objeto definitivo. Um reconciliador retoma a publicação ou remove temporários órfãos, validando lease e referências antes de apagar. A transação SQL protege os relacionamentos e o protocolo de publicação protege os bytes.
+
+Bloquear substituição ou remoção isolada do original de uma versão publicada pela API de mídia. Purge precisa verificar vínculos de evidência, extrações, exportações em andamento e a política de retenção aprovada. A revisão atual do documento permanece separada das versões históricas fixadas.
 
 ## Conversão do James 1.x
 

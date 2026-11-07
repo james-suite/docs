@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, pessoas-empresas, compatibilidade-legado, migrations, migration-10-settlements, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Services/SettlementGroupService.php, https://github.com/james-suite/james/blob/master/app/Services/SettlementBalanceCalculator.php, https://github.com/james-suite/james/blob/master/app/Http/Requests/StoreSettlementGroupRequest.php
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Caso confirmado
@@ -46,7 +46,7 @@ Separar três situações: (1) uma pessoa devolve dinheiro de um adiantamento �
 
 ## Fonte única de saldos e integração
 
-Cotas e contribuições geram um plano explícito de quem deve a quem. Somente as arestas que envolvem eu viram obrigações pessoais; relações entre contatos são informação do rateio, sem movimento nas minhas contas. O plano deve zerar os saldos líquidos de todos os participantes e manter uma revisão estável. Múltiplos pagadores só entram na UI quando esse plano estiver validado.
+Cotas, contribuições e a atribuição dos valores já financiados geram um plano explícito de quem deve a quem. Somente as arestas que envolvem eu viram obrigações pessoais; relações entre contatos são informação do rateio, sem movimento nas minhas contas. O plano deve zerar os saldos líquidos de todos os participantes e manter uma revisão estável. Múltiplos pagadores só entram na UI quando esse plano estiver validado.
 
 Uma contribuição paga pelo usuário aponta para a alocação do pagamento ao fornecedor. Não lançar caixa de novo ao registrar a contribuição ou materializar a obrigação. Uma liquidação posterior aponta para suas obrigações; quando houver movimento numa conta pessoal, o pagamento financeiro fica ligado a essa liquidação, nunca à compra original. Depois de liquidado, um rateio exige ajustes versionados em vez de excluir seus filhos e recriá-los.
 
@@ -59,3 +59,17 @@ Arquivar um contato ou acerto oculta sua posição na triagem, preservando o sal
 ## Compatibilidade
 
 O 1.x já aceita `my_amount = 0` no rateio exato; a divisão igual possui regra específica que considera o usuário. Preservar os valores legados sem recalcular rateios passados segundo a nova regra. A parcela antiga pode ser reconstruída por total menos cotas dos contatos, confrontando os itens financeiros existentes. Não aplicar essa inferência se houver inconsistência.
+
+## Seletores e interação
+
+Usar PartyPicker de seleção múltipla para montar o conjunto de contatos, com consumidores e pagadores independentes. Eu é uma opção de identidade local em cada papel. O rascunho preserva IDs, cotas e contribuições ao buscar, criar contato, reordenar ou validar linhas.
+
+Na liquidação, consultar obrigações abertas da contraparte e permitir várias alocações da mesma direção/moeda. O pagador efetivo fica em campo separado e o resumo mostra cada obrigação afetada. A pessoa pode criar um contato pendente no formulário, persistido atomicamente ao salvar. Os contratos de teclado, Livewire, estados de busca e revisão estão em [UI e UX](doc:ui-ux-2-0).
+
+## Pagamento parcial ao fornecedor e correções
+
+O rateio pode ser planejado antes de a compra estar integralmente paga. Atribuir cada contribuição às cotas financiadas permite distinguir consumo total, adiantamentos reais e saldo ainda devido ao fornecedor. A prévia de acerto mostra esses três valores.
+
+Compra de R$ 120 para duas pessoas, com R$ 60 pagos por mim e R$ 30 financiados para cada uma, produz dois créditos de R$ 30. O fornecedor continua com R$ 60 a receber pela compra. O contrato da matriz e de suas revisões está na Migration 10.
+
+Corrigir uma liquidação reabre a parcela correspondente das obrigações. Se ela movimentou conta pessoal, reverter caixa e alocações na mesma operação. Uma devolução comercial de compra compartilhada exige revisar o consumo, a atribuição entre pessoas e os acertos já liquidados antes de definir o destino do dinheiro devolvido.

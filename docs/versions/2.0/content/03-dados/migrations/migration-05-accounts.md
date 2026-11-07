@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, componentes-tecnicos
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `financial_accounts`
@@ -25,11 +25,11 @@ updated: 2026-11-01
 | --- | --- |
 | `account_id, scheme, label, value` | Chaves Pix e identificadores opcionais; privados, normalizados e omitidos de envios de IA. |
 
-## `payment_methods`
+## Meio de pagamento opcional
 
-| Campo ou grupo | Contrato |
-| --- | --- |
-| `code, label, family, archived_at` | Catálogo pessoal (Pix, dinheiro, boleto etc.); PaymentMethodFamily/handler precisa corresponder a implementação permitida. |
+O pagamento guarda `method` nullable pelo enum PaymentMethod. A tela oferece opções simples, como Pix e débito, junto à conta escolhida. Esse detalhe pode ficar vazio em lançamentos manuais e dados legados. Conta e cartão têm seus cadastros e determinam a origem financeira. O meio descreve a operação.
+
+A proposta dispensa um CRUD de meios e uma associação de meios permitidos por conta. Para crédito, identificar o cartão pelo CardCharge. O servidor valida compatibilidade entre instrumento e meio informado.
 
 ## `ledger_accounts`
 
@@ -49,7 +49,7 @@ A seleção de instituição pode consultar o catálogo de bancos da BrasilAPI p
 
 ## Conversão do James 1.x
 
-checking/investment/wallet preservados. Transações de saldo inicial/ajuste são convertidas por função explícita e reconciliadas, sem repetir seu efeito.
+checking/investment/wallet preservados, com Wallet exibido como Dinheiro físico. Transações de saldo inicial/ajuste são convertidas por função explícita e reconciliadas, sem repetir seu efeito.
 
 ## Componentes previstos
 

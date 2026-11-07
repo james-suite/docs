@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `spaces`
@@ -17,7 +17,7 @@ updated: 2026-11-01
 | --- | --- |
 | `owner_user_id` | FK users, NOT NULL e UNIQUE; um espaço pessoal por conta na primeira versão. |
 | `name` | Nome de exibição opcional; não é identificador de autorização. |
-| `currency, timezone` | Moeda padrão e fuso IANA. |
+| `currency, timezone` | Fonte canônica da moeda padrão e do fuso IANA do espaço. Preferências de usuário leem esses valores. Cada fato preserva sua própria moeda e seu fuso observado quando conhecidos. |
 | `archived_at` | Indisponibilidade do espaço; não elimina dados. |
 
 ## Integridade, índices e comportamento

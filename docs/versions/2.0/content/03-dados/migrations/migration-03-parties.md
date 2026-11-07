@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, pessoas-empresas, componentes-tecnicos
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `parties`
@@ -69,6 +69,12 @@ updated: 2026-11-01
 - source_reference_id em party_relationships é FK composta opcional para party_external_references do mesmo espaço.
 - Índices por espaço/nome normalizado e por documento pesquisável. Máscaras são apresentação, não persistência.
 - Preservar grupos e relações após arquivar partes. Exclusão física proibida quando referenciada em financeiro ou histórico.
+
+## Aliases e fusão com dependências
+
+party_aliases guarda party_id, display_name, normalized_name, origem e contexto opcional de estabelecimento. Unicidade vale por Party/contexto. Duas pessoas podem ter o mesmo nome ou alias e a busca apresenta os detalhes para escolher.
+
+A fusão mantém um mapa de origem para destino e revalida identificadores, grupos, relações e participações financeiras. Se ambas as Parties aparecem no mesmo rateio, revisar cotas, contribuições e liquidações antes de substituir FKs. A operação bloqueia o conjunto afetado e conserva snapshots históricos e exportação do mapa. Resolver colisões antes da publicação da fusão.
 
 ## Conversão do James 1.x
 

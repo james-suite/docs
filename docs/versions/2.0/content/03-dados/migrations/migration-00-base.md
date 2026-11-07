@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## `users`
@@ -23,8 +23,7 @@ updated: 2026-11-03
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id` | FK users, única. |
-| `locale, timezone` | Locale e fuso IANA; valores explícitos. |
-| `default_currency` | Código ISO de moeda; preferência inicial do espaço, sem conversão automática de histórico. |
+| `locale` | Preferência de apresentação. Moeda padrão e fuso de negócio têm fonte canônica em spaces.currency/timezone. |
 | `capture_location_on_save` | Boolean false por padrão, por ser um dado sensível num sistema multiusuário; ao ativar, tenta capturar uma posição do navegador em cada mutação manual no site. A permissão do navegador continua obrigatória. Ausência, recusa ou timeout curto não bloqueiam nem atrasam indefinidamente o salvamento. |
 
 ## `cache / jobs / failed_jobs / sessions`

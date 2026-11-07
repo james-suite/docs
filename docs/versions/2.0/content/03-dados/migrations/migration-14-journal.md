@@ -8,14 +8,14 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, diario, documentos-arquivos, migration-22-documents, componentes-tecnicos
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## `journal_entries`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `record_id, title, body_markdown, state` | Texto pessoal e JournalState. |
+| `record_id, title, body_markdown, state, archived_at` | Texto pessoal e JournalState. |
 | `occurred_on, occurred_at, time_precision, timezone` | TimePrecision: dia ou instante; não inventar hora para relato diário. |
 | `written_at, current_revision` | Momento da escrita e controle de concorrência. |
 

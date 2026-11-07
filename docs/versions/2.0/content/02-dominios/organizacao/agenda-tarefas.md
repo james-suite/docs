@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, notificacoes, veiculos, diario, migrations, ia-e-memoria, modulos-e-integracoes
 source_refs: https://support.apple.com/guide/iphone/iphc37be2016/27/ios, https://support.apple.com/guide/iphone/iph3d1110d4/27/ios, https://developers.google.com/workspace/calendar/api/v3/reference/events
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Contrato
@@ -55,3 +55,11 @@ Referências oficiais: [adicionar conta CalDAV no iPhone](https://support.apple.
 Não planejar colaboração entre usuários ou convites a terceiros. Sincronização bidirecional com CalDAV/Google é posterior à consistência da agenda local e à definição de conflitos, calendário padrão, privacidade e recuperação de falhas.
 
 O calendário pode oferecer uma camada visual de feriados nacionais e estaduais consultados por ano/UF. A fonte BrasilAPI não cobre todos os feriados municipais; não apresentar a lista como calendário legal completo nem deslocar vencimentos, tarefas ou compromissos automaticamente. Se a consulta estiver indisponível, os eventos pessoais continuam funcionando.
+
+## Datas, atualização e lembretes
+
+Eventos avulsos guardam seu próprio fuso. Dia inteiro usa início inclusivo e fim exclusivo, com o último dia mostrado de forma natural na interface. Duração desconhecida fica identificada no formulário. Ocorrências mantêm identidade estável mesmo após mover data ou horário.
+
+O feed precisa preservar identidade, revisão e cancelamentos suficientes para atualizar os clientes. O protótipo verifica o comportamento do iPhone ao editar, cancelar e excluir, inclusive quando o aparelho ficou offline. O contrato de serialização fica na Migration 17.
+
+Vencimentos financeiros e de manutenção entram como projeções ligadas à origem. A preferência do usuário controla sua publicação no feed e o nível de detalhe. Cada projeção usa uma chave estável por fato/ocorrência e seu lembrete compartilha a origem, evitando avisos concorrentes para a mesma pendência.

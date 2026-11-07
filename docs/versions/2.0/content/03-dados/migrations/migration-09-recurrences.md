@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, financas, componentes-tecnicos
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `financial_recurrences`
@@ -39,6 +39,12 @@ updated: 2026-11-01
 - UNIQUE(space_id, recurrence_id, scheduled_on). Bloqueio e unicidade no banco são a garantia; cache/job único são auxiliares.
 - Datas com dia 31 usam âncora original e clamp por mês, sem deriva para dia 28 nos meses seguintes.
 - Editar template afeta próximas ocorrências; não sobrescrever transação manualmente revisada. Instrumentos arquivados geram pendência de configuração.
+
+## Relógio e revisão da regra
+
+Gerar ocorrências no fuso persistido da regra, conservando a data nominal como chave. Mudanças no fuso padrão do espaço afetam novas regras. Editar âncora/frequência começa uma vigência a partir de data escolhida e preserva as ocorrências anteriores.
+
+O scheduler tem janela de recuperação limitada e apresenta prévia antes de materializar grande período atrasado. Uma ocorrência cancelada ou ignorada conserva sua chave, inclusive após restaurar o cadastro. Criação automática mantém instrumento e pagador como sugestões no rascunho financeiro até a efetivação pelo fluxo autorizado.
 
 ## Conversão do James 1.x
 

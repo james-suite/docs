@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migracao-2-0, financas, cartoes, acertos, tags, migration-20-imports
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Princípio
@@ -61,3 +61,11 @@ No cartão, o 1.x pode afetar o banco na data de cada compra ao quitar a fatura 
 ## Garantias
 
 Uma importação concluída conserva todos os dados de negócio aceitos pelo formato, com anexos e vínculos verificados. Exceções técnicas e perdas de precisão devem aparecer antes da confirmação. Dados rejeitados não desaparecem: o pacote original e o relatório permitem corrigir o exportador ou criar um conversor melhor.
+
+## Itens legados negativos
+
+O 1.x aceita preço unitário negativo em itens de desconto, estorno ou ajuste. Para cada linha cujo total é negativo, criar FinancialAdjustment de direção Discount pelo valor absoluto e manter a descrição, ordem, quantidade, preço assinado, tags e ID original no mapa/snapshot. O Record do ajuste recebe os vínculos de classificação da linha convertida.
+
+A semântica exata continua identificada como ajuste legado até revisão. Uma descrição de estorno pode exigir fluxo comercial próprio quando houver evidência, e a prévia apresenta a ambiguidade. Conservar o total da transação e o efeito de saldo demonstrado. Ajustes já resumidos no cabeçalho são conciliados com as linhas antes de contar seu efeito.
+
+Preservar categoria/tag primária legada para os relatórios e expor o nível de origem. Dados de itens já removidos definitivamente no 1.x só podem aparecer no histórico disponível, com essa limitação declarada no manifesto.

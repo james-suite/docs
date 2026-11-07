@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos, assistente-pessoal-rag
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Linguagem do produto
@@ -47,6 +47,61 @@ Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o 
 TagPicker, CategoryPicker, AiTagClassifier, VehicleFinancialLinkPicker, PaymentEditor, SplitEditor, SettlementPaymentEditor, PartySettlementSummary, InvoicePaymentsHistory, ArchiveInstrumentDialog, NotificationInbox, ImportWizard, VehicleServiceEditor, ChecklistEditor, PrivateFileUpload e AuditHistory. Reusar componentes reais existentes antes de criar wrappers que apenas mudam nome de um componente Flux.
 
 Todos têm teclado, foco visível, erro por campo, loading por ação e prevenção funcional de duplicatas no servidor. Seletores pesquisam somente dados da pessoa. Filtros e paginação sobrevivem à visita ao detalhe e retorno. Tabelas de gestão recebem versão móvel útil; o check-in funciona no navegador do celular sem aplicativo ou configuração externa.
+
+## Seleção de contatos com Livewire
+
+O PartyPicker é um componente próprio sobre a base gratuita escolhida em 2027 e o combobox do SGE. Compartilha busca, lista de resultados, teclado, seleção e criação rápida entre os módulos. Cada uso define o papel da Party, a cardinalidade e os tipos aceitos. A apresentação identifica pessoa/empresa, nome e detalhe de desambiguação disponível, como apelido ou identificação parcial permitida.
+
+| Contexto | Seleção e retorno |
+| --- | --- |
+| Fornecedor de transação ou serviço | Uma pessoa/empresa e retorno à transação com dados preservados |
+| Consumidores do rateio | Vários contatos com chips removíveis e tabela de cotas |
+| Pagadores ao fornecedor | Seleção independente dos consumidores com valor por contribuição |
+| Pagador de uma liquidação | Uma identidade, podendo diferir das contrapartes das obrigações |
+| Titular/emissor de documento | Papel explicitado junto ao campo |
+| Filtro de relatório | Referência tipada Party + papel + medida, com URL restaurável |
+
+### Busca, criação e acessibilidade
+
+Abrir o seletor mostra recentes da própria conta e a busca. Resultados limitados podem carregar mais, com busca digitada, atualização após pequena pausa e loading restrito ao componente. Preservar selecionados visíveis mesmo fora da página atual. Marcar arquivados nos vínculos históricos e oferecer filtro explícito quando a operação permitir usá-los.
+
+A pessoa pode criar contato com nome e tipo no próprio fluxo. Campos adicionais ficam recolhidos. O novo contato aparece selecionado como pendente e é persistido junto ao formulário principal. Cancelamento descarta o rascunho. Usar identificador temporário estável para manter cotas e foco durante a criação. Homônimos legítimos devem poder coexistir e a tela deve permitir escolher após comparar os detalhes disponíveis.
+
+Planejar navegação por setas, Enter, Escape e remoção de chip pelo teclado, com rótulo acessível e anúncio de carregamento/quantidade de resultados. No celular, o mesmo contrato pode abrir painel de seleção com busca focada e lista legível. Fechar devolve o foco ao campo de origem e mantém o rascunho completo.
+
+As consultas Livewire recebem termo, papel e filtros permitidos. O servidor resolve espaço e autorização. Respostas de buscas anteriores devem ser descartadas quando o termo mudou. IDs selecionados e estado atual são revalidados no salvamento. Usar chaves estáveis por identidade, validação contextual, erro próximo da linha e bloqueio de envio duplicado durante a submissão. Alpine pode cuidar de abrir/fechar e teclado local conforme o componente escolhido.
+
+### Rateio
+
+O formulário exibe total da despesa, consumidores e contribuições de pagamento em seções próximas. A opção Eu pertence à identidade do espaço e pode ser marcada em cada papel. Consumir e pagar têm controles independentes. O total e o saldo a distribuir ficam visíveis enquanto as cotas são editadas.
+
+Cada participante tem uma linha estável com identidade, participação no consumo, cota e contribuições. Após escolher contatos, permitir divisão igual entre consumidores selecionados ou edição exata dos valores. Preservar valores já digitados ao pesquisar ou adicionar outro contato. Alterar o grupo de consumidores recalcula somente após ação explícita de recalcular, com diferença visível antes de aplicar.
+
+Antes de salvar, mostrar resumo por pessoa com cota, valor pago e saldo resultante. Para exemplo de R$ 120 pagos por mim para três contatos, mostrar Eu com consumo zero e adiantamento R$ 120, e três cotas de R$ 40. A criação de cotas e obrigações usa o plano de domínio revisado pelo servidor.
+
+Remover uma pessoa com valores ou liquidações associadas exige apresentar as dependências e ação de correção. Reordenar linhas conserva identidades e quantias. Antes de salvar, divergências de soma aparecem junto ao total e às linhas envolvidas.
+
+### Liquidar acertos
+
+Escolher a contraparte mostra obrigações abertas, direção, moeda e saldos. Selecionar uma ou mais obrigações preenche o total sugerido e permite pagamento parcial. Um campo separado identifica quem efetivamente pagou. O resumo mostra destino de cada valor e saldo futuro. A confirmação persiste liquidação, alocações e pagamento financeiro opcional numa operação idempotente.
+
+## Seletores de instrumentos e classificação
+
+PaymentEditor mantém linhas independentes de valor, data, pagador e instrumento. Adicionar um segundo pagamento conserva o primeiro. Mostrar pago, agendado e saldo a pagar separados. A seleção de conta oferece o meio opcional em campo secundário. A seleção de cartão abre parcelas e primeira fatura prevista. Contas/cartões arquivados permanecem identificados em registros existentes, com seleção histórica acessível no fluxo apropriado.
+
+CategoryPicker mostra o caminho Alimentação > Mercado. TagPicker aceita várias tags específicas. O seletor de filtros pode agrupar categorias, tags e relações a pessoas/veículos, com tipo e papel visíveis em cada chip.
+
+FiscalAdjustmentEditor mostra desconto global, valor já atribuído e saldo restante. Escolher item e valor atualiza líquido conhecido e preço por unidade/peso. Distribuir o restante e desfazer uma atribuição são ações explícitas. O painel preserva os valores originais da nota para conferência.
+
+DocumentPicker e seletores de veículos/produtos/lugares reutilizam comportamento de busca, seleção, estado vazio, criação e foco quando os contratos coincidirem. Cada domínio mantém suas regras e confirmação de dados específicos.
+
+Na persistência de contato pendente, mapear seu identificador temporário ao Party criado pela operação idempotente. Repetir a mesma submissão reutiliza o mapeamento e os vínculos. A busca por nome oferece possíveis correspondências sem fundir homônimos automaticamente.
+
+## Revisões compartilhadas
+
+A prévia de correção mostra documentos, pagamentos, rateios, veículos e preços afetados antes de aplicar mudanças financeiras. Distinguir a versão de comprovante usada e a versão mais recente da biblioteca.
+
+Na revisão de rateio parcialmente pago, mostrar consumo total, valor já financiado por pessoa e saldo do fornecedor. Ao selecionar pagamento em dinheiro, valor entregue e troco podem ajudar a calcular o líquido efetivo. Em cadastro manual usual, a opção de consumo pessoal aparece como sugestão visível e pode ser alterada. A importação usa a atribuição demonstrável ou identifica consumo desconhecido.
 
 ## Prototipação
 

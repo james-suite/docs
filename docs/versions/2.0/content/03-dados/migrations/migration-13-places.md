@@ -8,14 +8,14 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, lugares-checkins, pessoas-empresas, produtos-precos, componentes-tecnicos
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `places`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `name, party_id, address` | Lugar pessoal, empresa/filial opcional e endereço estruturado; CEP, logradouro, número, bairro, município e UF quando conhecidos. |
+| `record_id, name, party_id, address` | Lugar pessoal, empresa/filial opcional e endereço estruturado; CEP, logradouro, número, bairro, município e UF quando conhecidos. |
 | `address_source, address_retrieved_at` | Procedência opcional do endereço sugerido (manual, fiscal ou BrasilAPI) e instante da consulta; edição do usuário preserva revisão/auditoria. |
 | `latitude, longitude, timezone, coordinate_source, coordinate_retrieved_at` | Coordenadas opcionais com limites, origem e instante da consulta; coordenadas derivadas de CEP são aproximadas. Fuso IANA. |
 

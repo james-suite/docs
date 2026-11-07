@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, componentes-tecnicos, enums, migrations, ui-ux-2-0, ia-e-memoria, assistente-pessoal-rag, decisoes-e-pendencias
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Direção confirmada
@@ -55,3 +55,7 @@ Dinheiro e quantidades usam aritmética exata. Datas de negócio e instantes de 
 A matriz em [Componentes técnicos](doc:componentes-tecnicos) registra os candidatos concretos do SGE e do James atual, o modo de reaproveitamento e os limites de cada peça. A regra geral é portar comportamentos com contrato útil e adaptar ao domínio pessoal do James; não importar regras acadêmicas do SGE nem carregar limitações do modelo 1.x. Só extrair uma biblioteca compartilhada quando dois projetos precisarem do mesmo contrato estável e a dependência puder ser mantida e testada sem acoplamento aos domínios.
 
 Projetar busca estruturada/textual com Eloquent e PostgreSQL antes de adotar vetores. A [visão do assistente pessoal](doc:assistente-pessoal-rag) prevê pgvector como protótipo opcional se perguntas semânticas justificarem, mantendo fontes tipadas e uma fronteira pequena para provedores. Não espalhar chamadas ao modelo pelos Controllers ou hooks de Model.
+
+## Contratos compartilhados de integração
+
+Donos dos fatos, publicação recuperável, revisões, idempotência, limites de somas e propagação de correções estão centralizados em [Integrações e consistência](doc:integracoes-e-consistencia). As notas de cada módulo definem somente os efeitos específicos. Módulos de agenda, tarefas e patrimônio recebem conexões opcionais por extensões, conforme a matriz de dependências.

@@ -9,7 +9,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: compatibilidade-legado, migration-20-imports, financas, cartoes, enums, fases-2-0
 source_refs:
-updated: 2026-10-25
+updated: 2026-11-07
 ---
 
 ## Fluxo confirmado pelo usuário
@@ -64,3 +64,7 @@ Importação não envia notificações externas, não chama IA e não materializ
 ## Componentes e persistência
 
 ExportWizard no 1.x; ImportWizard no 2.0; upload privado com progresso, estado de fila, relatório e botão de confirmação. Não processar todo o banco dentro de uma requisição HTTP longa. Contratos das tabelas em [Migration 20](doc:migration-20-imports), com [enums de importação](doc:enum-import-status).
+
+## Portabilidade depois da migração
+
+O James 2.0 mantém exportação completa da própria conta e exportação de relatórios filtrados durante todo o uso. A cobertura inclui todos os módulos, arquivados, dados em lixeira ainda retidos, documentos/versões e relações necessárias para reproduzir gráficos. O contrato de pacote pessoal e o backup de toda a instalação estão em [Exportação completa, relatórios e backup](doc:portabilidade-backup).

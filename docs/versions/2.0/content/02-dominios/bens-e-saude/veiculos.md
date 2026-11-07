@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, pessoas-empresas, agenda-tarefas, patrimonio, migration-15-vehicles, migration-18-assets, enum-vehicle-event-type
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Veículo e patrimônio são registros independentes
@@ -25,7 +25,7 @@ No cadastro, a consulta FIPE pode ajudar a selecionar tipo, marca, modelo, ano/c
 
 O fluxo deve aceitar uma NFC-e/XML ou imagem da nota. A leitura extrai candidatos para emitente, data, itens, quantidade, preço, descontos e total, preservando o arquivo original como Document e registrando a procedência da extração. O resultado começa como rascunho para conferência: reconhecer a nota não efetiva pagamento nem adivinha o veículo quando houver dúvida. A chave fiscal ou uma impressão digital evita cadastrar o mesmo documento duas vezes.
 
-Quando a nota contém um único item de combustível com quantidade identificável, o desconto desse item reduz o preço efetivo por litro: total líquido dividido pelos litros, com precisão decimal e arredondamento monetário definido. Se houver vários itens, o sistema não distribui automaticamente um desconto geral entre combustível e outros produtos; pede uma alocação explícita ou mantém o desconto sem atribuição ao combustível. Os valores brutos, desconto, líquido e quantidade permanecem consultáveis.
+Quando a nota contém um único item total de combustível com quantidade identificável, o desconto desse item reduz o preço efetivo por litro: total líquido dividido pelos litros, com precisão decimal e arredondamento monetário definido. Se houver vários itens, o sistema não distribui automaticamente um desconto geral entre combustível e outros produtos; pede uma alocação explícita ou mantém o desconto sem atribuição ao combustível. Os valores brutos, desconto, líquido e quantidade permanecem consultáveis.
 
 Após selecionar ou confirmar o veículo, a leitura pode criar juntos o rascunho financeiro com itens fiscais e o evento de abastecimento, ligados à mesma linha de item. A data da nota é a data da compra; a data em que a imagem foi lida fica como metadado de captura. Dados incertos devem ser revisados antes da confirmação.
 
@@ -66,3 +66,7 @@ Modelos de checklist geram cópias para a execução. Alterar o modelo não muda
 ## Etapas
 
 Primeiro: cadastro independente de patrimônio, leitura de nota com revisão, vínculo financeiro, abastecimento, odômetro manual independente, eventos com vários itens e notas genéricas. Depois: recorrências por distância, alertas consolidados, pneus/componentes e análise de custo por km. Telemetria, localização automática e conexão com fabricante exigem integrações próprias.
+
+## Desconto parcial e preço conhecido
+
+O editor permite atribuir apenas parte do desconto global ao combustível e recalcula o preço conhecido por litro. Mostrar o valor atribuído e eventual resíduo potencialmente aplicável na nota. A quantidade abastecida e as leituras de odômetro conservam sua validade própria. Comparações de preço usam a cobertura de ajustes da linha financeira, conforme [Produtos e preços](doc:produtos-precos).

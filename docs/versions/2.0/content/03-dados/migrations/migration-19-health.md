@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, saude-treinos, componentes-tecnicos, enum-health-data-origin
 source_refs: https://support.apple.com/en-euro/guide/iphone/iph5ede58c3d/ios
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `exercises / workout_routines`
@@ -72,7 +72,15 @@ Se o mesmo hash já foi importado, apresentar o lote anterior e não duplicar re
 - Não usar medições como diagnóstico automático nem completar valores ausentes por inferência.
 - Dados importados preservam origem, unidade e identificador/idempotência; sessões manuais e importadas convivem sem sobrescrever umas às outras. FKs do lote incluem `space_id`.
 - A consulta de uma rota de exercício não cria check-in, contexto de auditoria ou localização em registro não relacionado à sessão.
-- A pessoa pode exportar e excluir dados importados; apagar um lote permite remover apenas os registros cuja origem seja aquele lote, sem afetar registros manuais.
+- A pessoa pode exportar e excluir dados importados; apagar um lote segue os vínculos de proveniência e apresenta observações que também foram confirmadas em outro lote ou revisadas manualmente.
+
+## Proveniência em importações sucessivas
+
+Uma amostra já existente pode aparecer em vários lotes. health_import_sample_links guarda o vínculo entre lote e observação/sessão com chave de origem, hash e decisão de correspondência. Excluir um lote remove suas associações. Dados confirmados por outro lote ou revisados manualmente são apresentados antes de excluir a observação compartilhada. O campo de lote original continua disponível como proveniência.
+
+Amostras de treino importadas podem representar atividades sem catálogo de exercício e rotina. Os campos routine_id e exercise_id são opcionais quando a origem só fornece tipo de atividade e resumo. Preservar data/instante de início, fim e fuso conforme a precisão efetivamente disponível.
+
+XML usa parser sem entidades externas, DTD ou acesso de rede, com limite de expansão, profundidade, volume e tempo. Dados ainda incertos ficam em staging e chegam à prévia antes da publicação.
 
 ## Conversão do James 1.x
 
@@ -81,3 +89,5 @@ Módulo novo. Não há conversão de dados do James 1.x. A importação opcional
 ## Componentes previstos
 
 RecordWorkout; ReviseRoutine; RecordHealthObservation; HealthExportUpload; HealthExportReview; WorkoutMetricChart; formatadores de quantidade/unidade. WorkoutRouteMap só entra se um arquivo validado trouxer trilha utilizável.
+
+A referência uploaded_file_id fica nullable após expirar o staging. O lote conserva file_sha256, parser_version e decisões de correspondência para explicar o histórico.

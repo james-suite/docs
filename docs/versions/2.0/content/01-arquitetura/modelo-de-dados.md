@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migrations, enums, financas, acertos, pessoas-empresas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Estado do desenho
@@ -62,7 +62,7 @@ Valores inteiros grandes devem ser serializados sem perda para JavaScript. Moeda
 - Documento fiscal pode apontar à empresa emitente e à filial/lugar separadamente; identificadores da unidade ajudam a reconhecer posto e mercado sem inferir check-in.
 - Leitura de odômetro é observação independente e pode existir sem abastecimento, serviço ou transação.
 - Produto pessoal 1:N identificadores e observações de preço; cada observação liga uma linha financeira, produto e lugar opcional. Cestas calculam comparação usando quantidades fixas e observações reais, com cobertura explícita.
-- Conector de saúde opcional 1:N execuções de sincronização; cada observação/atividade importada preserva identificador e origem externos para idempotência e reconciliação. Sessões podem ter amostras de métricas e uma rota privada opcional; rota não é visita nem contexto de auditoria.
+- Lote de importação manual de saúde 1:N observações/atividades com identificador e origem externos para idempotência e reconciliação. Sessões podem ter amostras de métricas e uma rota privada opcional; rota não é visita nem contexto de auditoria.
 - Resumos de métricas e séries ponto a ponto são níveis distintos. Importar só a granularidade necessária; alterações/remoções da fonte não sobrescrevem observações manuais.
 - Party 1:N referências externas versionadas; vínculos empresariais guardam origem e revisão. Catálogos auxiliares não recebem dados fiscais privados de outras contas.
 - Arquivo e registro documental são conceitos distintos: o binário fica na Media Library, a versão preserva histórico/proveniência e `record_links` associa o documento às áreas. Não criar uma tabela de upload por domínio.
@@ -85,3 +85,21 @@ Criar busca textual onde necessária e medir com dados representativos. PostgreS
 ## Exemplos para revisar o schema
 
 Os [cenários de validação](doc:cenarios-de-validacao) fixam resultados de pagamentos mistos, faturas, rateios sem parcela própria, tags, IA, importação e veículos. Eles são o gate dos protótipos e a base dos testes de comportamento futuros.
+
+## Refinamentos de pagamento, ajustes e relatórios
+
+FinancialPayment identifica conta de origem/destino conforme operação ou cartão por CardCharge. PaymentMethod é detalhe nullable. Compra mista tem pagamentos independentes, e o plano de parcelas pertence apenas à parcela financiada no cartão.
+
+Ajustes globais usam financial_transaction_adjustments e financial_adjustment_allocations. Atribuições parciais conservam o total e deixam resíduo global explícito. Dados fiscais originais, alocações e preço analítico guardam suas revisões e podem ser exportados.
+
+Categorias têm hierarquia, e itens usam categoria própria ou fallback do cabeçalho. Partes/veículos/lugares são dimensões tipadas com papel, resolvidas das relações existentes. Relatórios declaram granularidade, medida, cobertura e sobreposição de tags, com exportação reproduzível.
+
+Todos os domínios precisam declarar os dados exportáveis, arquivos, versões, lixeira/arquivamento e relações necessárias no catálogo de portabilidade. A política de backup da instalação inclui os recursos necessários à restauração.
+
+## Fonte canônica e identidade dos pais
+
+Preferências gerais leem moeda e fuso de spaces. A infraestrutura de catálogo global, como unidades físicas, e as conexões de IA da instalação têm escopo operacional explícito. Dados pessoais permanecem no espaço.
+
+Além de validar o mesmo space_id, relações entre filhos precisam validar o mesmo pai. O item de uma alocação pertence à transação informada, a leitura pertence ao veículo do evento e a versão de evidência pertence ao documento do vínculo. Usar FKs compostas apropriadas e revalidação sob transação.
+
+As regras de propagação e publicação ficam em [Integrações e consistência](doc:integracoes-e-consistencia), incluindo o tratamento de snapshots e efeitos derivados.

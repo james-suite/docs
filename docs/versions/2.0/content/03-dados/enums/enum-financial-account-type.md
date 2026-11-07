@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, financas
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Contrato proposto
@@ -17,9 +17,9 @@ updated: 2026-11-01
 | --- | --- | --- |
 | `Checking` | `checking` | Conta corrente |
 | `Investment` | `investment` | Investimento |
-| `Wallet` | `wallet` | Carteira |
+| `Wallet` | `wallet` | Dinheiro físico |
 | `Savings` | `savings` | Poupança |
 
 ## Regras e transições
 
-Preservar os três valores existentes no 1.x. Tipo não controla arquivamento; archived_at é independente.
+O rótulo de Wallet passa a Dinheiro físico. Preservar o valor persistido `wallet`, os saldos e a correspondência de IDs de origem no mapa de importação. O destino usa seus próprios IDs locais. Tipo não controla arquivamento; archived_at é independente.

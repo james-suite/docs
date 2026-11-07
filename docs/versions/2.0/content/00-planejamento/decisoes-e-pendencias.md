@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Confirmado pelo usuário
@@ -91,3 +91,17 @@ updated: 2026-11-03
 ## Regra editorial
 
 Todas as notas técnicas continuam propostas. A existência de uma nota de enum ou migration não significa aprovação, implementação ou cobertura de testes. Ao aprovar uma decisão, registrar data, motivo, efeitos na migração e documentos afetados.
+
+## Refinamentos financeiros de 7 de novembro
+
+Requisitos reforçados pelo usuário incluem Dinheiro físico como novo rótulo de Wallet, pagamentos mistos na mesma compra, arquivamento de contas/cartões, atribuição parcial de descontos a itens, generalização para gráficos, exportação completa e seleção de contatos com Livewire.
+
+O desenho propõe PaymentMethod opcional direto no pagamento, categorias hierárquicas com fallback por item, chips tipados de pessoas/veículos e alocações de ajustes globais com resíduo explícito. O cadastro separado de meios por conta fica dispensado nesta proposta. A validação de UX deve verificar se o campo opcional de meio traz benefício no uso cotidiano.
+
+Portabilidade permanente cobre dados pessoais de todos os módulos e seus vínculos. O backup operacional cobre a instalação multiusuário completa. O contrato está em [Exportação completa, relatórios e backup](doc:portabilidade-backup).
+
+## Revisão integrada de 7 de novembro
+
+A revisão acrescenta contratos para fixar versão de evidência documental, financiar cotas apenas conforme contribuições efetivas, reverter liquidações, versionar preços, publicar arquivos com recuperação e exportar snapshots coerentes. A matriz de dependências separa as extensões opcionais de agenda, IA, tarefas, veículos e patrimônio.
+
+Esses contratos são propostas técnicas para os protótipos. Antes do schema definitivo, aprovar o plano de financiamento parcial e reclassificação do ledger, a política de devolução de compra compartilhada, os limites de publicação/importação e a retenção dos arquivos e tombstones de calendário. A regra inicial de média ponderada para preços da cesta também precisa ser validada com dados reais.

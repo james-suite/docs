@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, diario
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Contrato proposto
@@ -17,8 +17,7 @@ updated: 2026-11-01
 | --- | --- | --- |
 | `Draft` | `draft` | Rascunho |
 | `Published` | `published` | Registrado no diário |
-| `Archived` | `archived` | Arquivado |
 
 ## Regras e transições
 
-Arquivar preserva conteúdo e revisões. Exclusão usa ciclo próprio; published não significa público para outras pessoas.
+Arquivamento usa archived_at e preserva o estado Draft ou Published, o conteúdo e as revisões. Exclusão usa ciclo próprio; published não significa público para outras pessoas.

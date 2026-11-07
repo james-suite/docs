@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: financas, tags, veiculos, diario, documentos-arquivos, migrations, enums, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes, saude-treinos
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Núcleo que deve migrar
@@ -44,3 +44,7 @@ Cada módulo só avança para implementação com campos, estados, ações, auto
 ## Evoluções posteriores
 
 Colaboração entre usuários, conta bancária conjunta, sincronização bancária e conexões com APIs móveis não são pré-requisitos do núcleo migrável. O James não terá app iOS; qualquer importação opcional do Apple Saúde depende de arquivo exportado pela pessoa e enviado no navegador, após validação do formato. O assistente pessoal do James, com RAG e ferramentas entre módulos, está planejado em fases posteriores e não é pré-requisito do primeiro lançamento. Voz e ações proativas/autônomas continuam decisões separadas; o caminho inicial é busca fundamentada somente leitura, com dados pessoais isolados.
+
+## Portabilidade permanente
+
+Cada módulo entrega exportação completa dos dados pessoais e relações ainda retidos. O usuário também pode exportar relatórios filtrados com medida e critérios declarados. A operação da instalação prevê backup integral e restauração de banco, arquivos e configuração de recuperação. O contrato está em [Portabilidade e backup](doc:portabilidade-backup).

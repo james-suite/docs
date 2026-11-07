@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, migrations, enums, fases-2-0, migracao-2-0, assistente-pessoal-rag, modulos-e-integracoes
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Comece pelo plano
@@ -31,20 +31,20 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 | --- | --- |
 | `00-planejamento/` | Visão geral, escopo, fases e decisões abertas. |
 | `01-arquitetura/` | Arquitetura, modelo de dados, UI/UX, auditoria e componentes técnicos. |
-| `02-dominios/financas/` | Finanças, cartões e acertos. |
+| `02-dominios/financas/` | Finanças, cartões, acertos e produtos/preços. |
 | `02-dominios/organizacao/` | Tags, pessoas/empresas, notificações, agenda e tarefas. |
 | `02-dominios/memoria-e-contexto/` | Diário, lugares/check-ins e IA. |
 | `02-dominios/bens-e-saude/` | Veículos, patrimônio e saúde/treinos. |
 | `03-dados/` | Catálogos e especificações detalhadas de enums e migrations. |
-| `04-migracao/` | Importação do arquivo e compatibilidade com o James 1.x. |
+| `04-migracao/` | Portabilidade permanente, backup, importação do arquivo e compatibilidade com o James 1.x. |
 
 ### Módulos financeiros
 
-[Finanças](doc:financas) · [Cartões](doc:cartoes) · [Acertos](doc:acertos).
+[Finanças](doc:financas) · [Cartões](doc:cartoes) · [Acertos](doc:acertos) · [Produtos/preços](doc:produtos-precos).
 
 ### Organização pessoal
 
-[Tags](doc:tags) · [Pessoas/empresas](doc:pessoas-empresas) · [Notificações](doc:notificacoes) · [Agenda/tarefas](doc:agenda-tarefas).
+[Documentos](doc:documentos-arquivos) · [Tags](doc:tags) · [Pessoas/empresas](doc:pessoas-empresas) · [Notificações](doc:notificacoes) · [Agenda/tarefas](doc:agenda-tarefas).
 
 ### Memória e contexto
 
@@ -55,3 +55,5 @@ O conteúdo está dividido por assunto, tanto nas fontes quanto na navegação l
 [Veículos](doc:veiculos) · [Patrimônio](doc:patrimonio) · [Saúde/treinos](doc:saude-treinos).
 
 [Consulte a documentação da versão 1.x](versions/1.x/), com as funcionalidades publicadas atualmente.
+
+[Integrações e consistência entre módulos](doc:integracoes-e-consistencia) e [portabilidade completa](doc:portabilidade-backup) reúnem os contratos transversais.

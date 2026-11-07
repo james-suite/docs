@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, cartoes, acertos, tags, ia-e-memoria, produtos-precos, migrations, enums, veiculos, migration-06-transactions, migration-07-payments, enum-payment-payer-type
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/FinancialTransaction.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialAccount.php, https://brasilapi.com.br/docs
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Proposta central
@@ -19,11 +19,19 @@ Tags podem ser associadas ao cabeçalho da transação e, separadamente, aos ite
 
 Exemplo: uma compra de R$ 150 tem um pagamento de R$ 50 por Pix e outro de R$ 100 no cartão. Continua sendo uma compra de R$ 150, com duas alocações. Pagar depois a fatura de R$ 100 movimenta banco e dívida do cartão; não cria outra despesa de R$ 100.
 
+## Organização da compra e dos instrumentos
+
+Uma compra possui descrição, contraparte, data, valor e itens opcionais. A interface agrupa Itens, Pagamentos e Vínculos sob a mesma transação. Cada pagamento identifica valor, pagador, data e conta ou cartão. A tela de cartão consulta as compras financiadas por aquele cartão, suas parcelas e faturas.
+
+Compra de R$ 300 com R$ 50 em dinheiro físico, R$ 70 por Pix e R$ 180 no crédito gera três pagamentos. Os R$ 180 podem virar três parcelas de R$ 60. O consumo total é R$ 300 na data econômica, o caixa sai R$ 50 da conta Dinheiro físico e R$ 70 da conta corrente, e a dívida do cartão cresce R$ 180. Cada parcela aparece na respectiva fatura e sua quitação reduz caixa e dívida.
+
+O meio Pix/débito/boleto pode ser informado como detalhe opcional do pagamento. A proposta usa enum simples e dispensa cadastro de meios por conta. Crédito exige identificar o cartão. Dinheiro físico identifica a conta do tipo Wallet, cujo rótulo muda e mantém o valor persistido wallet.
+
 ## Invariantes
 
 - Dinheiro usa unidades mínimas inteiras (`amount_minor`): R$ 10,25 vira `1025`. Não usar `float` em somas, rateios, juros ou conciliação. Quantidades e preços unitários podem ter precisão maior; o total é arredondado uma vez conforme a moeda.
 - Cada operação financeira pertence ao espaço pessoal da conta autenticada. Contas, cartões, categorias, participantes e pagamentos relacionados devem pertencer ao mesmo espaço.
-- A soma dos itens, já considerando descontos e acréscimos explícitos, coincide com o valor da transação. Diferença de arredondamento tem destino determinístico e visível.
+- O total concilia itens líquidos e o saldo de ajustes globais ainda sem atribuição. Arredondamento tem destino determinístico e visível, preservado em centavos.
 - `occurred_on` representa o fato econômico; `due_on`, o vencimento; `posted_at`, a efetivação do movimento. Não reunir tudo em um campo de data.
 - O ciclo do documento (rascunho, confirmado, cancelado) é separado de sua situação de pagamento, calculada pelas alocações válidas.
 - Pagamentos efetivados são corrigidos por operação inversa e substituição rastreável. Não editar silenciosamente um pagamento antigo para acumular pagamentos novos.
@@ -33,7 +41,17 @@ Exemplo: uma compra de R$ 150 tem um pagamento de R$ 50 por Pix e outro de R$ 10
 
 O usuário pode capturar uma NFC-e/XML ou imagem e revisar os campos extraídos antes de salvar. A leitura preenche contraparte, data e linhas com descrição, quantidade, preço, desconto e total; o arquivo original fica como Document e FiscalDocument guarda a extração identificada por versão. O registro começa como rascunho. Uma nota não deve efetivar sozinha um pagamento, escolher uma conta bancária ou inferir um veículo.
 
-Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o usuário pagou, o instrumento pessoal é obrigatório e o caixa muda. Quando um contato pagou, o custo pode ficar registrado sem criar débito pessoal; eventual obrigação nasce somente de uma decisão explícita no módulo de [acertos](doc:acertos). Custo do bem, consumo do usuário, contraparte e fluxo da conta são dimensões diferentes.
+Cada pagamento declara quem pagou: usuário, contato ou desconhecido. Quando o usuário pagou, o instrumento pessoal é obrigatório e o efeito segue a conta ou o cartão selecionado. Quando um contato pagou, o custo pode ficar registrado sem criar débito pessoal; eventual obrigação nasce somente de uma decisão explícita no módulo de [acertos](doc:acertos). Custo do bem, consumo do usuário, contraparte e fluxo da conta são dimensões diferentes.
+
+## Descontos gerais e atribuição parcial
+
+Guardar o desconto original de cada linha e cada ajuste global da nota com procedência. Durante a revisão, permitir atribuir parte de um desconto global a um ou vários itens, informando valor e motivo. Mostrar o total do ajuste, quanto já foi atribuído e o saldo a distribuir.
+
+Exemplo de compra com R$ 150 brutos e R$ 15 de desconto global. Carne de 2 kg custa R$ 80, dois cafés custam R$ 50 e detergente custa R$ 20. A pessoa atribui R$ 10 à carne. O líquido conhecido da carne passa a R$ 70 e R$ 35/kg. Os R$ 5 restantes continuam como desconto global a distribuir. O total da compra permanece R$ 135. A interface informa a pendência de atribuição no preço por produto.
+
+A equação passa a ser total da transação = soma dos líquidos dos itens + acréscimos globais ainda sem atribuição − descontos globais ainda sem atribuição. Uma alocação transfere o efeito do ajuste para a linha. Total da compra e pagamentos permanecem os mesmos. Desconto original de linha já discriminado na nota entra uma única vez.
+
+Uma nota pode ser confirmada financeiramente com ajuste global residual identificado e conciliado. O histórico de produto guarda o preço conhecido e a pendência de cobertura. O indicador Minha inflação considera somente observações com desconto/acréscimo atribuível resolvido. Permitir distribuir o saldo restante em outra revisão e atualizar derivados rastreáveis.
 
 ## Entrada simples sem documento fiscal
 
@@ -41,7 +59,7 @@ Uma compra ou despesa pode ser registrada sem nota, com descrição, data e valo
 
 Se a pessoa informar produtos, relacionar as linhas a um produto de catálogo somente após correspondência confiável ou confirmação. O estabelecimento/filial faz parte do contexto de reconhecimento: um apelido ou código local de uma loja não deve identificar automaticamente produto de mesmo nome em outro lugar. Itens manuais confirmados podem alimentar o histórico de preços se produto, valor, quantidade/unidade e origem forem conhecidos.
 
-Para abastecimento, a linha fiscal de combustível pode alimentar o histórico do [veículo](doc:veiculos) pelo seu vínculo de item. Se houver apenas um item de combustível e desconto identificável, o valor líquido pode determinar o preço por litro. Um desconto geral numa nota com vários produtos exige alocação revisada, sem rateio automático presumido.
+Para abastecimento, a linha fiscal de combustível pode alimentar o histórico do [veículo](doc:veiculos) pelo seu vínculo de item. Se a nota tiver um único item total de combustível e desconto identificável, o valor líquido pode determinar o preço por litro. Um desconto geral numa nota com vários produtos exige alocação revisada, sem rateio automático presumido.
 
 As linhas de mercado também podem ser relacionadas a um produto do catálogo pessoal para guardar código, marca, apresentação e unidade normalizada. A partir de compras confirmadas, [produtos e preços](doc:produtos-precos) mostram evolução do preço, comparação entre lugares e uma cesta pessoal “Minha inflação”. Isso consulta observações ligadas às linhas financeiras; não cria despesas duplicadas e não confunde o indicador pessoal com um índice oficial.
 
@@ -81,9 +99,20 @@ Oferecer visões com nomes claros: consumo/despesas pessoais, fluxo de caixa, co
 
 Transações financeiras de terceiros podem ser acompanhadas nos acertos sem inflar o consumo pessoal. Um gasto de R$ 100 pago pelo usuário, com R$ 100 devidos por contatos, representa saída de caixa e crédito a receber; a despesa pessoal é zero.
 
-## Arquivamento de contas e cartões
+## Consumo, devoluções e base dos gráficos
 
-`archived_at` tira o instrumento dos seletores padrão e bloqueia novas operações usuais. O saldo e o histórico continuam nos totais patrimoniais e nas consultas históricas. Arquivar não equivale a excluir nem a zerar saldo. Dívidas, estornos e conciliações de operações anteriores continuam acessíveis. Antes de arquivar, mostrar recorrências e compromissos que precisam ser redirecionados.
+A transação e os itens identificam consumo próprio, de terceiros, misto ou desconhecido. O pagador é uma dimensão independente. Em rateio confirmado, cotas são a fonte dos valores de consumo. Até existir atribuição por item, o relatório detalhado apresenta a parte de consumo ainda sem categoria/item conhecida. A consulta pode oferecer distribuição proporcional explicitamente identificada como estimativa.
+
+Uma devolução comercial preserva a compra e cria transação relacionada de propósito Refund, direção econômica oposta e valor positivo. O relatório de consumo apresenta o valor como redução da natureza original na data da devolução. A visão de receita ordinária separa essas devoluções. Reembolso parcial por produto mantém a referência aos itens envolvidos, com cobertura pendente quando o fornecedor informar só o total.
+
+FinancialPayment de tipo Refund se aloca ao documento de devolução e referencia a alocação original da compra para controlar limites. Crédito no cartão reduz a dívida daquele cartão. Valores ainda sem devolução efetiva conservam a distinção entre redução econômica, recebimento pendente e caixa efetivo.
+
+## Arquivamento e histórico de instrumentos
+
+Antes de arquivar conta ou cartão, mostrar saldo, parcelas futuras, faturas abertas, pagamentos agendados e recorrências. A pessoa escolhe tratar as pendências ou preservar o instrumento arquivado com pendências visíveis. Arquivamento impede novas compras usuais e mantém operações de liquidação, reversão e conferência de fatos anteriores. Reativação restaura a seleção para novas operações.
+
+Permitir registrar um fato histórico anterior ao arquivamento por uma ação específica com aviso e autorização, mantendo trilha da operação. Seletores padrão mostram ativos, e filtros de histórico oferecem ativos e arquivados. O valor patrimonial e as obrigações continuam calculados inclusive para instrumentos arquivados.
+
 
 Conta bancária conjunta entre usuários não faz parte do escopo inicial. O caso confirmado de “conta compartilhada” é [divisão de despesas sem parcela própria](doc:acertos).
 

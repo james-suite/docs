@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, validação
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0, assistente-pessoal-rag
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 Estes casos são critérios para revisar o plano e, na implementação, criar testes de domínio e integração. Não representam testes já executados ou recursos implementados. Os números abaixo usam reais e nenhuma conversão de moeda.
@@ -126,6 +126,63 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | QR identifica empresa/endereço fiscal de um posto, mas ainda não há coordenadas. | Sugerir ou resolver a filial pelo identificador/endereço; deixar coordenadas vazias e não criar visita/check-in. |
 | UF não tem leitor determinístico disponível e a conexão fiscal de IA não foi autorizada. | Não enviar o documento a modelo; manter revisão manual e salvar normalmente. |
 | Leitor determinístico falha e usuário permite FiscalExtraction. | Criar candidatos com processador/versão e confiança disponíveis; exigir revisão humana e não confirmar pagamento, pagador, produto ou filial automaticamente. |
+
+## Casos complementares de financeiro e seleção
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Compra de R$ 300 paga com R$ 50 em dinheiro, R$ 70 Pix e R$ 180 em três parcelas no cartão. | Uma compra, três pagamentos e charge de R$ 180 com três parcelas de R$ 60. Consumo R$ 300, caixa sai R$ 120 e dívida cresce R$ 180. |
+| Nota de R$ 150 brutos tem R$ 15 de desconto global. Atribuir R$ 10 à carne de 2 kg por R$ 80. | Líquido conhecido da carne R$ 70 e R$ 35/kg, desconto residual R$ 5 e total da compra R$ 135. Preço exibe cobertura pendente até resolver o ajuste aplicável. |
+| Cabeçalho da nota resume R$ 15 de descontos já discriminados nos itens. | Registrar o resumo fiscal sem criar desconto adicional. Total preservado e procedência disponível. |
+| Atribuir R$ 10 do mesmo ajuste em duas abas quando só restam R$ 10. | Uma atribuição válida e a outra recusada/revisada sob bloqueio, com resíduo sempre não negativo. |
+| Mercado é filha de Alimentação e um item tem categoria Mercado. | Alimentação inclui o item uma vez. Tags sobrepostas têm total deduplicado e aviso de sobreposição quando agrupadas. |
+| Ana aparece como pagadora e consumidora e também existe uma tag com o nome Ana. | Seleção preserva kind/id/role. Filtro Party usa suas relações e medida escolhida, e o filtro Tag usa assignments próprios. |
+| Arquivar cartão com parcelas futuras e depois pagar fatura antiga. | Preservar parcelas, dívida e quitação acessível. Compra nova usa instrumento ativo ou exige reativação. |
+| Conta Wallet importada com saldo conhecido. | Tipo wallet e saldo preservados, IDs remapeados e rótulo Dinheiro físico. |
+| Buscar contato, digitar cota e receber resposta atrasada de busca anterior no Livewire. | Lista atual permanece coerente e valor/cota/foco ficam preservados por identidade estável. |
+| Criar contato pendente no rateio e cancelar o formulário. | Rascunho e cotas pendentes são descartados juntos. Homônimo existente pode ser escolhido ou uma pessoa distinta pode ser criada explicitamente. |
+| Eu pago R$ 120 para três contatos selecionados e deixo meu consumo em zero. | Resumo apresenta três cotas de R$ 40 e meu adiantamento de R$ 120 antes da confirmação. |
+| Exportar conta com instrumentos arquivados, tags, documentos versionados e ajustes parciais. | Manifesto cobre todos os domínios retidos, relações e arquivos. JSON preserva revisões e resíduo, e relatório pode reproduzir o total. |
+| Novo módulo adiciona tabela pessoal sem exportador. | Checklist de entrega e finalização do pacote completo indicam cobertura incompleta até registrar o exportador. |
+| Restaurar backup de toda a instalação em ambiente isolado. | Banco, arquivos, chaves e configuração recuperáveis, com contagens/hashes/saldos verificados antes de liberar acesso e entregas externas. |
+
+## Correções e integrações da revisão completa
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Compra de R$ 120 para Ana e Bruno, só R$ 60 pagos por mim, R$ 30 financiados para cada um. | Dois créditos de R$ 30 e R$ 60 pendentes ao fornecedor. Cotas totais continuam R$ 60 por pessoa. |
+| Pagar R$ 120 e definir depois que o consumo inteiro era dos contatos. | Reclassificação de contrapartida cria o crédito a receber, com saldo de caixa preservado e operação idempotente. |
+| Corrigir R$ 15 de uma liquidação de R$ 40 recebida em conta. | Reabrir R$ 15 da obrigação e reverter R$ 15 no instrumento original na mesma operação. |
+| Devolver R$ 100 por Pix de compra paga com R$ 60 Pix e R$ 40 cartão. | Um recebimento de R$ 100 e duas referências às alocações originais. O crédito em conta é R$ 100 e a dívida do cartão segue até a quitação. |
+| Corrigir desconto de item já ligado a veículo, preço e rateio. | Conservar total/pagamentos e validar alocações afetadas. Preços recebem nova revisão e consumo detalhado informa sua cobertura. |
+| Nota 1.x tem linhas de R$ 80 e R$ 20, mais ajuste de preço negativo totalizando menos R$ 10. | Dois itens usuais e um FinancialAdjustment Discount de R$ 10. Compra total R$ 90, com tags e valores originais rastreáveis no mapa. |
+| Adicionar nova digitalização a documento usado como comprovante de compra. | A compra abre a versão fixada e a biblioteca oferece a nova versão. |
+| Duas abas enviam versão nova do mesmo documento. | Números distintos sob bloqueio e unicidade, com cada upload idempotente e bytes publicados uma vez. |
+| Worker cai após preparar arquivo, antes de publicar os vínculos. | Versão pendente recuperável e limpeza respeitando lease, referências e publicação. |
+| Corrigir observação de preço da mesma linha. | Uma corrente e revisões históricas preservadas, sem colisão da unicidade nem duplicação na cesta. |
+| Apagar lote de saúde que compartilha amostra com outro lote. | Mostrar a associação compartilhada e preservar a amostra conforme seus vínculos/revisões confirmados. |
+| Habilitar agenda manual sem IA e tarefas sem veículos. | Migrations mínimas e operações funcionam, com extensões opcionais aplicadas somente quando suas pontas existirem. |
+| Criar evento de dia inteiro em 2 de novembro. | Início 2 e fim exclusivo 3, exibido como um dia no fuso local. |
+| Editar horário e depois cancelar evento publicado no feed. | Identidade estável e revisões atualizadas, com comportamento de cancelamento validado no cliente e tombstone retido pelo prazo definido. |
+| Sair da conta A e entrar em B no mesmo navegador com Web Push. | Revogar associação de A, confirmar a de B e revalidar o destinatário antes de cada envio. Um aviso antigo exige a conta proprietária no show. |
+| Exportação completa fixa versão de arquivo enquanto uma limpeza tenta removê-la. | Referência temporária conserva o original ou a exportação falha com diagnóstico antes de publicar pacote completo. |
+| Worker de importação antigo retorna após outro recuperar a operação. | Geração de lease divergente impede publicação pelo worker antigo. |
+| Categoria de uma linha, tag, pessoa e veículo chegam ao mesmo filtro de relatório. | Identidades e papéis tipados, deduplicação do conjunto e medida explicitada antes da soma. |
+| Mudar o fuso padrão após criar recorrência. | A recorrência mantém seu fuso/âncora até edição explícita e preserva chaves das ocorrências já geradas. |
+| Nome de produto começa com expressão interpretável como fórmula na planilha. | CSV usa escape documentado e JSON mantém o valor original. |
+
+## Casos de completude do schema
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Um PDF contém duas notas fiscais distintas e depois recebe nova digitalização. | Cada nota referencia sua origem de versão e identidade fiscal. As extrações anteriores preservam os bytes usados. |
+| Um serviço recebe leitura de odômetro de outro veículo do mesmo usuário. | Validação recusa a referência incompatível mesmo com space_id igual. |
+| Modelo de tarefa é usado com o módulo de veículos desabilitado. | Tarefa e checklist podem ser salvos com o contrato genérico. |
+| Compra de R$ 150 recebe R$ 200 em espécie e devolve R$ 50 de troco. | Pagamento líquido e redução da conta Dinheiro físico são R$ 150. Dados de entregue/troco continuam rastreáveis. |
+| Duas execuções usam a chave geral de IA com limites globais quase esgotados. | Reserva pessoal e global é coordenada sob bloqueio e somente chamadas cobertas são autorizadas. |
+| Correção de preço chega depois de uma consulta que fixou snapshot anterior. | Consulta histórica mantém sua revisão e nova consulta pode usar a substituta corrente. |
+| Importar pacote pessoal cujo módulo de documentos está ausente no destino. | Prévia indica dependência e bloqueia publicação completa até disponibilizar o contrato necessário. |
+| Cesta contém preço zero conhecido de promoção em um período. | Preservar zero como observado, exigir custo-base total positivo e declarar cobertura/política da cesta. |
 
 ## Gate de aprovação
 

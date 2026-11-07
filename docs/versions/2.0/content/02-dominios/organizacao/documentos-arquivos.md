@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, documentos
 related: escopo-2-0, modulos-e-integracoes, financas, acertos, patrimonio, veiculos, diario, pessoas-empresas, migration-22-documents, migration-20-imports, migration-02-records, migration-11-notifications
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Objetivo
@@ -77,7 +77,7 @@ Modelo lógico proposto, detalhado em [Migration 22](doc:migration-22-documents)
 - `records`/`record_links`: reutilizar o registro comum e os vínculos tipados já planejados para ligar um documento a vários registros. Não criar um pivô especial para cada módulo.
 - `Party`: emissor/titular opcional; referências são explícitas e não transformam contato em tag.
 
-O componente reutilizável de formulário recebe um `DocumentPicker` com duas ações: enviar novo arquivo (criando documento/versão/vínculo) ou selecionar documento existente (criando apenas vínculo). A remoção no formulário elimina o vínculo daquela origem, nunca o documento inteiro sem confirmação. A biblioteca possui Policy própria e reutiliza o mesmo resolvedor/download seguro.
+O componente reutilizável de formulário recebe um `DocumentPicker` com duas ações: enviar novo arquivo (criando documento/versão/vínculo) ou selecionar documento existente (criando apenas vínculo). A remoção no formulário elimina o vínculo daquela origem. Evidências históricas fixam uma versão em document_link_versions e podem exigir resolver referências antes de remoção definitiva. A biblioteca possui Policy própria e reutiliza o mesmo resolvedor/download seguro.
 
 ## Migração dos anexos existentes
 
@@ -93,3 +93,9 @@ Não fundir anexos iguais automaticamente. Dois recibos idênticos em transaçõ
 4. **OCR e pesquisa de conteúdo, se aprovados:** fila, provedor/permissão, resultados por página/trecho, correção humana, orçamento e limpeza independente do original.
 
 OCR e integração com IA não são requisitos da primeira fase. Primeiro garantir que o arquivo certo, o dono, os vínculos, o histórico e a exportação estejam corretos.
+
+## Versão usada como comprovante
+
+Ao ligar um comprovante a uma transação, acerto ou serviço, fixar a versão do arquivo usada naquele registro. Uma nova digitalização fica disponível na biblioteca e os comprovantes históricos continuam abrindo seus originais. Vínculos de consulta podem acompanhar a versão corrente, com esse comportamento visível no formulário.
+
+Upload, publicação e exportação conservam referências às versões e ao estado dos bytes. Um arquivo pendente de publicação mostra progresso e pode ser retomado após erro. Limpeza de staging verifica a operação e os vínculos antes de remover objetos.

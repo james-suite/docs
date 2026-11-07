@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, financas, ia-e-memoria, pessoas-empresas, lugares-checkins, veiculos, migration-21-products, migration-06-transactions
 source_refs: https://ref.gs1.org/standards/genspecs/, https://ref.gs1.org/guidelines/2d-in-retail/
-updated: 2026-10-29
+updated: 2026-11-07
 ---
 
 ## Compras como fonte do histórico
@@ -75,3 +75,9 @@ Separar claramente o catálogo privado do usuário dos dados auxiliares comparti
 2. Consultar histórico de um produto e comparar unidades/preços em lugares diferentes.
 3. Com volume e qualidade suficientes, permitir cestas pessoais e o índice “Minha inflação”.
 4. Avaliar fontes auxiliares de empresas e vínculos, com proveniência e revisão explícitas.
+
+## Revisão parcial de descontos
+
+A pessoa pode atribuir apenas parte do desconto global a um item. O preço conhecido da linha passa a considerar essa parte e guarda também a cobertura pendente. Carne de 2 kg por R$ 80 com R$ 10 atribuídos de um desconto global de R$ 15 tem líquido conhecido de R$ 70 e R$ 35/kg. Os R$ 5 residuais permanecem na transação até nova revisão.
+
+Uma observação com ajuste residual potencialmente aplicável pode ser exibida com essa pendência e fica fora da cesta Minha inflação até a atribuição ser resolvida. Confirmar que o resíduo pertence exclusivamente a outros itens resolve a cobertura daquela linha. Exportar preço original, alocações, líquido conhecido, unidade e cobertura permite reproduzir a comparação.

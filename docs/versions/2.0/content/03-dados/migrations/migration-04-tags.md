@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, tags, componentes-tecnicos
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `tags`
@@ -39,7 +39,7 @@ updated: 2026-11-01
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `parent_id, name, normalized_name` | Hierarquia sem ciclos; unicidade entre irmãs incluindo raiz por índice parcial apropriado. |
-| `transaction_kind, archived_at` | Income/Expense e arquivamento; não aceitar categoria incompatível. |
+| `transaction_kind, archived_at` | Income/Expense e arquivamento. Operações usuais validam a direção da categoria. Refund usa a natureza da operação original para classificar sua redução. |
 
 ## `classification_rules`
 
@@ -59,6 +59,14 @@ updated: 2026-11-01
 - Quando a classificação autorizada por IA não encontra uma tag específica adequada, criar a tag e atribuí-la no mesmo commit lógico. Sem etapa de confirmação individual; registrar `creation_origin=ai`, `ai_run_id`, atribuição e auditoria. Se um alias/termo normalizado equivalente existir, reutilizá-lo sob restrição única e concorrência.
 - Uma transação sem itens mantém tags e categoria no próprio cabeçalho; os relatórios não inventam itemização nem duplicam totais.
 - Fusão de tags redireciona vínculos, guarda alias e é auditada. Não apagar tag referenciada sem plano de transferência.
+
+## Generalização e medidas de relatório
+
+A categoria efetiva de um item é category_id ou, se ausente, default_category_id da transação. A categoria do cabeçalho cobre o valor integral somente nas transações sem itens. Ajustes globais residuais aparecem como parcela sem classificação até sua atribuição, preservando a conciliação.
+
+Expandir descendentes por IDs e impedir ciclos em criação/movimentação de categorias. Agregar valores na categoria pai uma vez por parcela de valor. Consultas por tags podem se sobrepor e devem deduplicar o conjunto filtrado antes de calcular um total conjunto.
+
+Chips de Party/Vehicle/Place usam referências tipadas e as respectivas relações de domínio. A UI reutiliza a apresentação dos seletores, enquanto cada provedor de opções e consulta de relatório conserva a autorização e o papel da relação.
 
 ## Conversão do James 1.x
 

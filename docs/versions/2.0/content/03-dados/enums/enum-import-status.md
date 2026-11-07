@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, migracao-2-0
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Contrato proposto
@@ -25,4 +25,4 @@ updated: 2026-11-01
 
 ## Regras e transições
 
-uploaded → validating → ready → running → completed. Cancelar permitido antes da publicação. Falha após lotes gera estado recuperável; completed exige reconciliação, não apenas término do worker.
+uploaded → validating → ready → running → completed. Cancelar permitido antes da publicação. Validação pode avançar por lotes em staging. No importador financeiro inicial, falha na publicação reverte o domínio inteiro e permite retomar o staging. Completed exige reconciliação da publicação e arquivos disponíveis.

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, agenda-tarefas, ia-e-memoria, veiculos, migrations, enums
 source_refs: https://github.com/james-suite/james/blob/master/app/Notifications/GeneralNotification.php, https://github.com/sge-suite/sge/blob/master/app/Models/EmailDeliveryAttempt.php, https://developer.apple.com/documentation/usernotifications/sending-web-push-notifications-in-web-apps-and-browsers, https://webkit.org/blog/13878/, https://web.dev/articles/push-notifications-faq, https://web.dev/articles/push-notifications-subscribing-a-user
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Melhorar o que chega ao usuário
@@ -52,3 +52,9 @@ No Android, navegadores compatíveis podem acordar o Service Worker para process
 Filtros por não lidas, pendências, categoria, canal e período; contagem consistente; detalhe com ação e motivo. Disponibilizar diagnóstico de falha de canal e reenvio autorizado. Não expor stack traces, tokens ou dados de outro usuário ao mostrar o erro.
 
 Permissão negada, web app não instalado ou endpoint indisponível não bloqueiam a gravação do aviso. Tentar um transporte externo não pode bloquear a gravação do fato de negócio.
+
+## Sessões e notificações atrasadas
+
+Uma instalação do navegador pode trocar de usuário. Vincular Web Push à sessão confirmada e revogar a associação anterior na saída/troca de conta. A tela de dispositivos distingue a assinatura atual das demais instalações.
+
+Ao enviar, revalidar assinatura e preferência. Um aviso já em trânsito pode chegar após resolver a pendência. Seu show explica o estado atual e exige a conta proprietária. O centro de atenção usa a mesma identidade de origem que agenda e projeções de vencimento para agrupar a pendência.

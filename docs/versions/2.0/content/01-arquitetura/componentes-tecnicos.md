@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0, assistente-pessoal-rag, migration-19-health
 source_refs: https://brasilapi.com.br/docs
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Organização da implementação
@@ -98,3 +98,17 @@ Referência: [documentação e termos da BrasilAPI](https://brasilapi.com.br/doc
 ## Qualidade
 
 Factories por estado de domínio e seeds com códigos estáveis, sem IDs mágicos de tags. Testes relevantes cobrem autorização cruzada, somas, concorrência, estornos, importação e falhas externas. Não criar testes que só repitam textos de documentação ou classes CSS.
+
+## Componentes compartilhados de seleção e análise
+
+PartyPicker oferece seleção única/múltipla, papéis, criação pendente e desambiguação. SplitEditor mantém valores por identidade e SettlementPaymentEditor mantém as alocações por obrigação. A consulta de opções é limitada e autorizada. Reaproveitar do SGE o comportamento de combobox e as fontes de opções já inventariadas, adaptando nomes, tipos e cardinalidades.
+
+DimensionFilter apresenta chips tipados de Category, Tag, Party, Vehicle, Product e Place. O serviço de relatório resolve cada dimensão em sua relação de domínio e expõe medida, período, moeda, cobertura e sobreposição. FiscalAdjustmentEditor e AllocateTransactionAdjustment compartilham o contrato de valores exatos e revisão de alocações.
+
+ExportAccountData, ExportFilteredReport e o catálogo de exportadores por domínio devem reutilizar normalizadores de dinheiro, datas, dimensões e IDs estáveis. Cada resultado declara schema e versão. O backup integral da instalação usa o procedimento operacional documentado em [Portabilidade e backup](doc:portabilidade-backup).
+
+## Contratos da revisão integrada
+
+DocumentVersion recebe publicação idempotente e vínculo de evidência fixo. AllocateSplitFunding e ReverseSettlement coordenam financiamento parcial e correção de acertos com o financeiro. Revisões de preço conservam uma única observação corrente. As responsabilidades e a ordem de correção estão em [Integrações e consistência](doc:integracoes-e-consistencia).
+
+Uma infraestrutura de chamada externa pode compartilhar validação de destinos, limites e diagnóstico. Cada adaptador mantém seu parser, campos autorizados e política de revisão. Exportações e importações usam snapshots, lease recuperável e retenção temporária dos arquivos referenciados.

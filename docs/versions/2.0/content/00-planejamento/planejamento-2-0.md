@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: home, modelo-de-dados, migrations, enums, escopo-2-0, fases-2-0, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes
 source_refs:
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Direção
@@ -23,12 +23,14 @@ Cada conta terá seu próprio conjunto de dados. Relação entre usuários reais
 | --- | --- |
 | [Escopo](doc:escopo-2-0) | Núcleo migrável, módulos planejados e recorte de releases. |
 | [Arquitetura](doc:arquitetura-2-0) | Limites do monólito e propriedade pessoal. |
+| [Integrações e consistência](doc:integracoes-e-consistencia) | Donos dos fatos, revisões, correções e recuperação de falhas entre módulos. |
 | [Modelo de dados](doc:modelo-de-dados) | Tipos, cardinalidades, dinheiro e invariantes. |
-| [Migrations](doc:migrations) | 21 pacotes lógicos com tabelas, campos, FKs, índices e conversão. |
+| [Migrations](doc:migrations) | Pacotes lógicos com tabelas, campos, FKs, índices e conversão, separados de suas dependências opcionais. |
 | [Enums](doc:enums) | Estados/conjuntos fechados com valores persistidos e regras. |
 | [Componentes técnicos](doc:componentes-tecnicos) | Models, Actions, Policies, casts, Jobs e componentes de interface. |
 | [UI e UX](doc:ui-ux-2-0) | Flux gratuito e padrões adaptados do SGE. |
 | [Auditoria](doc:auditoria-2-0) | Autoria, escopo e histórico funcional. |
+| [Portabilidade e backup](doc:portabilidade-backup) | Exportação de todos os módulos, relatórios reproduzíveis e recuperação integral da instalação. |
 | [Migração pelo navegador](doc:migracao-2-0) | Arquivo completo, prévia, confirmação e destino pessoal. |
 | [Compatibilidade 1.x](doc:compatibilidade-legado) | Conversão por entidade e reconciliação. |
 | [Cenários de validação](doc:cenarios-de-validacao) | Exemplos numéricos e resultados que o desenho precisa suportar. |

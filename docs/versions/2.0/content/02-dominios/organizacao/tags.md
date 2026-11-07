@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, ia-e-memoria, componentes-tecnicos, enums, migrations
 source_refs: https://github.com/sge-suite/sge/blob/master/resources/views/components/select.blade.php, https://github.com/sge-suite/sge/blob/master/resources/views/components/select-create.blade.php, https://github.com/james-suite/james/blob/master/app/Models/FinancialTag.php
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Categorias e tags têm papéis diferentes
@@ -52,3 +52,27 @@ Tags criadas pela IA recebem origem, execução e auditoria. A pessoa pode revis
 Preservar as tags e os vínculos que existam no cabeçalho e em cada item, sem projetar tags do cabeçalho sobre os itens. A tag primária pode gerar uma categoria correspondente quando o mapeamento for seguro; preservar também a tag e sua informação original para auditoria. Relatar colisões e qualquer fallback usado na prévia de migração.
 
 As tags especiais atuais usam IDs fixos para reembolso, juros, saldo inicial, transferência, ajuste e pagamento parcial. No James, juros, saldo inicial, transferência, ajuste e pagamento pertencem ao tipo da operação; um valor devolvido por uma pessoa/empresa pertence a um acerto, e devolução de loja pertence ao fluxo comercial de Refund. Não criar uma tag “reembolso” para identificar essas operações nem continuar tomando decisões de saldo por ID de tag. Na migração, converter para relação de acerto somente quando pagamentos, obrigações e contraparte puderem ser conciliados; caso contrário, preservar o dado legado para revisão, sem inventar vínculo ou efeito contábil.
+
+## Generalização para gráficos e detalhamento
+
+Adotar categoria financeira hierárquica como generalização principal. Uma conta pode configurar Alimentação > Mercado e Alimentação > Restaurantes. Tags específicas acrescentam detalhes, como café em grãos e almoço de trabalho. A IA inicial continua dedicada a tags específicas e a pessoa pode usar categorias ou regras locais para a classificação ampla.
+
+A categoria de cada item prevalece sobre a categoria de fallback da transação. Itens sem categoria usam o fallback, enquanto uma transação sem itens usa o cabeçalho. Somar uma categoria pai inclui seus descendentes uma vez. O mesmo registro categorizado em Mercado compõe Alimentação uma vez. Arquivar categoria conserva a hierarquia e os vínculos históricos.
+
+Tags permanecem uma dimensão sobreposta. Uma linha pode conter duas tags específicas e participar de ambas as consultas. Um gráfico por tags deve informar sobreposição e oferecer total deduplicado da seleção. Gráficos de composição que precisam fechar em 100% usam categoria única por parcela de valor ou uma regra explícita de distribuição.
+
+## Contatos e outros chips de contexto
+
+A seleção unificada pode oferecer chips de Tag, Categoria, Pessoa/empresa, Veículo, Produto e Lugar. Cada opção guarda um par tipado kind/id e seu papel, por exemplo Party como fornecedor, consumidor, pagador ou contraparte do acerto. Mostrar ícone e legenda do tipo. Uma pessoa é uma dimensão virtual obtida da relação existente e pode agrupar filtros, linhas e gráficos.
+
+Categorias e pessoas podem ter o mesmo nome de uma tag. Identidade tipada evita colisão e mantém navegação para a ficha correta. Renomear um contato atualiza sua apresentação por ID. Exportar kind, id e role, com os cadastros e relações necessários para resolver os nomes.
+
+O filtro permite combinar papéis e medidas. Uma compra envolvendo Ana como consumidora e pagadora aparece uma vez no conjunto de transações filtradas. Para valores, consumo vem das cotas e adiantamento vem das contribuições/obrigações. O gráfico declara a medida escolhida, período, moeda e política de devoluções.
+
+## Exportação analítica
+
+Exportar categorias com parent_id, tags e aliases, assignments com nível transação/item, vínculos tipados e valores líquidos com cobertura de ajustes. A tela permite exportar o resultado filtrado em CSV e guardar metadados de filtro, medida e regra de agregação em arquivo acompanhante. O pacote integral de portabilidade inclui todas essas entidades e relações.
+
+## Ajustes classificados e compatibilidade
+
+FinancialAdjustment pode ter categoria e tags próprias, inclusive as tags de uma linha negativa importada. Sua medida é o valor assinado do ajuste. Ao agrupar tags de itens e ajustes, preservar a granularidade e indicar sobreposição quando a mesma seleção alcança líquido de item e desconto já alocado.

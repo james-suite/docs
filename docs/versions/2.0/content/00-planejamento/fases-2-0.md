@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, componentes-tecnicos, compatibilidade-legado, decisoes-e-pendencias, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-03
+updated: 2026-11-07
 ---
 
 ## Ordem proposta
@@ -55,3 +55,9 @@ Usar os [cenários de validação](doc:cenarios-de-validacao) para avaliar o sch
 Conta nova recebe um export real do 1.x pelo navegador, com saldos, dívidas, acertos, tags e arquivos conferidos. Repetição de upload/requisição não duplica dados; usuário A não consulta dados de B por qualquer rota, arquivo, relatório, busca, Job ou resultado de IA. Canais externos ficam inativos até configuração explícita na nova conta.
 
 Nenhuma fase está marcada como implementada apenas porque a documentação foi escrita.
+
+## Gates adicionais da revisão integrada
+
+O protótipo do núcleo inclui pagamento anterior ao rateio, compra parcialmente paga ao fornecedor, devolução em instrumento diferente, estorno de liquidação, descontos parciais e itens negativos do legado. O plano documental inclui evidência fixada por versão e falhas entre armazenamento e banco.
+
+A entrega de portabilidade inclui importação do pacote pessoal 2.0 em destino vazio e a conferência de todos os módulos habilitados. Agenda manual e tarefas genéricas precisam ser verificadas também com IA/veículos desabilitados. Os casos completos estão em [Cenários de validação](doc:cenarios-de-validacao) e [Integrações e consistência](doc:integracoes-e-consistencia).

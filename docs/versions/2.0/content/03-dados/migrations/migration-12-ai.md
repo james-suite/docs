@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, assistente-pessoal-rag, agenda-tarefas, financas, componentes-tecnicos
 source_refs: https://platform.openai.com/docs/guides/embeddings, https://github.com/pgvector/pgvector
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## `ai_connections`
@@ -65,14 +65,14 @@ TransactionDraft nunca cria `fiscal_documents`. Não exigir itens quando a pesso
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `run_id, attempt_number, budget_period_id, reserved_minor, actual_cost_minor` | UNIQUE(run_id, attempt_number); custo desconhecido é nulo com estado explícito. |
+| `run_id, attempt_number, user_budget_period_id, instance_budget_period_id, reserved_minor, actual_cost_minor` | UNIQUE(run_id, attempt_number). Referências identificam os períodos pessoal/global aplicáveis. Custo desconhecido é nulo com estado explícito. |
 | `input_tokens, output_tokens, price_version, currency` | Contadores opcionais e referência de preço; não assumir zero quando ausentes. |
 
 ## `ai_budget_periods`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `user_id, connection_id, starts_at, ends_at` | Janela de orçamento, UNIQUE(user_id, connection_id, starts_at); término posterior ao início. |
+| `user_id, connection_id, starts_at, ends_at` | Janela de orçamento. user_id preenchido identifica limite pessoal e user_id nulo identifica limite global da instalação. Índices únicos parciais por user/connection/início e por connection/início global. Término posterior ao início. |
 | `limit_minor, reserved_minor, spent_minor, currency` | Valores exatos; reserva/acerto sob bloqueio. Uso desconhecido mantém reserva até reconciliação ou decisão explícita. |
 
 ## Extensão opcional futura: Assistente pessoal do James
@@ -101,7 +101,7 @@ Campos candidatos: `run_id`, `tool_code` allowlisted, `target_record_id`, `targe
 
 - Adicionar `created_by_ai_run_id` nullable a tags e `ai_run_id` nullable a tag_assignments após criar ai_runs. A Action de aplicação compara revisão, valida IDs e cria tag/atribuições atomicamente; se uma tag equivalente surgir em concorrência, reutiliza-a.
 - Adicionar ai_run_id nullable a fiscal_document_extractions e uma FK composta após criar ai_runs. O job fiscal só anexa sua tentativa à execução do mesmo espaço e documento.
-- A migration 17 cria a FK de `calendar_command_proposals.target_event_id`; a Action também valida que o evento e a execução pertencem ao mesmo usuário/espaço.
+- A extensão conjunta dos pacotes 12/17 cria a FK de calendar_command_proposals.target_event_id quando a função de agenda por IA estiver habilitada. A Action também valida que o evento e a execução pertencem ao mesmo usuário/espaço.
 - User secret não entra em payload serializado de Job; o worker carrega conexão autorizada por ID. Não alterar config global mutável para trocar chaves entre usuários.
 - Orçamento é reservado sob bloqueio antes da chamada; manter histórico de tentativas, sem cobrança dupla invisível.
 - Uma execução libera/acerta sua reserva uma única vez. Contadores do período são reconciliáveis pelas entradas de uso; verificar limites da instalação e do usuário quando ambos existirem.
@@ -113,6 +113,12 @@ Campos candidatos: `run_id`, `tool_code` allowlisted, `target_record_id`, `targe
 - Material derivado obedece à revisão/remoção da fonte. Jobs de indexação comparam `source_revision` antes/depois da geração para evitar persistir embeddings atrasados; repetição de job não cria chunks duplicados.
 - Uma resposta conversacional guarda referências de origem e versão de busca/modelo; falta de evidência produz abstenção. Conteúdo recuperado é dado não confiável, nunca instrução para trocar políticas ou ferramentas.
 - Separar limites/custo de geração, embeddings e reindexação. Indexar apenas registros incluídos pelo usuário; localização, diário íntimo, saúde e finanças exigem escolha própria e não são indexados por padrão.
+
+## Orçamento compartilhado da instalação
+
+Conexão Instance possui também um período de orçamento global, além dos limites por usuário. Reservar ambos na mesma operação com ordem estável de bloqueio. Cada entrada de uso identifica as reservas correspondentes e reconcilia o consumo uma vez. Falha/timeout ambíguo conserva a reserva até reconciliar ou obter decisão explícita.
+
+Permissão de função, revisão da fonte, política e situação da conexão são revalidadas ao iniciar a chamada e antes de aplicar resultado. Revogação durante a execução impede a aplicação posterior e mantém somente o registro mínimo de custo/estado autorizado pela retenção.
 
 ## Conversão do James 1.x
 
