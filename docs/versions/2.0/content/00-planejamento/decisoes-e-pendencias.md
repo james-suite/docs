@@ -105,3 +105,9 @@ Portabilidade permanente cobre dados pessoais de todos os módulos e seus víncu
 A revisão acrescenta contratos para fixar versão de evidência documental, financiar cotas apenas conforme contribuições efetivas, reverter liquidações, versionar preços, publicar arquivos com recuperação e exportar snapshots coerentes. A matriz de dependências separa as extensões opcionais de agenda, IA, tarefas, veículos e patrimônio.
 
 Esses contratos são propostas técnicas para os protótipos. Antes do schema definitivo, aprovar o plano de financiamento parcial e reclassificação do ledger, a política de devolução de compra compartilhada, os limites de publicação/importação e a retenção dos arquivos e tombstones de calendário. A regra inicial de média ponderada para preços da cesta também precisa ser validada com dados reais.
+
+## Migração com reorganização aprovada
+
+O usuário confirmou que os dados do 1.x podem ser manipulados e melhorados antes da importação. A estrutura do 2.0 deve servir ao novo produto. O fluxo admite fusões, divisões, novas classificações, correções e reconstrução de relações com revisão.
+
+Agente de IA é uma ajuda opcional em avaliação, podendo trabalhar fora do James sobre uma cópia exportada. A proposta técnica usa original de referência, arquivo de preparação versionado, prévia do grafo final, proveniência e reconciliação com o resultado esperado aprovado. A granularidade da confirmação e o formato público de preparação serão definidos no protótipo.

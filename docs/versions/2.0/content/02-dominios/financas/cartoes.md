@@ -54,3 +54,7 @@ Parcelas pertencem ao financiamento e conservam vínculo à compra original. Edi
 ## Arquivamento
 
 O diálogo mostra dívida atual, parcelas futuras, crédito disponível, pagamentos e recorrências pendentes. A ficha arquivada mantém faturas, parcelas e ações de pagar/estornar fatos existentes. Novas compras exigem reativação ou fluxo histórico explícito para fatos anteriores ao arquivamento. Exportações mantêm o instrumento e archived_at.
+
+## Preparação de compras antigas
+
+A preparação pode reconstruir uma compra a partir de parcelas antigas e reorganizar os vínculos de fatura antes da importação. Conferir quantidade/ordem de parcelas, valores, datas, pagamentos e dívida, com as origens disponíveis na prévia. A pessoa pode complementar datas a partir de extratos ou informação própria, mantendo origem e precisão declaradas.

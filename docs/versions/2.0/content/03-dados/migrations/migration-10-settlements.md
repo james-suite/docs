@@ -96,7 +96,7 @@ Quando houver FinancialPayment vinculado, a mesma operação cria o Reversal fin
 
 ## Conversão do James 1.x
 
-TheyOwe/IOwe viram obrigações; TheyPaid/IPaid viram liquidações na direção correta. Preservar rateios e arquivamento. Reconciliação considera a antiga regra de saldo diário limitado a zero; diferença exige relatório.
+TheyOwe/IOwe e TheyPaid/IPaid orientam a proposta inicial de obrigações e liquidações. A preparação permite reconstruir rateios, contribuições e financiamento conforme o modelo do 2.0, com revisão de saldos, arquivamento e decisões de correção. Reconciliação considera a antiga regra de saldo diário limitado a zero; diferença exige relatório.
 
 ## Componentes previstos
 

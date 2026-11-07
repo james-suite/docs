@@ -184,6 +184,18 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Importar pacote pessoal cujo módulo de documentos está ausente no destino. | Prévia indica dependência e bloqueia publicação completa até disponibilizar o contrato necessário. |
 | Cesta contém preço zero conhecido de promoção em um período. | Preservar zero como observado, exigir custo-base total positivo e declarar cobertura/política da cesta. |
 
+## Reorganização da origem antes da importação
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Três contatos antigos representam a mesma empresa. | Preparação revisada cria uma Party e redireciona os papéis, preservando as três origens e resolvendo colisões nos acertos. |
+| Tags antigas genéricas passam a categorias e tags específicas por item. | Prévia compara a organização antiga e a proposta. O catálogo ativo e as atribuições usam a versão aprovada do plano. |
+| Agente propõe agrupar seis parcelas numa compra. | Conferir evidências, totais, datas, pagamentos e faturas, permitindo confirmar, ajustar ou rejeitar o agrupamento antes de importar. |
+| A pessoa corrige um erro histórico de R$ 20 durante a preparação. | Registrar motivo e delta aprovado. O destino é conferido contra o valor esperado corrigido e a comparação com o legado explica R$ 20 de diferença. |
+| Alterar o arquivo preparado depois da prévia. | Hash/revisão divergente exige nova validação e confirmação. |
+| Agente gera destino com IDs de outra conta ou relações inválidas. | Validação rejeita o grafo e apresenta os erros antes da publicação. |
+| Dois anexos legados são reunidos num documento com dois vínculos. | Contagens de documentos mudam conforme o plano e cada vínculo conserva origem e versão de evidência. |
+
 ## Gate de aprovação
 
 O protótipo de schema precisa resolver os casos centrais de dinheiro, cartão, rateio e migração antes de consolidar ledger/records. Os demais casos orientam cada marco; não exigir todos os módulos futuros para validar a migração do núcleo atual.

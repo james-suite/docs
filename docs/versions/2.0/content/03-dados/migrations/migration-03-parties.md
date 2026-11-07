@@ -78,7 +78,7 @@ A fusão mantém um mapa de origem para destino e revalida identificadores, grup
 
 ## Conversão do James 1.x
 
-Contact → Party(Person); ContactGroup e pivô preservados. Notas, contatos e mídia são copiados. Alteração para Organization é uma revisão posterior.
+Contact vira Party segundo o tipo e os agrupamentos aprovados na preparação. A conversão inicial pode propor Person. Permitir Organization, fusão de duplicatas e reorganização de grupos antes da importação, com notas, mídia, vínculos e origens identificados no plano.
 
 ## Componentes previstos
 

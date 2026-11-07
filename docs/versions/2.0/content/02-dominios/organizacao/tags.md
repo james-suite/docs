@@ -49,7 +49,7 @@ Tags criadas pela IA recebem origem, execução e auditoria. A pessoa pode revis
 
 ## Migração
 
-Preservar as tags e os vínculos que existam no cabeçalho e em cada item, sem projetar tags do cabeçalho sobre os itens. A tag primária pode gerar uma categoria correspondente quando o mapeamento for seguro; preservar também a tag e sua informação original para auditoria. Relatar colisões e qualquer fallback usado na prévia de migração.
+A preparação pode fundir ou renomear tags, criar categorias hierárquicas, reclassificar itens e substituir tags antigas por relações de domínio. Uma tag primária pode orientar a categoria-alvo. A pessoa revisa o catálogo e as atribuições resultantes antes de importar. Guardar o mapeamento dos labels/IDs originais e as decisões no histórico privado da preparação, permitindo um catálogo ativo reorganizado.
 
 As tags especiais atuais usam IDs fixos para reembolso, juros, saldo inicial, transferência, ajuste e pagamento parcial. No James, juros, saldo inicial, transferência, ajuste e pagamento pertencem ao tipo da operação; um valor devolvido por uma pessoa/empresa pertence a um acerto, e devolução de loja pertence ao fluxo comercial de Refund. Não criar uma tag “reembolso” para identificar essas operações nem continuar tomando decisões de saldo por ID de tag. Na migração, converter para relação de acerto somente quando pagamentos, obrigações e contraparte puderem ser conciliados; caso contrário, preservar o dado legado para revisão, sem inventar vínculo ou efeito contábil.
 

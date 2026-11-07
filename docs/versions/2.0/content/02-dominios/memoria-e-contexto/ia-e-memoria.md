@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, financas, produtos-precos, tags, agenda-tarefas, diario, lugares-checkins, notificacoes, assistente-pessoal-rag, migrations, enums
 source_refs: https://laravel.com/docs/13.x/ai-sdk
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Direção de produto
@@ -82,3 +82,9 @@ A visão de um assistente que consulta dados pessoais e ajuda em vários módulo
 O Laravel AI SDK oferece uma interface para provedores e saída estruturada; é candidato a avaliar quando o projeto começar. O plano não fixa SDK, provedor ou modelo agora. Sua adoção deve permitir conexões por usuário e evitar configuração global mutável em workers compartilhados.
 
 Referência: [Laravel AI SDK](https://laravel.com/docs/13.x/ai-sdk).
+
+## Preparação assistida para migração
+
+Uma possibilidade adicional é usar agente para organizar uma cópia dos dados exportados do 1.x antes de importar. Ele pode produzir propostas de fusão, divisão, reclassificação e reconstrução de relações. O formato e a revisão ficam no contrato de [conversão e reorganização](doc:compatibilidade-legado).
+
+Essa preparação pode acontecer fora do James. Se houver assistência interna, terá autorização, orçamento, origem das sugestões e política de aplicação próprios. A publicação recebe o grafo preparado validado e aprovado. As funções iniciais de classificação/fallback fiscal mantêm seus limites de domínio.

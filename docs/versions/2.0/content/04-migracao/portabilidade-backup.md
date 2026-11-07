@@ -56,3 +56,9 @@ O manifesto mantém referência às versões originais fixadas no snapshot, com 
 O importador registra adaptadores suportados por formato e versão. A entrega de portabilidade do 2.0 inclui validação e importação de seu pacote pessoal em conta de destino vazia, além do adaptador legado 1.x. Ambos remapeiam IDs e preservam relações. Credenciais e associações com dispositivos/calendários exigem reconfiguração explícita.
 
 Relatórios CSV escapam células que possam ser interpretadas como fórmula por planilhas e declaram o escape no manifesto. O JSON preserva valores originais, decimais como strings e unidades monetárias inteiras sem perda de precisão. Separadores, codificação e fuso ficam identificados.
+
+## Pacotes preparados e histórico de transformação
+
+O pacote exportável conserva também as decisões de migração e seus mapas de origem quando existentes. Uma preparação externa pode reorganizar o conteúdo para o schema-alvo, usando o formato versionado do importador e referências ao pacote original.
+
+As contagens e os relatórios comparativos distinguem dados de origem e dados transformados. A exportação do 2.0 representa a organização vigente e permite consultar a proveniência das transformações aprovadas.

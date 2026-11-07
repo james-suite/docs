@@ -58,7 +58,7 @@ Arquivar um contato ou acerto oculta sua posição na triagem, preservando o sal
 
 ## Compatibilidade
 
-O 1.x já aceita `my_amount = 0` no rateio exato; a divisão igual possui regra específica que considera o usuário. Preservar os valores legados sem recalcular rateios passados segundo a nova regra. A parcela antiga pode ser reconstruída por total menos cotas dos contatos, confrontando os itens financeiros existentes. Não aplicar essa inferência se houver inconsistência.
+O 1.x já aceita `my_amount = 0` no rateio exato; a divisão igual possui regra específica que considera o usuário. A preparação pode reconstruir os rateios segundo o modelo do 2.0 e corrigir valores quando a pessoa aprovar, conservando a referência original e o delta explicado. A parcela antiga pode ser reconstruída por total menos cotas dos contatos, confrontando os itens financeiros existentes. Não aplicar essa inferência se houver inconsistência.
 
 ## Seletores e interação
 

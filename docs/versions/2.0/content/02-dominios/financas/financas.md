@@ -122,7 +122,7 @@ Ao cadastrar uma conta, a instituição brasileira pode ser pesquisada pelo cat�
 
 Preservar descrição, datas, valores, itens, recorrências, anexos e IDs de origem. O status legado `draft` vira rascunho; `pending` vira documento confirmado com pagamento pendente; `posted` exige analisar se representa movimento de banco ou compra de cartão. Transferências pareadas devem virar uma operação única com duas pernas, sem duplicar valor.
 
-Não reconstruir uma compra parcelada inteira agrupando textos parecidos. Preservar cada parcela legada e sua data. Migrar separadamente tags do cabeçalho e dos itens, sem inferir tags de item a partir da transação. Permitir agrupamento posterior confirmado pelo usuário. O relatório de importação deve comparar os saldos e os relatórios antigos com os novos antes de liberar automações.
+A preparação pode reconstruir compras parceladas antes de importar, com agrupamento proposto por regras ou agente e revisão de valores, datas e faturas. Descrições semelhantes ajudam a localizar candidatos, e a pessoa confirma a interpretação. Tags e itens podem ser reorganizados no plano aprovado, com referências às classificações e linhas originais. O relatório de importação deve comparar os saldos e os relatórios antigos com os novos antes de liberar automações.
 
 ## Casos de aceite
 

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, enums, migrations, ia-e-memoria, agenda-tarefas
 source_refs:
-updated: 2026-11-01
+updated: 2026-11-07
 ---
 
 ## Contrato proposto
@@ -23,4 +23,4 @@ updated: 2026-11-01
 
 ## Regras e transições
 
-proposed → accepted/rejected/stale/expired. Aceite revalida IDs, contexto e revisão da fonte; respostas antigas não são aplicadas automaticamente. Usar em sugestões de tags e propostas de comando de agenda.
+proposed → accepted/rejected/stale/expired. Aceite revalida IDs, contexto e revisão da fonte; respostas antigas não são aplicadas automaticamente. Usar em sugestões de tags, propostas de agenda e transformações de preparação de migração. Cada uso mantém os validadores e efeitos específicos do domínio.

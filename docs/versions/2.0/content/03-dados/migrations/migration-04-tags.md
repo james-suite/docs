@@ -70,7 +70,7 @@ Chips de Party/Vehicle/Place usam referências tipadas e as respectivas relaçõ
 
 ## Conversão do James 1.x
 
-Preservar `financial_tags` e `financial_taggables`, incluindo separação entre tags da transação e tags dos itens. `is_primary` pode gerar uma categoria correspondente com metadado legado; funções especiais viram códigos de operação, não IDs fixos.
+O plano pode transformar financial_tags/financial_taggables em categorias, tags específicas e relações de domínio, com atribuições revistas no cabeçalho e itens. is_primary orienta o mapeamento inicial. Conservar os labels/IDs e decisões originais em proveniência, enquanto o catálogo ativo usa a organização aprovada.
 
 ## Componentes previstos
 

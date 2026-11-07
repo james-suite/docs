@@ -99,3 +99,7 @@ OCR e integração com IA não são requisitos da primeira fase. Primeiro garant
 Ao ligar um comprovante a uma transação, acerto ou serviço, fixar a versão do arquivo usada naquele registro. Uma nova digitalização fica disponível na biblioteca e os comprovantes históricos continuam abrindo seus originais. Vínculos de consulta podem acompanhar a versão corrente, com esse comportamento visível no formulário.
 
 Upload, publicação e exportação conservam referências às versões e ao estado dos bytes. Um arquivo pendente de publicação mostra progresso e pode ser retomado após erro. Limpeza de staging verifica a operação e os vínculos antes de remover objetos.
+
+## Reorganização antes da migração
+
+Na preparação dos dados do 1.x, a pessoa pode reunir anexos duplicados em um documento com múltiplos vínculos, organizar nomes/tipos e revisar relações. O plano identifica os uploads originais e a versão usada como evidência em cada destino. A conferência apresenta as fusões e o efeito sobre as contagens de arquivos/documentos.

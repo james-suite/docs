@@ -26,3 +26,5 @@ updated: 2026-11-07
 ## Regras e transições
 
 uploaded → validating → ready → running → completed. Cancelar permitido antes da publicação. Validação pode avançar por lotes em staging. No importador financeiro inicial, falha na publicação reverte o domínio inteiro e permite retomar o staging. Completed exige reconciliação da publicação e arquivos disponíveis.
+
+Validating abrange a preparação do grafo e suas revisões. Ready significa que a versão preparada atual passou no validador e pode ser confirmada. Editar a preparação retorna à validação e invalida o aceite anterior. Running publica o plano fixado pela confirmação.

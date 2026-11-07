@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio
 related: planejamento-2-0, modelo-de-dados, tags, financas, lugares-checkins, veiculos, migrations
 source_refs: https://github.com/james-suite/james/blob/master/app/Models/Contact.php, https://brasilapi.com.br/docs
-updated: 2026-10-31
+updated: 2026-11-07
 ---
 
 ## Base proposta
@@ -47,4 +47,4 @@ Dados continuam pessoais e isolados por conta. Não relacionar automaticamente u
 
 ## Migração
 
-Cada contato 1.x vira inicialmente uma pessoa, mantendo grupos, notas, imagens, chaves de origem e acertos. Converter um contato antigo para organização exige escolha explícita. Não inventar vínculos societários ou filiais usando somente o texto do contato.
+A preparação permite converter contatos em pessoas/organizações, fundir duplicatas e organizar filiais antes da importação. A conversão direta usa pessoa como proposta inicial quando faltar identificação melhor. A pessoa revisa o tipo e as fusões, com grupos, notas, imagens e acertos vinculados ao destino aprovado. Não inventar vínculos societários ou filiais usando somente o texto do contato.

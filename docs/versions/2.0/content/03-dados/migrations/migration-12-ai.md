@@ -122,7 +122,7 @@ Permissão de função, revisão da fonte, política e situação da conexão s�
 
 ## Conversão do James 1.x
 
-Não há IA no 1.x para migrar. Tags e escolhas humanas viram base de regras locais; não chamar modelo durante importação.
+Tags e escolhas antigas podem orientar a organização preparada. Um agente externo ou uma assistência específica pode propor transformações antes da prévia final. Uma futura tarefa interna de preparação exige consentimento, orçamento e contrato próprios. A publicação usa o plano já aprovado e validado.
 
 ## Componentes previstos
 

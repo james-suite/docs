@@ -65,7 +65,7 @@ Bloquear substituição ou remoção isolada do original de uma versão publicad
 
 ## Conversão do James 1.x
 
-Cada `media` da coleção `attachments` em transações, liquidações e grupos de acerto vira `Document` + primeira `document_version` + um vínculo ao registro legado mapeado. Preservar bytes, hash, MIME, nome, ordem, data disponível, espaço e lixeira. Importar objetos iguais em contextos diferentes sem mesclar; informar ausência ou hash inválido no relatório.
+Cada `media` da coleção `attachments` em transações, liquidações e grupos de acerto vira `Document` + primeira `document_version` + um vínculo ao registro legado mapeado. Preservar bytes, hash, MIME, nome, ordem, data disponível, espaço e lixeira. A preparação pode consolidar arquivos equivalentes num Document com versões e vários vínculos quando a pessoa confirmar. Registrar todas as origens e fixar as versões de evidência. Ausência ou hash inválido aparece no relatório.
 
 O conversor precisa mapear o `model_type/model_id` legado por uma allowlist; não resolver classes arbitrárias do manifesto. Avatares da coleção separada não são documentos. Anexos não recebem tipo/tag inferido pela descrição. `fiscal_documents` aponta para o mesmo documento original quando os IDs e conteúdo confirmarem a identidade.
 

@@ -19,20 +19,20 @@ updated: 2026-11-07
 | `source_instance_id, export_id, format_version, package_sha256` | Identidade de origem, pacote e versão verificáveis. |
 | `status, manifest, validation_report, reconciliation_report` | ImportStatus, prévia e comparações. |
 | `uploaded_media_id, expires_at, confirmed_at, completed_at` | Arquivo privado temporário e marcos. |
-| `preview_hash, destination_revision, converter_version` | Identificam exatamente a prévia aprovada e permitem rejeitar mudanças de origem/destino. |
+| `preview_hash, destination_revision, converter_version, preparation_revision, preparation_hash, target_schema_version` | Identificam exatamente a prévia aprovada e permitem rejeitar mudanças de origem/destino. |
 
 ## `import_items`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `run_id, source_table, source_id, status` | Item permitido por conversor; UNIQUE(run_id, source_table, source_id). |
-| `normalized_payload, failure_code` | Staging validado e temporário, com acesso restrito e limpeza definida. |
+| `source_payload, source_payload_version, failure_code` | Snapshot de origem validado em staging privado. O resultado destinado ao 2.0 fica em import_prepared_entities. |
 
 ## `legacy_id_maps`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `space_id, source_instance_id, source_table, source_id, output_role, output_index` | Chave única de conversão: uma origem pode produzir documento, pagamento, alocação e parcela. Papéis/índices são determinísticos por versão do conversor. |
+| `space_id, source_instance_id, source_table, source_id, output_role, output_index` | Chave única de conversão: uma origem pode produzir documento, pagamento, alocação e parcela. Papéis/índices são estáveis dentro do plano aprovado e versão do conversor. O mapeamento admite fusões, divisões e relações N:N com suas origens identificadas. |
 | `target_kind, target_id, import_run_id, source_metadata` | Destino por mapa fechado; várias origens podem apontar ao mesmo destino (transferência consolidada). Metadados seguros preservam datas e precisão relevantes. |
 
 ## `data_exports` no 1.x e 2.0
@@ -53,7 +53,7 @@ updated: 2026-11-07
 - No início da confirmação, bloquear o espaço e revalidar destino vazio (fora seeds técnicos), proprietário e revisão da prévia. UNIQUE parcial em import_runs impede duas runs running no mesmo espaço. Todas as gravações de domínio participam da guarda de importação; mudanças concorrentes causam prévia expirada ou manutenção temporária, sem apagar dados novos do usuário.
 - A FK opcional spaces.active_import_run_id é adicionada depois de import_runs existir. A liberação da guarda em sucesso/falha é recuperável; não depender de um processo vivo para destravar a conta.
 - Reconciliação inclui séries por mês/conta e não só saldo final. Alterações temporais causadas pela nova regra de cartões são mostradas e exigem aceite explícito.
-- Não marcar completed antes de conferir saldos, dívidas, cotas, tags e documentos/versões/vínculos. Não disparar IA, recorrências ou notificações externas durante a importação.
+- Não marcar completed antes de conferir saldos, dívidas, cotas, tags e documentos/versões/vínculos. A publicação executa somente o grafo preparado aprovado, com recorrências e notificações operacionais desativadas. Assistência de IA pode ser autorizada na preparação, com registro próprio da transformação.
 
 ## Exportação contínua no 2.0
 
@@ -76,6 +76,28 @@ Arquivos de migração e XML de saúde pertencem a staging técnico privado com 
 uploaded_media_id do ImportRun e referências técnicas equivalentes podem ficar nulos após limpeza autorizada do staging. O registro conserva hash, versão, contagens e resultado. DataExport expirado conserva manifesto e estado, com private_path eliminado. A limpeza de arquivo pessoal continua sujeita ao contrato de documentos e evidências.
 
 Um pacote completo informa quais módulos/schema precisa no destino. A prévia bloqueia a publicação quando faltar adaptador ou módulo necessário. O fluxo pode orientar habilitação ou atualização do destino. Importação parcial, se vier a ser aprovada, terá escopo e resultado próprios, com exclusões declaradas.
+
+## Preparação transformável e proveniência
+
+import_prepared_entities guarda run_id, preparation_revision, target_key, target_kind, payload_schema_version, normalized_payload, validated_at e validation_errors sanitizados. UNIQUE(run_id, preparation_revision, target_key). target_key é identidade de staging e será remapeada para ID local na publicação. Relações-alvo também usam essas chaves.
+
+import_transformations guarda run_id, preparation_revision, operation_key, operation_type, reason, proposed_by, tool_metadata, decision via SuggestionStatus e reviewed_by_user_id/reviewed_at quando confirmada. operation_type identifica conversão, fusão, divisão, reclassificação, complemento, correção ou exclusão deliberada. Metadados de ferramenta/agente são limitados e privados.
+
+Tabelas filhas ligam cada transformação aos import_items de origem e às entidades preparadas de destino, com chaves únicas por par. Uma correção manual pode acrescentar documento/fonte complementar. A decisão aprovada conserva diff e efeito financeiro. Hipóteses aceitas mantêm autoria e nível de certeza declarado.
+
+import_items mantém a referência à origem. O grafo preparado define o resultado pretendido. legacy_id_maps registra os IDs efetivamente publicados para os papéis do plano, permitindo consultar todas as origens de um destino e todos os destinos de uma origem. Origens deliberadamente substituídas ou descartadas conservam a decisão no histórico de preparação.
+
+Reconciliation_report compara baseline legado, expected_target e actual_target. Incluir deltas aprovados por moeda, conta/grupo de contas, cartão, período e contraparte. Comparação financeira final exige equivalência ao target aprovado, com alterações perante o legado justificadas. Preview_hash inclui as transformações, o grafo final e as decisões.
+
+Modificar uma entidade preparada invalida sua validação e as dependências afetadas. Atualizar preparation_revision/hash e exigir nova prévia. Retomar falha de publicação reutiliza somente o mesmo plano aprovado. Uma revisão nova é uma operação de preparação distinta, sujeita à conferência antes de publicar.
+
+## Aprovação do plano e entidades novas
+
+Entidades novas do 2.0 podem ser acrescentadas ao grafo preparado, com origem manual, fonte complementar ou hipótese confirmada. Validar o schema e o módulo de destino, mesmo quando a entidade tiver zero correspondências diretas no 1.x. A operação de preparação conserva a autoria desse acréscimo.
+
+Valores reviewed_by_user_id, reviewed_at, decision e space_id recebidos de um arquivo são metadados de origem. A autoridade de aceite é registrada pela sessão autenticada no servidor, vinculada ao hash da prévia.
+
+A interface permite revisar transformações por grupo e confirmar o plano completo em lote, mostrando resumos e exceções financeiras. Uma revisão nova reabre o aceite dos grupos afetados. Propostas rejeitadas continuam identificadas no histórico da preparação.
 
 ## Conversão do James 1.x
 

@@ -2,10 +2,15 @@
   "id": "migration-flow",
   "kind": "flowchart",
   "title": "Migração entre versões do James",
-  "description": "O James 1.x exporta um pacote; o 2.0 valida e mostra a prévia antes de importar e reconciliar os dados.",
-  "source": { "language": "mermaid", "path": "diagrams/sources/migration-flow.mmd" },
-  "summary": "A migração começa no James 1.x com um pacote versionado. O James 2.0 valida o pacote e mostra contagens, conflitos e mapeamentos antes de gravar. Após a confirmação, importa no espaço inicial e reconcilia dados, anexos e permissões; o James 1.x e seu backup ficam disponíveis até o aceite.",
-  "sourceRefs": ["content/04-migracao/migracao-2-0.md"],
+  "description": "Exportação de origem, preparação revisável e importação do grafo aprovado na própria conta.",
+  "source": {
+    "language": "mermaid",
+    "path": "diagrams/sources/migration-flow.mmd"
+  },
+  "summary": "O James 1.x exporta o original. A pessoa pode preparar a organização por conversor, edição ou agente opcional. O importador valida o grafo e suas transformações, apresenta diferenças e reconciliação, e publica a revisão confirmada na própria conta.",
+  "sourceRefs": [
+    "content/04-migracao/migracao-2-0.md"
+  ],
   "nodes": [],
   "edges": [],
   "groups": [],

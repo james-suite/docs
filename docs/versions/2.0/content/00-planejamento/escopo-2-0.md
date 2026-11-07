@@ -48,3 +48,7 @@ Colaboração entre usuários, conta bancária conjunta, sincronização bancár
 ## Portabilidade permanente
 
 Cada módulo entrega exportação completa dos dados pessoais e relações ainda retidos. O usuário também pode exportar relatórios filtrados com medida e critérios declarados. A operação da instalação prevê backup integral e restauração de banco, arquivos e configuração de recuperação. O contrato está em [Portabilidade e backup](doc:portabilidade-backup).
+
+## Evolução dos dados na migração
+
+A migração pode reorganizar os dados antigos para aproveitar o schema do 2.0. O usuário pode preparar os dados manualmente, por conversores ou com ajuda opcional de agente de IA, revisar as transformações e importar o resultado. Preservar a proveniência e explicar diferenças financeiras permite superar limitações de estrutura e classificação do 1.x.

@@ -103,6 +103,12 @@ A prévia de correção mostra documentos, pagamentos, rateios, veículos e pre�
 
 Na revisão de rateio parcialmente pago, mostrar consumo total, valor já financiado por pessoa e saldo do fornecedor. Ao selecionar pagamento em dinheiro, valor entregue e troco podem ajudar a calcular o líquido efetivo. Em cadastro manual usual, a opção de consumo pessoal aparece como sugestão visível e pode ser alterada. A importação usa a atribuição demonstrável ou identifica consumo desconhecido.
 
+## Preparação da migração
+
+ImportWizard oferece conversão inicial e envio opcional de arquivo preparado por ferramenta externa. A revisão compara origem e destino com agrupamentos de contatos, tags/categorias, compras/parcelas, acertos e documentos. A pessoa pode filtrar alterações, aceitar grupos, corrigir exceções e confirmar o plano completo em lote.
+
+Mostrar dados financeiros originais, resultado esperado e diferenças justificadas em painéis próprios. A troca de arquivo ou edição do plano atualiza sua revisão, revalida dependências e pede novo aceite. Durante a publicação, o progresso acompanha somente a revisão já confirmada.
+
 ## Prototipação
 
 Antes de congelar o schema, prototipar compra mista, fatura parcial, rateio sem parcela própria e importação com divergência. A interface deve explicar a diferença entre gasto, caixa, passivo e crédito de terceiros sem exigir conhecimento contábil.

@@ -109,7 +109,7 @@ A interpretação fiscal mantém bytes/payload de origem, valores lidos e valore
 
 ## Conversão do James 1.x
 
-Preservar amount, description, date, status, itens e NFC-e. Valores decimais convertidos por texto para unidades mínimas. Migrar tags do cabeçalho e dos itens como vínculos separados; não inferir tags dos itens a partir do cabeçalho. O arquivo de nota vai para `Document`/versão do pacote 22; `FiscalDocument` referencia esse mesmo documento. O conversor distingue documento fiscal já importado de captura por imagem e nunca inventa pagador, desconto por item, produto de catálogo ou veículo. Emitente e filial importados são candidatos até uma correspondência segura.
+Ler amount, description, date, status, itens e NFC-e como referência original. A preparação pode reunir/dividir transações, reconstruir parcelas, corrigir linhas e reclassificar registros antes de importar. Valores decimais são convertidos por texto para unidades mínimas e cada alteração conserva sua origem e decisão no plano. O arquivo de nota vai para `Document`/versão do pacote 22; `FiscalDocument` referencia esse mesmo documento. O conversor distingue documento fiscal já importado de captura por imagem e nunca inventa pagador, desconto por item, produto de catálogo ou veículo. Emitente e filial importados são candidatos até uma correspondência segura.
 
 ## Componentes previstos
 
