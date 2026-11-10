@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos, assistente-pessoal-rag
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-10
 ---
 
 ## Linguagem do produto
@@ -16,6 +16,10 @@ updated: 2026-11-07
 Manter nomes e caminhos reconhecíveis: contatos, finanças, cartões, acertos e histórico. Melhorias devem reduzir trabalho para registrar a vida; não tornar cada cadastro uma ficha obrigatória extensa. Desktop é o foco de gestão; celular deve servir bem para captura, check-in, diário, recibo, gasto e consulta rápida.
 
 Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o select pesquisável/creatable, upload, loading, confirmação e componentes de auditoria, adaptando-os à identidade do James. O combobox é implementação própria inspirada no SGE; não pressupor licença Pro.
+
+Form Objects, validação, uploads temporários, propriedades computadas, paginação e estados de carregamento usam os recursos do Livewire descritos em [Ecossistema Laravel](doc:ecossistema-laravel). Avaliar lazy loading e navegação aprimorada por tela, com ciclo de vida explícito dos widgets JavaScript e preservação dos rascunhos.
+
+O histórico oferece reversão seletiva por campo ou seleção de campos de uma edição, com prévia de valores atuais/anteriores, conflitos e confirmação. Elegibilidade e correções de domínio seguem [Auditoria e histórico](doc:auditoria-2-0).
 
 ## Jornadas prioritárias
 

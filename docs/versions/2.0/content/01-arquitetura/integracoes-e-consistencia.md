@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, integração
 related: arquitetura-2-0, modelo-de-dados, migrations, cenarios-de-validacao, financas, acertos, documentos-arquivos, notificacoes, portabilidade-backup
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## Dono de cada fato
@@ -58,7 +58,7 @@ Cada tabela vinculável mantém id simples e record_id único. O Model tipado é
 
 Arquivamento preserva valores e relações históricos, e novos seletores aplicam o estado do domínio. Lixeira remove a fonte das consultas correntes e aciona invalidação. Exclusão física percorre referências e a política de retenção aprovada. A decisão de exclusão definitiva da conta continua pendente, incluindo o tratamento de auditoria funcional.
 
-Moeda padrão e fuso do espaço têm uma fonte em spaces. Fatos preservam moeda, precisão temporal, fuso observado e dados originais relevantes. Alterar preferência afeta apresentação e padrões novos. Conversões de unidade usam catálogo e versão reconhecidos.
+Moeda padrão e fuso do espaço têm uma fonte em spaces, e locale vem de user_preferences. Number, Carbon e a interface reutilizam o contexto regional de [Componentes técnicos](doc:componentes-tecnicos). Fatos preservam moeda, precisão temporal, fuso observado e dados originais relevantes. Alterar preferência afeta apresentação e padrões novos. Conversões de unidade usam catálogo e versão reconhecidos.
 
 Localização pertence à submissão humana que a capturou. Operações automáticas podem referenciar a causa pelo identificador de correlação, mas seus eventos continuam identificados como sistema. A posição é exibida na ação humana de origem e tem retenção própria.
 

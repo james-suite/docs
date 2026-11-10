@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio, IA
 related: ia-e-memoria, diario, lugares-checkins, financas, veiculos, modelo-de-dados, migration-12-ai, componentes-tecnicos, fases-2-0, decisoes-e-pendencias
 source_refs: https://platform.openai.com/docs/guides/embeddings, https://github.com/pgvector/pgvector
-updated: 2026-10-29
+updated: 2026-11-08
 ---
 
 ## Visão
@@ -49,12 +49,12 @@ Manter três coisas distinguíveis:
 - **Índice derivado:** trechos, resumos de busca e embeddings reconstruíveis que apontam para fonte e revisão. Embedding é uma lista numérica usada para comparar proximidade semântica; não é um fato novo nem substitui o texto original.
 - **Memória confirmada:** preferências ou fatos pessoais que a pessoa vê, corrige, confirma e apaga. Inferências do modelo ficam como candidatos até essa confirmação; fatos temporais guardam validade e fonte.
 
-Começar avaliando busca textual do PostgreSQL e consultas estruturadas. Se perguntas naturais sobre notas do diário continuarem difíceis, testar a extensão `pgvector` no mesmo PostgreSQL antes de operar outro banco. Busca exata serve como baseline e para volumes modestos; um índice aproximado como HNSW só entra após medir latência e cobertura. A dimensão do vetor precisa corresponder ao modelo escolhido; registrar o identificador/versão do modelo e da divisão em trechos para permitir reindexação.
+A busca textual do James usa Scout com Meilisearch, conforme [Componentes técnicos](doc:componentes-tecnicos), e as consultas estruturadas usam PostgreSQL/Eloquent. Usar essa base como referência na avaliação do RAG. Se a recuperação semântica melhorar as perguntas representativas, avaliar os recursos semânticos do Meilisearch e `pgvector` no PostgreSQL, considerando escopo, custo, revogação e operação. Selecionar um backend por índice semântico. Um índice aproximado como HNSW só entra após medir latência e cobertura. A dimensão do vetor corresponde ao modelo escolhido, com versão do modelo e da divisão em trechos registrada para reindexação.
 
 Contrato lógico futuro, não migration obrigatória do núcleo:
 
 - `ai_memory_sources`: `space_id`, `record_id`, revisão da fonte, hash do conteúdo indexável, módulo, estado de inclusão/indexação, versão do conversor, modelo de embeddings e `indexed_at`. Chave única pela fonte/revisão/perfil de indexação.
-- `ai_memory_chunks`: `space_id`, `memory_source_id`, número do trecho, snapshot textual mínimo, embedding `vector(N)`, modelo/dimensão, versão do chunker e contagem aproximada de tokens. Índices relacionais por espaço/fonte/revisão; índice vetorial separado, se necessário.
+- `ai_memory_chunks`: `space_id`, `memory_source_id`, número do trecho, snapshot textual mínimo, modelo/dimensão, versão do chunker e contagem aproximada de tokens. O embedding fica no backend semântico aprovado, ligado à identidade/revisão do chunk. A opção PostgreSQL/pgvector usa `vector(N)` e índice vetorial conforme medição. Índices relacionais atendem espaço/fonte/revisão.
 - `ai_conversations` e `ai_messages`: conversas visíveis à pessoa e mensagens finais necessárias para retomar a sessão. Retenção própria; prompts internos, segredos e payloads completos de ferramentas não são guardados por padrão.
 - `assistant_action_proposals`: quando ações forem autorizadas, ação/tipo allowlisted, alvo e revisão esperada, parâmetros tipados, expiração, autor da confirmação, estado e chave de idempotência. Não aceitar SQL, nome de tabela ou classe vindo do modelo.
 
@@ -90,7 +90,7 @@ Guardar telemetria mínima: `ai_run_id`, tarefa, conexão/modelo e versões, fon
 ## Etapas futuras propostas
 
 1. Consolidar módulos, relações, permissões e exclusão no núcleo 2.0; concluir primeiro as funções delimitadas da [IA atual](doc:ia-e-memoria).
-2. Fazer protótipo de busca em diário e histórico de veículos com dados sintéticos/selecionados, medindo busca textual, SQL e `pgvector`; aprovar quais fontes podem ser indexadas.
+2. Fazer protótipo de busca em diário e histórico de veículos com dados sintéticos/selecionados, usando Scout/Meilisearch textual e SQL como base. Avaliar o backend semântico conforme os critérios acima e aprovar quais fontes podem ser indexadas.
 3. Lançar RAG somente leitura para os módulos selecionados, com fontes clicáveis, respostas com período e regra de abstenção.
 4. Adicionar consultas estruturadas e ferramentas de leitura por módulo; garantir que cálculos venham do domínio.
 5. Propor ações revisáveis, uma ferramenta e um módulo por vez. Avaliar assistência proativa separadamente; voz é canal opcional, não pressuposto.

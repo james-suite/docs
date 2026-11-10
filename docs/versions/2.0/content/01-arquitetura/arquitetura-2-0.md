@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, componentes-tecnicos, enums, migrations, ui-ux-2-0, ia-e-memoria, assistente-pessoal-rag, decisoes-e-pendencias
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## Direção confirmada
@@ -50,11 +50,13 @@ Servidor determina proprietário; Models, consultas, Livewire, filas, auditoria,
 
 Dinheiro e quantidades usam aritmética exata. Datas de negócio e instantes de captura são diferentes. Arquivamento preserva histórico; exclusão de rascunho é diferente de estorno de operação efetivada.
 
+Number padroniza a apresentação numérica e monetária. Carbon atende datas e cálculos temporais. Locale, moeda e fuso são resolvidos pelo contexto comum, com fontes e precedência definidas em [Componentes técnicos](doc:componentes-tecnicos). Todos os módulos reutilizam esse contrato.
+
 ## Reuso entre projetos
 
 A matriz em [Componentes técnicos](doc:componentes-tecnicos) registra os candidatos concretos do SGE e do James atual, o modo de reaproveitamento e os limites de cada peça. A regra geral é portar comportamentos com contrato útil e adaptar ao domínio pessoal do James; não importar regras acadêmicas do SGE nem carregar limitações do modelo 1.x. Só extrair uma biblioteca compartilhada quando dois projetos precisarem do mesmo contrato estável e a dependência puder ser mantida e testada sem acoplamento aos domínios.
 
-Projetar busca estruturada/textual com Eloquent e PostgreSQL antes de adotar vetores. A [visão do assistente pessoal](doc:assistente-pessoal-rag) prevê pgvector como protótipo opcional se perguntas semânticas justificarem, mantendo fontes tipadas e uma fronteira pequena para provedores. Não espalhar chamadas ao modelo pelos Controllers ou hooks de Model.
+Adotar Scout com Meilisearch para busca textual e seletores pesquisáveis, aproveitando a integração do SGE. Consultas estruturadas, integridade e cálculos continuam no PostgreSQL/Eloquent. O contrato de escopo e indexação está em [Componentes técnicos](doc:componentes-tecnicos). A [visão do assistente pessoal](doc:assistente-pessoal-rag) mantém a recuperação semântica em fase posterior, com fontes tipadas e uma fronteira pequena para provedores.
 
 ## Contratos compartilhados de integração
 

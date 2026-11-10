@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## `users`
@@ -23,7 +23,7 @@ updated: 2026-11-07
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `user_id` | FK users, única. |
-| `locale` | Preferência de apresentação. Moeda padrão e fuso de negócio têm fonte canônica em spaces.currency/timezone. |
+| `locale` | Identificador validado de apresentação, com fallback na configuração da instalação. O contexto regional compartilha esse valor com Number, Carbon e frontend. Moeda padrão e fuso de negócio têm fonte canônica em spaces.currency/timezone. |
 | `capture_location_on_save` | Boolean false por padrão, por ser um dado sensível num sistema multiusuário; ao ativar, tenta capturar uma posição do navegador em cada mutação manual no site. A permissão do navegador continua obrigatória. Ausência, recusa ou timeout curto não bloqueiam nem atrasam indefinidamente o salvamento. |
 
 ## `cache / jobs / failed_jobs / sessions`
@@ -67,4 +67,4 @@ Não importar senhas, sessões, tokens, 2FA ou flags de administração da insta
 
 ## Componentes previstos
 
-Policies de arquivos/auditoria; helpers de moeda e data; jobs com contexto explícito; integração dos pacotes.
+Policies de arquivos/auditoria; contexto regional e formatadores compartilhados com Number/Carbon conforme [Componentes técnicos](doc:componentes-tecnicos); jobs com contexto explícito; integração dos pacotes e Scout/Meilisearch.

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-10
 ---
 
 ## Confirmado pelo usuário
@@ -16,6 +16,10 @@ updated: 2026-11-07
 - Reescrita com Laravel/Livewire e Flux 2 gratuito; início em 2027 com o starter kit disponível naquele momento.
 - Documentação organizada por versão no Aurelius: o planejamento dos módulos fica em `/docs/` e a documentação 1.x em `/docs/versions/1.x/`.
 - Preservar o que funciona no James atual, usando o SGE como referência de planejamento, componentes, UX e auditoria.
+- Usar Number e Carbon disponíveis no ecossistema Laravel, com locale, moeda e fuso centralizados e reutilizados entre módulos. Number atende apresentação, Carbon atende datas/cálculos temporais e o financeiro conserva aritmética exata.
+- Usar Laravel Scout com Meilisearch na busca textual e nos seletores pesquisáveis, aproveitando a integração do SGE e aplicando isolamento por espaço no servidor.
+- Usar Blaze para os componentes Blade/Flux, aproveitando sua inclusão no starter kit Livewire, e Sail como ambiente de desenvolvimento. A versão efetiva será conferida no kit de 2027.
+- Dispensar Horizon e Pulse da seleção de ferramentas de produção e descartar Pennant e Telescope. Reverb/Echo seguem em avaliação pelos casos concretos de atualização da interface.
 - Migração por arquivo completo: baixar no navegador do 1.x, enviar no navegador do 2.0 e importar na própria conta autenticada.
 - Vários pagamentos numa transação, arquivamento de contas/cartões e melhoria de tags, cartões e notificações.
 - Rateios podem não ter parcela própria; o usuário pode pagar/organizar sem consumir. Isso não significa conta bancária conjunta.
@@ -37,7 +41,11 @@ updated: 2026-11-07
 - Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV do James e Google Calendar por OAuth ficam como possibilidades posteriores. Não planejar EventKit ou recursos que dependam de app iOS do James; a agenda interna funciona sem conectores.
 - Quero guardar documentos pessoais como comprovantes, escrituras e certidões. Uploads feitos nos outros módulos devem ser localizáveis numa área de documentos; fotos entram como anexos quando necessário, sem tornar galeria de fotos o objetivo.
 
+O histórico deve permitir propor reversão somente dos campos alterados em uma edição, inclusive seleção por linha, preservando outros atributos atuais. Prévia, conflitos posteriores, autorização e encaminhamento a correções financeiras seguem [Auditoria e histórico](doc:auditoria-2-0).
+
 ## Propostas técnicas para revisar
+
+Os recursos nativos com uso concreto estão mapeados em [Ecossistema Laravel](doc:ecossistema-laravel). Blaze e Sail estão confirmados. A avaliação de Reverb/Echo apresenta os usos possíveis em tarefas assíncronas, notificações e atualização entre dispositivos, aguardando decisão do usuário.
 
 | Proposta | Motivo e ponto de revisão |
 | --- | --- |
@@ -58,7 +66,7 @@ updated: 2026-11-07
 | Mapa privado com base OpenStreetMap | Atribuição visível, provedor de tiles configurável e consultas sob demanda; o servidor público de tiles tem capacidade/política próprias e não é API ilimitada gratuita. |
 | Registro documental compartilhado pelos anexos | Upload feito dentro de um módulo cria um documento e um vínculo; a biblioteca e os formulários consultam o mesmo original. Confirmar o menor contrato que permita versões e ligações múltiplas desde o núcleo, deixando OCR e navegação avançada para depois. |
 | RAG e assistente pessoal do James em fases posteriores | Manter a fonte de verdade nos módulos; começar com busca somente leitura, filtros pessoais e citações antes de habilitar ferramentas de escrita, proatividade ou voz. |
-| PostgreSQL/pgvector como protótipo do índice semântico | Evita outro serviço enquanto o volume é pequeno; começar com busca exata, medir qualidade e latência, só usar HNSW/particionamento se necessário. A extensão não é requisito do lançamento inicial. |
+| Backend semântico para a fase de RAG | A busca textual já usa Scout/Meilisearch. Avaliar sua extensão semântica e pgvector no PostgreSQL com as mesmas perguntas, fontes e permissões. Escolher uma implementação para cada índice semântico e medir qualidade, custo e latência. Embeddings continuam fora do requisito inicial. |
 | Sincronização bidirecional posterior | Avaliar conta CalDAV do James e Google Calendar por OAuth após a entrega do feed `.ics`; definir conflitos, duplicatas, calendário padrão, revogação e exclusões. |
 | Importação inicial em domínios vazios | Reduz mistura ambígua de dois históricos; mesclagem incremental requer projeto próprio. |
 | Histórico efetivado imutável | Corrigir por inversão; exceção explícita ao SoftDeletes genérico em postings/tentativas. |

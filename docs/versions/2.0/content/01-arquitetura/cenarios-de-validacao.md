@@ -8,10 +8,20 @@ visibility: public
 tags: james/2.0, planejamento, validação
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0, assistente-pessoal-rag
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-10
 ---
 
 Estes casos são critérios para revisar o plano e, na implementação, criar testes de domínio e integração. Não representam testes já executados ou recursos implementados. Os números abaixo usam reais e nenhuma conversão de moeda.
+
+## Contexto regional e busca
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Duas contas com locale, moeda e fuso diferentes usam o mesmo worker, e um dos jobs falha. | Cada execução resolve suas preferências e limpa o contexto. A formatação e as datas da conta seguinte usam seus próprios valores. |
+| A pessoa muda a moeda padrão para USD, mantendo uma compra histórica em BRL. | Novos formulários recebem o padrão USD. A compra continua em BRL, com exibição pela moeda do registro e preservação exata dos valores exportados. |
+| Um instante UTC aparece em telas e avisos no fuso do espaço, junto de um evento de dia inteiro. | Carbon preserva o instante na conversão. O evento mantém sua data local. Componentes, gráficos e notificações usam os mesmos presets regionais. |
+| A criação inline de um contato termina antes da indexação no Meilisearch. | O seletor recebe o registro persistido diretamente. A opção mantém sua identidade e aparece na busca após a sincronização. |
+| Uma busca tenta consultar outro espaço ou retorna um candidato já excluído com índice atrasado. | Filtro de espaço é obrigatório no servidor, inclusive em facetas e contagens. Revalidação no banco impede exibir o registro excluído ou executar ações sobre ele. |
 
 ## Financeiro e cartões
 
@@ -195,6 +205,18 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 | Alterar o arquivo preparado depois da prévia. | Hash/revisão divergente exige nova validação e confirmação. |
 | Agente gera destino com IDs de outra conta ou relações inválidas. | Validação rejeita o grafo e apresenta os erros antes da publicação. |
 | Dois anexos legados são reunidos num documento com dois vínculos. | Contagens de documentos mudam conforme o plano e cada vínculo conserva origem e versão de evidência. |
+
+## Reversão seletiva no histórico
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Edição altera descrição e valor, e outra edição posterior altera a data. | Reverter a primeira edição restaura somente descrição e valor. A data atual é preservada. |
+| Pessoa seleciona somente a linha do valor no histórico. | Aplicar apenas esse atributo, respeitando os grupos de campos e as validações do domínio. |
+| O mesmo campo recebeu uma alteração posterior. | Prévia destaca conflito e exige escolha explícita para restaurar o valor antigo. |
+| Registro muda depois de abrir a prévia. | Confirmação rejeita a proposta desatualizada e solicita nova revisão antes de gravar. |
+| A submissão de reversão é repetida. | Uma operação idempotente e uma nova alteração auditada ligada ao evento original. |
+| Campo já possui o valor desejado ou seu diff antigo está incompleto. | O primeiro é dispensado da gravação. O segundo aparece indisponível para reversão segura. |
+| Log contém valor de pagamento efetivado ou relação hoje inválida. | Encaminhar ao fluxo de correção/estorno ou recusar a relação, preservando invariantes e autorização. |
 
 ## Gate de aprovação
 

@@ -8,14 +8,14 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, componentes-tecnicos, compatibilidade-legado, decisoes-e-pendencias, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## Ordem proposta
 
 - [ ] **00 — Descoberta e decisões:** inventário 1.x e regras de relatórios; aprovar categorias/tags, recorte do lançamento e decisões em [Pendências](doc:decisoes-e-pendencias).
 - [ ] **01 — Provas de modelagem:** validar documento/pagamento/alocação, livro interno e records com compra mista, fatura parcial, liquidação de acerto, devolução comercial e rateio sem parcela própria. Definir fonte única dos saldos antes de escrever todas as migrations.
-- [ ] **02 — Fundação:** starter kit de 2027, Flux 2 gratuito, identidade, espaço pessoal, Policies, tipos monetários, mídia privada e auditoria. [Pacotes 00–02](doc:migrations).
+- [ ] **02 — Fundação:** starter kit de 2027, Flux 2 gratuito, Blaze, ambiente de desenvolvimento Sail, identidade, espaço pessoal, Policies, tipos monetários, contexto regional compartilhado com Number/Carbon, Scout com Meilisearch, mídia privada e auditoria. [Pacotes 00–02](doc:migrations) e [contratos compartilhados](doc:componentes-tecnicos).
 - [ ] **03 — Pessoas e classificação:** contatos/empresas/grupos, tags/categorias, aliases, combobox com criação e regras locais. [Pessoas](doc:pessoas-empresas) e [tags](doc:tags).
 - [ ] **04 — Financeiro:** documentos/itens e uploads por meio do registro documental compartilhado, leitura revisável de XML/QR/imagem, adaptadores fiscais por UF (avaliar o scraper existente do RS), pagador explícito, múltiplos pagamentos, transferências, estornos, relatórios e arquivamento. Comprovantes enviados nesta tela também aparecem na biblioteca; a mesma regra será reutilizada nos demais módulos. Provar idempotência e somas sob concorrência. [Finanças](doc:financas) e [documentos](doc:documentos-arquivos).
 - [ ] **05 — Cartões e recorrências:** ciclos congelados, parcelas, várias contas por fatura, limite e ocorrências sem duplicatas. [Cartões](doc:cartoes).
@@ -31,17 +31,19 @@ updated: 2026-11-07
 - [ ] **14 — Preparação de produção:** revisão de segurança, performance, acessibilidade, backup/restore, exclusão, atualização, documentação e plano de suporte. Aprovar quais módulos compõem o primeiro lançamento.
 - [ ] **15 — Conectores de agenda bidirecionais:** comparar uma conta CalDAV do James e Google Calendar OAuth. Implementar somente após definir conflitos, duplicatas, revogação, exclusões e recuperação; o feed `.ics` continua sendo a opção simples de leitura no Calendário do iPhone.
 - [ ] **16 — Descoberta do assistente pessoal:** seguir o [plano do assistente e RAG](doc:assistente-pessoal-rag); escolher fontes opt-in, política de retenção, fronteiras de ferramenta, métricas de qualidade e orçamento; montar conjunto de perguntas/fontes para avaliação. Não requer mudar o primeiro lançamento migrável.
-- [ ] **17 — Busca fundamentada (RAG), somente leitura:** prototipar diário e histórico de veículos; comparar SQL, busca textual e PostgreSQL/pgvector; entregar fontes clicáveis, período, filtros por espaço e abstenção sem evidência.
+- [ ] **17 — Busca fundamentada (RAG), somente leitura:** prototipar diário e histórico de veículos sobre SQL e Scout/Meilisearch textual; avaliar backend semântico conforme [Assistente pessoal e RAG](doc:assistente-pessoal-rag); entregar fontes clicáveis, período, filtros por espaço e abstenção sem evidência.
 - [ ] **18 — Ferramentas do assistente:** adicionar consultas estruturadas e depois propostas de escrita por módulo, uma ferramenta de cada vez, com Policies, confirmação, idempotência e auditoria. Assistência proativa e voz são fases separadas.
 
 ## Checklist por funcionalidade, inspirado no SGE
 
 - [ ] Problema, regra, estados e critérios de aceite descritos.
+- [ ] Recursos nativos do [ecossistema Laravel](doc:ecossistema-laravel) avaliados antes de uma implementação própria; ferramentas opcionais têm decisão registrada.
 - [ ] Enum/catálogo escolhido com motivo; migrations e FKs revisadas.
 - [ ] Propriedade pessoal validada em consultas, seletores, Action, Policy, arquivo e Job.
 - [ ] Transação, concorrência e idempotência definidas onde houver efeitos financeiros/externos.
 - [ ] Histórico, exclusão, arquivamento, notificações e IA avaliados sem copiar segredos.
 - [ ] UI com estados de erro/vazio/carregamento e captura móvel útil.
+- [ ] Formatação e entrada usam o contexto regional comum; dados persistidos e exportados conservam precisão e formato canônico. Busca aplica escopo pessoal e declara quais campos serão indexados.
 - [ ] Mapeamento legado definido e perda/ambiguidade mostrada no relatório.
 - [ ] Testes de comportamento, autorização e invariantes; formatação e build pertinentes.
 - [ ] Notas Aurelius e catálogos técnicos coerentes com o que realmente foi implementado.

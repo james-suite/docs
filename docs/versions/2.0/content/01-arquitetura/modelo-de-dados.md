@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migrations, enums, financas, acertos, pessoas-empresas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## Estado do desenho
@@ -80,7 +80,7 @@ Posições ligadas a ações de auditoria são dados geográficos sensíveis com
 
 Priorizar índices compostos de espaço com data/status usados nas consultas. Unicidade de ocorrências, chaves de idempotência, nomes normalizados e mapas de importação pertence ao banco. Operações de soma entre linhas usam transação e bloqueio; um CHECK por linha não valida sozinho a soma de um pagamento ou lote.
 
-Criar busca textual onde necessária e medir com dados representativos. PostgreSQL continua a referência atual; PostGIS, particionamento e vetores são decisões posteriores motivadas por consultas reais e volume.
+Busca textual usa Scout com Meilisearch, com documentos derivados e filtrados por espaço. Índices relacionais do PostgreSQL atendem integridade, filtros e consultas de domínio. Escopo, atualização e reconstrução da busca seguem [Componentes técnicos](doc:componentes-tecnicos). PostGIS, particionamento e vetores são decisões posteriores motivadas por consultas reais e volume.
 
 ## Exemplos para revisar o schema
 
@@ -98,7 +98,7 @@ Todos os domínios precisam declarar os dados exportáveis, arquivos, versões, 
 
 ## Fonte canônica e identidade dos pais
 
-Preferências gerais leem moeda e fuso de spaces. A infraestrutura de catálogo global, como unidades físicas, e as conexões de IA da instalação têm escopo operacional explícito. Dados pessoais permanecem no espaço.
+Preferências gerais leem moeda e fuso de spaces, e locale de user_preferences. O contexto regional compartilhado resolve esses valores uma vez por execução e alimenta Number, Carbon e a apresentação dos componentes, conforme [Componentes técnicos](doc:componentes-tecnicos). A infraestrutura de catálogo global, como unidades físicas, e as conexões de IA da instalação têm escopo operacional explícito. Dados pessoais permanecem no espaço.
 
 Além de validar o mesmo space_id, relações entre filhos precisam validar o mesmo pai. O item de uma alocação pertence à transação informada, a leitura pertence ao veículo do evento e a versão de evidência pertence ao documento do vínculo. Usar FKs compostas apropriadas e revalidação sob transação.
 

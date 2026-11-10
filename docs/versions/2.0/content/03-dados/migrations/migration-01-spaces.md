@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## `spaces`
@@ -17,7 +17,7 @@ updated: 2026-11-07
 | --- | --- |
 | `owner_user_id` | FK users, NOT NULL e UNIQUE; um espaço pessoal por conta na primeira versão. |
 | `name` | Nome de exibição opcional; não é identificador de autorização. |
-| `currency, timezone` | Fonte canônica da moeda padrão e do fuso IANA do espaço. Preferências de usuário leem esses valores. Cada fato preserva sua própria moeda e seu fuso observado quando conhecidos. |
+| `currency, timezone` | Fonte canônica da moeda padrão ISO 4217 e do fuso IANA do espaço. O contexto regional compartilha esses valores com formulários, Number/Carbon, filas e relatórios. Cada fato preserva sua própria moeda e seu fuso observado quando conhecidos. |
 | `archived_at` | Indisponibilidade do espaço; não elimina dados. |
 
 ## Integridade, índices e comportamento
@@ -35,4 +35,4 @@ A conta autenticada no 2.0 é a dona do arquivo importado. O usuário do 1.x apa
 
 ## Componentes previstos
 
-PersonalSpaceContext; criação idempotente do espaço; Policies por proprietário; casts de timezone e moeda.
+PersonalSpaceContext com resolução regional compartilhada conforme [Componentes técnicos](doc:componentes-tecnicos); criação idempotente do espaço; Policies por proprietário; casts de timezone e moeda.

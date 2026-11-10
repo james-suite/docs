@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, ia-e-memoria, assistente-pessoal-rag, agenda-tarefas, financas, componentes-tecnicos
 source_refs: https://platform.openai.com/docs/guides/embeddings, https://github.com/pgvector/pgvector
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## `ai_connections`
@@ -77,7 +77,7 @@ TransactionDraft nunca cria `fiscal_documents`. Não exigir itens quando a pesso
 
 ## Extensão opcional futura: Assistente pessoal do James
 
-Estas tabelas são propostas para uma fase posterior à IA inicial. Não fazem parte do primeiro schema migrável; criar somente após aprovar fontes, consentimento, retenção, provedor e critérios de qualidade. A extensão do PostgreSQL `vector`/pgvector fica opcional. Começar comparando busca SQL/textual e busca vetorial exata; índice aproximado HNSW só após medir volume, latência e cobertura. Dimensão `N` e modelo não são fixados até escolher provedor/modelo.
+Estas tabelas são propostas para uma fase posterior à IA inicial. Criar após aprovar fontes, consentimento, retenção, provedor e critérios de qualidade. A base textual usa Scout/Meilisearch, e as consultas estruturadas usam SQL. A escolha do backend semântico segue [Assistente pessoal e RAG](doc:assistente-pessoal-rag). Se a opção aprovada for PostgreSQL, usar a extensão `vector`/pgvector, com HNSW somente após medir volume, latência e cobertura. Dimensão `N` e modelo são definidos ao escolher o provedor/modelo.
 
 ### `ai_conversations` e `ai_messages`
 
@@ -89,7 +89,7 @@ Uma linha por Record/revisão e perfil de indexação: `space_id`, `record_id`, 
 
 ### `ai_memory_chunks`
 
-Uma linha por trecho com `space_id`, `memory_source_id`, `chunk_index`, snapshot mínimo de texto recuperável, `embedding vector(N)`, `embedding_model`, dimensão, versão do chunker, hash e contagem de tokens. UNIQUE por fonte/revisão/perfil/trecho. Texto, vetores e metadados derivados são dados privados e sensíveis; manter referência à fonte para abrir, corrigir, invalidar e apagar. Não transformar vetor em fonte de verdade nem carregar conteúdo de um Record não autorizado.
+Uma linha por trecho com `space_id`, `memory_source_id`, `chunk_index`, snapshot mínimo de texto recuperável, `embedding_model`, dimensão, versão do chunker, hash e contagem de tokens. UNIQUE por fonte/revisão/perfil/trecho. O embedding fica no backend semântico aprovado, ligado à identidade/revisão do chunk. Se PostgreSQL/pgvector for escolhido, acrescentar `embedding vector(N)` nesse contrato. Texto, vetores e metadados derivados são dados privados e sensíveis, com referência à fonte para abrir, corrigir, invalidar e apagar. Consultas revalidam o Record autorizado e usam os dados tipados como fonte factual.
 
 O mesmo conjunto/index usa uma dimensão/modelo compatíveis; troca de modelo cria uma versão de perfil e reindexação, sem misturar vetores incompatíveis. Filtro de `space_id`, fontes selecionadas e Policies vem do servidor e é aplicado antes da montagem do contexto. RLS/consulta escopada garante confidencialidade; índice ANN não é controle de autorização. Com filtros em índices aproximados, medir cobertura contra busca exata e ajustar a consulta/particionamento se necessário.
 

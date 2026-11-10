@@ -6,14 +6,16 @@ type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
-related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0, assistente-pessoal-rag, migration-19-health
-source_refs: https://brasilapi.com.br/docs
-updated: 2026-11-07
+related: modelo-de-dados, migrations, enums, ui-ux-2-0, fases-2-0, assistente-pessoal-rag, migration-19-health, bibliotecas-candidatas, ecossistema-laravel
+source_refs: https://brasilapi.com.br/docs, https://laravel.com/docs/13.x/helpers#numbers, https://carbon.nesbot.com/guide/getting-started/localization.html, https://laravel.com/docs/13.x/scout#meilisearch
+updated: 2026-11-08
 ---
 
 ## Organização da implementação
 
 CRUD simples segue o padrão vigente do projeto. Operações com várias entidades, concorrência, importação ou transporte externo justificam Actions/Services próprias. Não criar Repository, interface ou Service genérico para cada tabela. Interfaces são úteis nas fronteiras de provedor de IA, importador e transporte.
+
+Priorizar as APIs nativas mapeadas em [Ecossistema Laravel](doc:ecossistema-laravel) para filas, agendamento, cache, HTTP, arquivos, validação e componentes Livewire. Os pacotes adicionais com benefício dependente de operação ou medição ficam separados para decisão do usuário nessa mesma página.
 
 ## Models e operações
 
@@ -41,14 +43,16 @@ CRUD simples segue o padrão vigente do projeto. Operações com várias entidad
 
 ## Reaproveitamento de código
 
+Os candidatos externos, licenças e pontos de integração estão em [Bibliotecas candidatas](doc:bibliotecas-candidatas). Essa seleção complementa as peças do James e do SGE inventariadas abaixo.
+
 Reutilizar uma implementação quando o contrato, as dependências e a responsabilidade continuarem válidos. Portar uma peça não significa copiar o domínio ao redor. Conferir versões, licença, cobertura de testes e comportamento real antes de integrar no ciclo de desenvolvimento de 2027.
 
 | Origem e referência | Caminho de reaproveitamento | Limites a respeitar |
 | --- | --- | --- |
-| SGE — `resources/views/components/select.blade.php`, `select-create.blade.php` | Portar o comportamento do combobox: teclado, busca, estados vazios e criação inline; adaptá-lo para TagPicker e seletores de Party. | A implementação atual integra Livewire 4, Flux 2 e Alpine. Rever versões no início do projeto; não carregar busca remota e Meilisearch se os catálogos não precisarem disso. Criar a tag continua sendo uma operação do domínio James. |
-| SGE — `app/Support/SelectOptionSource.php`, `app/Concerns/SearchesSelectOptions.php` | Reaproveitar o contrato de opções limitadas, `hasMore` e busca remota como referência. | As classes incorporam Scout/Meilisearch e consultas acadêmicas. Começar com Eloquent; adotar busca remota quando volume e medição justificarem. |
+| SGE — `resources/views/components/select.blade.php`, `select-create.blade.php` | Portar o comportamento do combobox: teclado, busca, estados vazios e criação inline; adaptá-lo para TagPicker e seletores de Party. | A implementação atual integra Livewire 4, Flux 2 e Alpine. Rever versões no início do projeto. Usar Scout com Meilisearch nos seletores pesquisáveis; criar a tag continua sendo uma operação do domínio James. |
+| SGE — `app/Support/SelectOptionSource.php`, `app/Concerns/SearchesSelectOptions.php` | Reaproveitar o contrato de opções limitadas, `hasMore` e busca com Scout/Meilisearch. | Adaptar campos, filtros e autorização ao espaço pessoal. A criação inline devolve a opção persistida diretamente ao seletor enquanto o índice é atualizado. |
 | SGE — `app/Support/BrasilApiCepLookup.php`, `BrasilApiCompanyLookup.php`, `BrasilApiHolidayLookup.php` | Adaptar validação, timeout, normalização e retorno manual para os lookups de CEP, CNPJ e feriados do James. | Mapear os campos para Party/Place e registrar fonte/data quando aceitos. Não copiar DTOs do SGE nem confiar no resultado sem revisão. |
-| SGE — `app/Helpers/BrazilianDocumentHelper.php`, `BrazilianContactHelper.php`, `BrazilianAddressHelper.php`, `DigitsHelper.php`, `CurrencyHelper.php`, `DateHelper.php` | Reaproveitar ou portar funções pontuais de normalização e apresentação que tenham a mesma semântica no James. | Conferir formatos e testes antes de copiar. Formatação monetária não substitui aritmética exata em unidades menores; datas precisam respeitar o fuso do espaço. |
+| SGE — `app/Helpers/BrazilianDocumentHelper.php`, `BrazilianContactHelper.php`, `BrazilianAddressHelper.php`, `DigitsHelper.php`, `CurrencyHelper.php`, `DateHelper.php` | Reaproveitar contratos úteis de normalização e apresentação, apoiando moeda/números em Number e datas em Carbon. | Concentrar locale, moeda e fuso no contexto compartilhado definido abaixo. Conferir precisão e formatos antes de portar cada função. |
 | SGE — `app/Support/ActivityHistory.php`, `AdministrativeActivityPresenter.php`, `resources/views/components/audit/*` | Portar a separação entre consulta autorizada, apresentação e histórico contextual; incluir navegação e contexto geográfico próprios do James. | Não copiar escopos de campus, afiliação, estágio ou perfis acadêmicos. A autorização deve ser pelo usuário e Space do James. |
 | James 1.x — `app/Services/Nfce/` (resolver, interface, scraper SVRS e DTOs) | Candidato principal a portar como adaptador fiscal determinístico para RS; mapear sua saída para FiscalDocument e FiscalDocumentExtraction. | Validar HTML/termos e fixtures por portal em 2027. O DTO atual não inclui filial nem código de produto. Preservar chave fiscal/idempotência e deixar IA apenas como fallback autorizado. |
 | James 1.x — `app/Services/SettlementBalanceCalculator.php` | Reaproveitar cenários e a aritmética em centavos como referência para saldos por contraparte. | Recalcular a regra em cima de pagamentos e alocações 2.0; a API antiga depende de SettlementType e não deve virar contrato novo. |
@@ -60,7 +64,36 @@ Extrair um pacote compartilhado para James e SGE só depois que ambos usarem o m
 
 ## Casts, valores e helpers
 
-Money e Quantity precisam de operações exatas e arredondamento explícito; usar biblioteca compatível ou objetos pequenos em vez de espalhar casts para float. Campos de enum recebem cast próprio. Datas locais, instantes UTC e fuso IANA devem ser distinguidos no domínio. Conferir APIs e versões dos candidatos listados acima quando o desenvolvimento começar em 2027.
+Money e Quantity precisam de operações exatas e arredondamento explícito. Avaliar `brick/money` e `brick/math` conforme [Bibliotecas candidatas](doc:bibliotecas-candidatas), com persistência e escalas do domínio. Campos de enum recebem cast próprio. Datas locais, instantes UTC e fuso IANA devem ser distinguidos no domínio. Conferir APIs e versões quando o desenvolvimento começar em 2027.
+
+## Formatação e contexto regional compartilhados
+
+Usar `Illuminate\Support\Number` para apresentação de números, percentuais, moedas e tamanhos de arquivo. Os helpers/componentes compartilhados resolvem locale e moeda pelo contexto, permitindo chamadas simples como `formatCurrency($valor)`. Quando o registro tem moeda própria, ela prevalece sobre o padrão do espaço. A conversão de unidades menores para apresentação conserva escala e precisão, inclusive para inteiros grandes. Aritmética monetária, rateios e arredondamento de negócio seguem o contrato de Money/Quantity. [Number do Laravel](https://laravel.com/docs/13.x/helpers#numbers).
+
+Usar Carbon, já integrado ao Laravel, para datas, intervalos, comparações, cálculos temporais e apresentação localizada. Preferir `CarbonImmutable` nos cálculos, com política explícita de fim de mês para vencimentos e recorrências. Instantes são persistidos em UTC e convertidos ao fuso de apresentação com `setTimezone`, preservando o instante. Datas conhecidas somente por dia e eventos de dia inteiro conservam essa precisão. Configurar locale na instância/factory usada pelo contexto. [Localização do Carbon](https://carbon.nesbot.com/guide/getting-started/localization.html), [API do Carbon](https://carbon.nesbot.com/develop/reference.html).
+
+Resolver o contexto regional uma vez na fronteira da requisição ou do job, junto ao PersonalSpaceContext, e reutilizá-lo em todos os módulos. A origem dos valores fica definida em um único contrato.
+
+| Configuração | Fonte e precedência |
+| --- | --- |
+| Locale de apresentação | `user_preferences.locale`, com fallback validado na configuração da instalação. Normalizar o identificador conforme Number, Carbon e frontend na integração central. |
+| Moeda padrão | `spaces.currency`, validada pelo catálogo ISO 4217. Serve como valor inicial de cadastros; registros existentes conservam a própria moeda. |
+| Fuso padrão | `spaces.timezone`, validado como identificador IANA. Eventos e recorrências com fuso explícito conservam sua regra temporal. |
+| Formatos, escalas e unidades | Catálogo e presets compartilhados para datas curtas/completas, quantidades, percentuais e moedas. Componentes recebem valores tipados e escolhem o preset adequado. |
+
+Defaults da instalação ficam em `config/*`. Formulários, notificações, gráficos, PDFs e relatórios usam os mesmos formatadores. O frontend recebe uma representação normalizada desse contexto e os valores exatos, com formatação equivalente por Intl quando necessária. JSON de portabilidade mantém datas e números no formato canônico do schema, independente da apresentação localizada.
+
+Preferências variáveis ficam isoladas por execução. Defaults estáticos de Number atendem à instalação, e contextos pessoais usam argumentos resolvidos pelo formatador ou escopo temporário restaurado. Jobs carregam identidade/escopo, resolvem suas preferências e limpam o contexto ao terminar, inclusive em falhas. Exportações reproduzíveis fixam as preferências no início e registram esse snapshot no manifesto. [Escopos de Number](https://laravel.com/docs/13.x/helpers#method-number-withlocale).
+
+## Busca compartilhada com Scout e Meilisearch
+
+Usar Laravel Scout com o driver Meilisearch para a busca textual e os seletores pesquisáveis dos módulos. Aproveitar a integração existente no SGE, adaptando documentos indexáveis, campos pesquisáveis, filtros e ordenação ao domínio James. O PostgreSQL mantém os fatos, relações, cálculos e validações transacionais. [Integração Scout/Meilisearch](https://laravel.com/docs/13.x/scout#meilisearch).
+
+As consultas passam pelo backend Laravel, que impõe `space_id` antes da busca e configura esse atributo como filtrável. Respostas, contagens, facetas e sugestões respeitam esse filtro. Antes de exibir registros ou executar ações, revalidar no banco o proprietário, a Policy e o estado atual. Indexar somente os campos necessários, conforme a política do módulo. Diário, documentos e saúde seguem os controles de inclusão definidos no domínio. [Isolamento de buscas no Meilisearch](https://www.meilisearch.com/blog/multi-tenancy).
+
+Sincronizar o índice em fila após commit. Jobs recarregam o estado atual, tratam exclusão/revogação e permitem reconstrução a partir dos fatos autorizados. A indexação assíncrona exige feedback de atualização e entrega direta do registro recém-criado ao seletor. Configurar índices por ambiente, campos filtráveis/ordenáveis, retentativas e observação das falhas. [Filas e atualização do Scout](https://laravel.com/docs/13.x/scout#queueing).
+
+O fluxo de restauração reconstrói o índice e valida seu isolamento antes de reabrir a busca. A evolução semântica e os embeddings seguem a fase de [RAG](doc:assistente-pessoal-rag), com avaliação própria do backend vetorial.
 
 ## Policies e validação
 

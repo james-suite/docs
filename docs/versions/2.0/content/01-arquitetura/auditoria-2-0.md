@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migration-00-base, notificacoes, ia-e-memoria, compatibilidade-legado
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-10
 ---
 
 ## Preservar e adaptar
@@ -28,6 +28,22 @@ Não capturar posição para jobs ou eventos do sistema. Importação confirmada
 ## Consulta
 
 Histórico contextual dentro do registro e painel com filtros por módulo, sujeito, ação, autor e período. Abrir detalhe e retornar preserva o filtro/página. Resolver nomes e links somente dentro do escopo atual; snapshot mínimo mantém a leitura quando o sujeito foi arquivado/excluído.
+
+## Reversão seletiva de alterações
+
+Oferecer **Reverter campo** em cada linha elegível do diff e **Revisar reversão** no evento, com seleção dos campos e prévia antes da confirmação. A operação usa o valor anterior de cada atributo alterado naquele evento. Campos ausentes do diff conservam seu valor atual, inclusive alterações feitas depois em outros atributos.
+
+Exemplo de uma edição que mudou descrição e valor de R$ 100 para R$ 120, seguida por outra edição somente da data. Reverter o primeiro evento restaura sua descrição anterior e R$ 100, preservando a data atual. Reverter somente a linha do valor preserva também a descrição atual.
+
+A prévia apresenta campo, valor anterior do evento, valor resultante daquele evento e valor atual. Quando o valor atual divergir do resultado registrado no evento, destacar o conflito com uma alteração posterior do mesmo campo. A pessoa pode selecionar conscientemente a restauração do valor antigo ou deixar esse campo como está. Mostrar quando o histórico disponível indicar mudanças posteriores mesmo que o valor tenha voltado a coincidir.
+
+Na confirmação, revalidar proprietário, Policy, estado, revisão atual e allowlist de campos reversíveis dentro da operação transacional. Mudança concorrente após a prévia exige nova revisão da proposta. Aplicar somente os campos selecionados pelas operações normais do módulo, com validação de tipos, relações e invariantes. Relações vinculadas usam a identidade preservada no histórico e exigem conferir existência, escopo e elegibilidade atuais.
+
+A reversão gera uma nova alteração auditada, com autor, campos efetivamente modificados, motivo quando informado, correlação e referência ao evento original. Preservar o histórico original e registrar a operação de forma idempotente. Um campo que já possui o valor desejado é apresentado como tal e dispensado da gravação.
+
+Começar por atributos simples de eventos de edição com valores anteriores completos e confiáveis. Cada domínio define os campos elegíveis e os grupos que precisam ser corrigidos juntos. Campos calculados, segredos, diffs incompletos e transformações legadas sem correspondência segura ficam identificados como indisponíveis para essa ação. Revisões privadas de diário/documentos seguem seu próprio contrato autorizado de histórico.
+
+Valores financeiros efetivados, pagamentos, exclusões e mudanças com efeitos relacionados usam o fluxo de correção ou estorno do módulo. A interface apresenta esse encaminhamento e seus efeitos antes da confirmação. O log fornece a referência histórica, enquanto o domínio coordena pagamentos, faturas, acertos, preços e demais dependências. O detalhamento técnico segue os contratos de [Integrações e consistência](doc:integracoes-e-consistencia).
 
 ## Retenção e outros históricos
 

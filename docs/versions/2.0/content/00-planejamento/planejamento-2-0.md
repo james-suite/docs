@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: home, modelo-de-dados, migrations, enums, escopo-2-0, fases-2-0, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 ## Direção
@@ -28,6 +28,8 @@ Cada conta terá seu próprio conjunto de dados. Relação entre usuários reais
 | [Migrations](doc:migrations) | Pacotes lógicos com tabelas, campos, FKs, índices e conversão, separados de suas dependências opcionais. |
 | [Enums](doc:enums) | Estados/conjuntos fechados com valores persistidos e regras. |
 | [Componentes técnicos](doc:componentes-tecnicos) | Models, Actions, Policies, casts, Jobs e componentes de interface. |
+| [Bibliotecas candidatas](doc:bibliotecas-candidatas) | Pesquisa de soluções prontas, licenças, prioridades e integração ao código existente. |
+| [Ecossistema Laravel](doc:ecossistema-laravel) | Recursos nativos aplicáveis aos módulos e opções adicionais aguardando decisão. |
 | [UI e UX](doc:ui-ux-2-0) | Flux gratuito e padrões adaptados do SGE. |
 | [Auditoria](doc:auditoria-2-0) | Autoria, escopo e histórico funcional. |
 | [Portabilidade e backup](doc:portabilidade-backup) | Exportação de todos os módulos, relatórios reproduzíveis e recuperação integral da instalação. |
