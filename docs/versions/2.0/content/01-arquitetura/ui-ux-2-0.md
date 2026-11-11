@@ -1,25 +1,70 @@
 ---
 id: ui-ux-2-0
 title: UI e UX — componentes e jornadas
-description: Preservação da experiência atual com componentes Flux gratuitos e padrões do SGE.
+description: Flux UI como padrão visual do James, com referências adaptadas de outros produtos.
 type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos, assistente-pessoal-rag
-source_refs:
-updated: 2026-11-10
+source_refs: https://tuffui.com/components
+updated: 2026-11-11
 ---
 
 ## Linguagem do produto
 
 Manter nomes e caminhos reconhecíveis: contatos, finanças, cartões, acertos e histórico. Melhorias devem reduzir trabalho para registrar a vida; não tornar cada cadastro uma ficha obrigatória extensa. Desktop é o foco de gestão; celular deve servir bem para captura, check-in, diário, recibo, gasto e consulta rápida.
 
-Usar o starter kit disponível em 2027 e Flux 2 gratuito. Reaproveitar do SGE o select pesquisável/creatable, upload, loading, confirmação e componentes de auditoria, adaptando-os à identidade do James. O combobox é implementação própria inspirada no SGE; não pressupor licença Pro.
+Usar o starter kit disponível em 2027. Flux UI, na edição gratuita, é o padrão de design do sistema: componentes, tokens, tipografia, cores, espaçamentos, superfícies, bordas, estados e movimentos definem a aparência final das telas. Preferir seus componentes; quando faltar um comportamento necessário, criar componente próprio do James usando o mesmo padrão visual e de acessibilidade.
+
+Outros produtos, inclusive SGE e TuffUI, podem inspirar organização, hierarquia, visualização de dados e comportamento de interação. Adaptar essas ideias para o estilo Flux UI; não importar a aparência visual de outra biblioteca. Do SGE podem ser reaproveitados os padrões de select pesquisável/creatable, upload, loading, confirmação e auditoria. O combobox do James será implementação própria inspirada no SGE, composta e estilizada conforme Flux UI; não pressupor licença Pro.
 
 Form Objects, validação, uploads temporários, propriedades computadas, paginação e estados de carregamento usam os recursos do Livewire descritos em [Ecossistema Laravel](doc:ecossistema-laravel). Avaliar lazy loading e navegação aprimorada por tela, com ciclo de vida explícito dos widgets JavaScript e preservação dos rascunhos.
 
 O histórico oferece reversão seletiva por campo ou seleção de campos de uma edição, com prévia de valores atuais/anteriores, conflitos e confirmação. Elegibilidade e correções de domínio seguem [Auditoria e histórico](doc:auditoria-2-0).
+
+## Referências visuais
+
+As referências abaixo servem para explorar hierarquia, composição, visualização de dados e interação. Não definem requisitos, textos, métricas, identidade visual nem dependências do James. A identidade visual continua sendo Flux UI; cada padrão deve ser refeito nesse estilo e validado nas jornadas dos módulos.
+
+### Dashboard financeiro encontrado no X
+
+![Captura de um dashboard financeiro compartilhada pelo usuário como referência visual](asset:references/dashboard-financeiro-x.png)
+
+A captura pode inspirar a hierarquia da tela inicial: navegação persistente, resumo do mês, leitura rápida de entradas e saídas, gráficos e informações úteis de cartões e contas. Reavaliar densidade, prioridade dos dados e adaptação para celular com os dados e fluxos reais do James. Os nomes, valores, marcas, cores e indicadores mostrados pertencem à captura e não são decisões para o produto. O permalink da publicação original não foi informado.
+
+### Dashboard financeiro Visor
+
+![Captura de um dashboard financeiro Visor compartilhada pelo usuário como referência visual](asset:references/dashboard-financeiro-visor.png)
+
+Esta captura complementa a referência anterior com ideias para orçamento mensal e limite diário, distribuição de gastos, resultado parcial comparado ao mês anterior, investimentos, recorrências, faturas, reserva de emergência e metas. No James, cada cartão deve existir apenas quando houver dados e regra de cálculo definidos pelo módulo correspondente; percentuais, previsões, pontuações, limites e exemplos desta imagem não são requisitos. Aplicar a composição e hierarquia ao padrão Flux UI.
+
+### TuffUI
+
+[TuffUI](https://tuffui.com/components) é uma referência ampla de interface: o catálogo reúne 82 componentes React em oito grupos, incluindo fundamentos visuais, telas completas, tabelas, gráficos, formulários, conversa e fluxos de aprovação. A lista abaixo registra o escopo consultado; ela não significa que o James precise reproduzir ou adotar cada padrão.
+
+| Grupo do catálogo | Componentes | Possível leitura para o James |
+| --- | --- | --- |
+| Foundations (24) | Surface, Action Button, Choice Controls, Status Pill, Segmented Control, Progress Bar, Rolling Number, Text Field, Tooltip, Action Menu, Popover Panel, Modal Sheet, Toast Stack, Select Field, Tab Panels, Disclosure, Agent Avatar, Loading Skeleton, Range Slider, Key Hint, Loader, Empty State, Date Field e Drop Zone | Vocabulário para superfícies, navegação, formulários, feedback e estados vazios/carregando; comparar com Flux e os componentes próprios do James antes de criar algo. |
+| Screens (7) | AI Chat, Coding Agent, Data Answer, Booking Assistant, Agent Console, Support Widget e Handoff Inbox | Composições de página prontas. Data Answer pode inspirar análises; Booking Assistant pode inspirar a criação assistida de evento; os demais dependem de uma necessidade própria do produto. |
+| Conversation (13) | Streaming Message, Agent Status, Message Branches, Response Feedback, Agent Composer, Agent Question, Chat Thread, User Message, Conversation List, Prompt Suggestions, Attachment Preview, Code Block e Source List | Padrões para um futuro assistente, incluindo conversa, seleção de respostas, anexos e fontes que levam aos registros usados. |
+| Tools & Approvals (5) | Tool Approval Queue, Tool Call Block, File Changes, Terminal Output e MCP Servers | Referência para explicar uma ação proposta, seus dados e seu estado. A fila de aprovação pode inspirar a revisão de propostas do assistente; terminal, alterações de código e administração de servidores não são requisitos dos módulos pessoais. |
+| Interactive Answers (19) | Chart Card, Dot Histogram, Tick Gauge, Mirror Strips, Radial Dots, Match Field, Radar Chart, Diverging Bars, Blast Radius, Iso Bars, Hex Density, Data Table, Stat Grid, Form Card, Result Carousel, Slot Picker, Confirmation Card, JSON Viewer e Artifact Panel | Reúne cartões e indicadores, visualizações especializadas, tabela, formulário, seleção de horário, confirmação e painel de conteúdo. É a principal referência do catálogo para dashboards e resultados interativos. |
+| Planning & Execution (2) | Background Agents Panel e Checkpoint Timeline | Podem inspirar a apresentação de uma tarefa longa e de suas etapas, caso alguma operação futura precise disso. Não implicam execução autônoma contínua. |
+| Observability (8) | Run Trace, Eval Results, Lap Timer, Eval Race, Tool Call Graph, Deploy Timeline, Delivery Heatmap e Message Log | São visualizações voltadas principalmente a execuções e avaliação de agentes/sistemas. Podem servir como referência interna pontual para depurar uma execução de IA; não definem uma plataforma de monitoramento em produção para o James. |
+| Settings & Usage (4) | Context Window Meter, Memory Panel, Usage Summary e Rate Limits | Memory Panel pode inspirar a tela em que a pessoa consulta, corrige ou apaga o que o assistente lembra. Uso, contexto e limites só devem aparecer se ajudarem a pessoa a entender configuração ou custo da IA. |
+
+#### Aplicações possíveis no James
+
+- **Início e finanças:** Chart Card, Stat Grid e Data Table podem inspirar resumos de entradas/saídas, balanço, faturas e comparações por período. A mesma linguagem pode ser avaliada para histórico de preços, metas, veículos e saúde, sem obrigar todos esses módulos a usar gráficos.
+- **Leitura correta dos dados:** todo cartão ou gráfico precisa dizer período, unidade, moeda e critério do total. Consumo, caixa, saldo de acertos e dívida de cartão continuam medidas distintas. Não copiar pontuação financeira ou indicador da captura/TuffUI sem uma definição de domínio própria.
+- **Filtros e formulários:** Select Field, Choice Controls, Date Field, Tab Panels, Disclosure, Modal Sheet, Empty State e Drop Zone são referências para interação recorrente. Reusar Flux, o combobox do SGE e componentes existentes quando cobrirem a necessidade; criar componente do James quando faltar comportamento ou regra de domínio.
+- **Assistente:** Data Answer, Source List, Attachment Preview, Agent Question e Confirmation Card podem inspirar respostas com fontes e propostas de alteração. A proposta deve mostrar os registros e os campos afetados, permitir editar/cancelar e só gravar após confirmação no módulo dono do dado.
+- **Agenda:** Slot Picker e Booking Assistant podem inspirar a apresentação de data, horário, fuso e confirmação quando o assistente sugerir um evento. Eles não escolhem integração de calendário nem autorizam gravação sem revisão.
+- **Memória do James:** Memory Panel é uma referência para transparência sobre informações lembradas, sua origem/escopo e ações de corrigir ou esquecer, conforme [Assistente pessoal e RAG](doc:assistente-pessoal-rag).
+- **Visualizações especializadas:** histogramas, radial dots, radar, mapas de densidade e gráficos de comparação só entram quando uma pergunta real do módulo se beneficia deles e há dados suficientes. Dar preferência a tabela ou gráfico simples quando transmitir o mesmo resultado com menos interpretação.
+
+O catálogo documenta componentes React instaláveis via shadcn e informa licença MIT. Para o James, a referência atual é de organização, visualização e interação: os componentes equivalentes devem manter a aparência Flux UI. Isso não adiciona React/shadcn como dependência nem altera a direção prevista de Laravel, Livewire e Flux. Qualquer decisão futura de reutilizar código deve conferir a versão e a licença do componente específico no momento da implementação.
 
 ## Jornadas prioritárias
 
