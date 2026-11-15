@@ -7,8 +7,8 @@ status: proposed
 visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos, assistente-pessoal-rag
-source_refs: https://tuffui.com/components
-updated: 2026-11-11
+source_refs: https://tuffui.com/components, https://github.com/last-refuge/overlook, https://easyui.site/components
+updated: 2026-11-15
 ---
 
 ## Linguagem do produto
@@ -38,6 +38,26 @@ A captura pode inspirar a hierarquia da tela inicial: navegação persistente, r
 ![Captura de um dashboard financeiro Visor compartilhada pelo usuário como referência visual](asset:references/dashboard-financeiro-visor.png)
 
 Esta captura complementa a referência anterior com ideias para orçamento mensal e limite diário, distribuição de gastos, resultado parcial comparado ao mês anterior, investimentos, recorrências, faturas, reserva de emergência e metas. No James, cada cartão deve existir apenas quando houver dados e regra de cálculo definidos pelo módulo correspondente; percentuais, previsões, pontuações, limites e exemplos desta imagem não são requisitos. Aplicar a composição e hierarquia ao padrão Flux UI.
+
+### Overlook — referência para e-mails
+
+[Overlook](https://github.com/last-refuge/overlook), consultado em 15 de novembro de 2026, é um cliente Linux em Rust/GPUI com licença MIT. Seu README descreve uma experiência Gmail com três painéis, rascunhos persistentes e fila de saída durável. Os padrões abaixo podem orientar o futuro módulo de e-mails do James.
+
+- Navegação por pastas/marcadores, lista de conversas e leitura lado a lado, adaptadas ao celular e ao estilo Flux UI.
+- Editor com salvamento de rascunho, destinatários sugeridos, anexos, assinaturas e prévia. A assistência de escrita usa os controles de fontes dos diários já planejados.
+- Estados visíveis de envio e reconciliação de resultado incerto antes de tentar novamente, com atenção à duplicidade de mensagens.
+- Leitura de HTML isolada, com conteúdo remoto condicionado à autorização e anexos consultáveis.
+- Organização de mensagens por prioridade com regras explicáveis e reversíveis.
+
+Avaliar esses comportamentos no contexto do servidor Laravel, incluindo persistência, concorrência entre dispositivos e sincronização com Gmail. A referência mantém Flux UI como padrão visual. O contrato de escrita assistida está em [Assistente pessoal e RAG](doc:assistente-pessoal-rag).
+
+### EasyUI — referência de componentes e interações
+
+[EasyUI](https://easyui.site/components), consultado em 15 de novembro de 2026, apresenta componentes React com Tailwind, exemplos interativos e código TypeScript. A página inicial também destaca interações com Framer Motion. O catálogo inclui formulários, navegação, botões, feedback, overlays e autenticação, além de componentes para dados.
+
+Avaliar como inspiração Data Table, Stat Card, gráficos de barras, rosca, área e linha, Activity Heatmap e os padrões de paginação, menus e accordion. Esses exemplos podem apoiar tabelas de gestão, resumos financeiros, histórico de atividades e formulários do James. Prompt Input pode orientar a entrada de pedidos para a escrita assistida.
+
+Adaptar hierarquia, comportamento e movimento aos componentes e tokens Flux UI. Priorizar legibilidade dos dados, teclado, foco, estados de carregamento e preferência por movimento reduzido. A implementação do James segue Livewire/Blade e seus componentes existentes, com interação adicional quando houver benefício concreto na jornada.
 
 ### TuffUI
 

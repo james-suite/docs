@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: componentes-tecnicos, bibliotecas-candidatas, arquitetura-2-0, ui-ux-2-0, decisoes-e-pendencias, fases-2-0, migracao-2-0, notificacoes
 source_refs: https://laravel.com/docs/13.x, https://livewire.laravel.com/docs/4.x, https://fluxui.dev/docs/installation, https://github.com/livewire/blaze
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## Direção e alcance da pesquisa
@@ -21,7 +21,7 @@ Priorizar uma API nativa que atenda ao contrato do James. Usar pacotes oficiais 
 
 | Recurso | Aplicação no James | Contrato de integração e fonte |
 | --- | --- | --- |
-| Starter kit e Fortify | Base de autenticação, recuperação de senha, confirmação e segurança da conta. | Personalizar os pontos de extensão do kit. A escolha entre registro aberto e cadastro pelo administrador permanece em pendências. [Starter kits e autenticação](https://laravel.com/docs/13.x/starter-kits#authentication). |
+| Starter kit e Fortify | Base de autenticação, recuperação de senha, confirmação e segurança da conta. | Personalizar os pontos de extensão do kit. Conta inicial criada por seeder de instalação e primeiro acesso com conclusão obrigatória do perfil, conforme [Arquitetura do James](doc:arquitetura-2-0). Habilitar login, recuperação e manutenção da própria conta. Cadastro público fica desabilitado. [Starter kits e autenticação](https://laravel.com/docs/13.x/starter-kits#authentication). |
 | Policies, Gates e validação | Propriedade dos registros, uploads privados, seleção de contatos e acesso a operações por estado. | Reutilizar regras por entrada com Form Requests ou validação Livewire. IDs de relações têm validação pelo espaço e revalidação transacional. [Autorização](https://laravel.com/docs/13.x/authorization), [validação](https://laravel.com/docs/13.x/validation). |
 | Eloquent, casts e transações | Estados tipados, datas, relações e operações de pagamento, rateio e revisão. | Usar casts nativos para enums/datas e casts próprios somente onde o contrato exigir. Transações, FKs e bloqueios do banco protegem as somas e relações. [Casts](https://laravel.com/docs/13.x/eloquent-mutators), [transações](https://laravel.com/docs/13.x/database#database-transactions). |
 | Number, Carbon e configuração | Formatação e contexto regional compartilhados por todos os módulos. | Seguir a fonte canônica de locale, moeda, fuso, escalas e precisão já definida em [Componentes técnicos](doc:componentes-tecnicos). |
@@ -71,9 +71,10 @@ Pint, Boost e Pail constam no manifest atual do James. Prompts faz parte da base
 | Ferramenta | Uso e integração |
 | --- | --- |
 | Blaze, do ecossistema Livewire | Aproveitar a otimização de componentes Blade/Flux já incluída no starter kit Livewire consultado. Conferir a versão do kit de 2027 e compatibilidade dos componentes portados do SGE, especialmente composers, dados compartilhados e `@aware`. Estratégias adicionais de memoização e folding dependem de validação com conteúdo dinâmico. [Starter kit](https://github.com/laravel/livewire-starter-kit/blob/main/composer.json), [Blaze](https://github.com/livewire/blaze). |
-| Sail | Usar como ambiente Docker de desenvolvimento, com PostgreSQL, Meilisearch e os demais serviços efetivamente escolhidos. Versionar a configuração do ambiente conforme as necessidades do James. [Sail](https://laravel.com/docs/13.x/sail). |
 
 Na revisão com o usuário, Horizon e Pulse foram dispensados da seleção de ferramentas de produção. Pennant e Telescope foram descartados. A operação usa os recursos básicos de logs, falhas de jobs, saúde e backup previstos nos contratos do James.
+
+A instalação de desenvolvimento e do servidor usa serviços gerenciados diretamente pelo sistema operacional. A decisão de operar sem Docker substitui a seleção anterior de Sail. O contrato operacional está em [Arquitetura do James](doc:arquitetura-2-0).
 
 ## Reverb e Echo em avaliação
 

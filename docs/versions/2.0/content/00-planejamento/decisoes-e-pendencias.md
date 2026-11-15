@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-10
+updated: 2026-11-14
 ---
 
 ## Confirmado pelo usuário
@@ -18,12 +18,14 @@ updated: 2026-11-10
 - Preservar o que funciona no James atual, usando o SGE como referência de planejamento, componentes, UX e auditoria.
 - Usar Number e Carbon disponíveis no ecossistema Laravel, com locale, moeda e fuso centralizados e reutilizados entre módulos. Number atende apresentação, Carbon atende datas/cálculos temporais e o financeiro conserva aritmética exata.
 - Usar Laravel Scout com Meilisearch na busca textual e nos seletores pesquisáveis, aproveitando a integração do SGE e aplicando isolamento por espaço no servidor.
-- Usar Blaze para os componentes Blade/Flux, aproveitando sua inclusão no starter kit Livewire, e Sail como ambiente de desenvolvimento. A versão efetiva será conferida no kit de 2027.
+- Executar o James diretamente no servidor, com instalação e gerenciamento dos serviços no sistema operacional. Desenvolvimento também usa instalação direta. Essa decisão substitui a escolha anterior de Sail.
+- Usar Blaze para os componentes Blade/Flux, aproveitando sua inclusão no starter kit Livewire. A versão efetiva será conferida no kit de 2027.
 - Dispensar Horizon e Pulse da seleção de ferramentas de produção e descartar Pennant e Telescope. Reverb/Echo seguem em avaliação pelos casos concretos de atualização da interface.
 - Migração por arquivo completo: baixar no navegador do 1.x, enviar no navegador do 2.0 e importar na própria conta autenticada.
 - Vários pagamentos numa transação, arquivamento de contas/cartões e melhoria de tags, cartões e notificações.
 - Rateios podem não ter parcela própria; o usuário pode pagar/organizar sem consumir. Isso não significa conta bancária conjunta.
-- Não há relação entre contas de usuários prevista inicialmente. Contatos e participantes de rateio não precisam ser usuários.
+- Instalação pessoal com um único usuário, mantendo a tabela users capaz de receber múltiplos registros e todas as FKs de propriedade, autoria e domínio. Cadastro público, gestão de usuários e compartilhamento ficam fora do escopo atual. Contatos e participantes de rateio são registros pessoais.
+- Criar a conta inicial por seeder de instalação idempotente, com credenciais protegidas e revisão de nome/e-mail e senha no primeiro acesso, conforme o contrato de arquitetura.
 - Planejar módulos existentes no roadmap, empresas/relacionamentos, check-ins, diário e veículos com vários itens de serviço/checklist.
 - Fazer check-ins pelo próprio site; não criar API ou automação externa para iOS/Android. A posição atual pode ser preenchida pelo navegador mediante ação e permissão da pessoa.
 - Poder registrar a posição do navegador junto a cada criação/edição/ação manual feita no site e consultar essas posições no histórico e num mapa. A captura é pontual ao salvar, nunca contínua ou em segundo plano; o sistema ainda precisa da permissão do navegador.
@@ -39,20 +41,22 @@ updated: 2026-11-10
 - Não usar uma tag “reembolso” para acertos entre pessoas/empresas. A contraparte associada à obrigação/liquidação será uma dimensão de filtro e gráfico; liquidação de acerto, devolução comercial e receita terão fluxos diferentes.
 - Quero planejar uma evolução do James como assistente pessoal que consulta dados autorizados e ajuda a agir entre módulos; primeiro lançamento continua com funções delimitadas, e a evolução começa por busca fundamentada com fontes.
 - Integração inicial com Calendário do iPhone por feed `.ics` acessível por URL secreta e somente leitura; eventos do James aparecem no iPhone, sem trazer edições externas de volta. CalDAV do James e Google Calendar por OAuth ficam como possibilidades posteriores. Não planejar EventKit ou recursos que dependam de app iOS do James; a agenda interna funciona sem conectores.
+- Permitir vários diários criados livremente, com entradas vinculadas por FK. Textos selecionados podem orientar estilo e conteúdo de rascunhos assistidos, com autorizações independentes por diário e revisão das fontes. O usuário usa Gmail e considera integração de leitura/escrita assistida como possibilidade futura.
+- Investimentos devem usar dados e integrações gratuitas. Propor posições por ativo, quantidade e custo, com atualização de cotações, alternativa manual/importação e integração financeira sem dupla contagem, conforme [Patrimônio e bens](doc:patrimonio).
 - Quero guardar documentos pessoais como comprovantes, escrituras e certidões. Uploads feitos nos outros módulos devem ser localizáveis numa área de documentos; fotos entram como anexos quando necessário, sem tornar galeria de fotos o objetivo.
 
 O histórico deve permitir propor reversão somente dos campos alterados em uma edição, inclusive seleção por linha, preservando outros atributos atuais. Prévia, conflitos posteriores, autorização e encaminhamento a correções financeiras seguem [Auditoria e histórico](doc:auditoria-2-0).
 
 ## Propostas técnicas para revisar
 
-Os recursos nativos com uso concreto estão mapeados em [Ecossistema Laravel](doc:ecossistema-laravel). Blaze e Sail estão confirmados. A avaliação de Reverb/Echo apresenta os usos possíveis em tarefas assíncronas, notificações e atualização entre dispositivos, aguardando decisão do usuário.
+Os recursos nativos com uso concreto estão mapeados em [Ecossistema Laravel](doc:ecossistema-laravel). Blaze está confirmado. O desenvolvimento e a implantação usarão instalação direta dos serviços, conforme a decisão de operar sem Docker e Sail. A avaliação de Reverb/Echo apresenta os usos possíveis em tarefas assíncronas, notificações e atualização entre dispositivos, aguardando decisão do usuário.
 
 | Proposta | Motivo e ponto de revisão |
 | --- | --- |
 | Documento + pagamentos + alocações | Atende múltiplas formas, datas e quitações sem duplicar transação. |
 | Livro interno balanceado | Ajuda transferências, passivos de cartão e liquidações de obrigações sem tratá-las como receita/despesa; validar custo com protótipo antes de aprovar. |
 | Pagamentos de acertos ligados a caixa | Tipo `Settlement` pode movimentar uma conta pessoal e limpar receber/pagar; não cria alocação da compra original. Registro de acerto sem conta acompanhada não inventa posting. |
-| Espaço pessoal 1:1 com usuário | Limite consistente de dados; sem membership/colaboração agora. |
+| Espaço pessoal 1:1 com usuário | Preservar o limite e as FKs na instalação pessoal. O banco permite múltiplos usuários estruturalmente; o produto opera com um proprietário. |
 | Record registry e vínculos tipados | Conecta diário, empresas, compras e veículos; validar que não complica os Models nem duplica entidades. |
 | Categoria financeira + tags específicas em dois níveis | Usar a categoria para agregação ampla e tags para descrever o registro com precisão; preservar tags no cabeçalho e em cada item sem duplicação nem dupla contagem. |
 | TagPicker com criação manual e automática | A pessoa pode criar tags no formulário; a IA cria e aplica uma tag específica ausente durante uma classificação autorizada, sem confirmação individual, com proveniência, auditoria e opção de desfazer. |
@@ -106,7 +110,7 @@ Requisitos reforçados pelo usuário incluem Dinheiro físico como novo rótulo 
 
 O desenho propõe PaymentMethod opcional direto no pagamento, categorias hierárquicas com fallback por item, chips tipados de pessoas/veículos e alocações de ajustes globais com resíduo explícito. O cadastro separado de meios por conta fica dispensado nesta proposta. A validação de UX deve verificar se o campo opcional de meio traz benefício no uso cotidiano.
 
-Portabilidade permanente cobre dados pessoais de todos os módulos e seus vínculos. O backup operacional cobre a instalação multiusuário completa. O contrato está em [Exportação completa, relatórios e backup](doc:portabilidade-backup).
+Portabilidade permanente cobre dados pessoais de todos os módulos e seus vínculos. O backup operacional cobre a instalação pessoal completa. O contrato está em [Exportação completa, relatórios e backup](doc:portabilidade-backup).
 
 ## Revisão integrada de 7 de novembro
 

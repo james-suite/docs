@@ -8,14 +8,14 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, migrations, enums, componentes-tecnicos, compatibilidade-legado, decisoes-e-pendencias, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## Ordem proposta
 
 - [ ] **00 — Descoberta e decisões:** inventário 1.x e regras de relatórios; aprovar categorias/tags, recorte do lançamento e decisões em [Pendências](doc:decisoes-e-pendencias).
 - [ ] **01 — Provas de modelagem:** validar documento/pagamento/alocação, livro interno e records com compra mista, fatura parcial, liquidação de acerto, devolução comercial e rateio sem parcela própria. Definir fonte única dos saldos antes de escrever todas as migrations.
-- [ ] **02 — Fundação:** starter kit de 2027, Flux 2 gratuito, Blaze, ambiente de desenvolvimento Sail, identidade, espaço pessoal, Policies, tipos monetários, contexto regional compartilhado com Number/Carbon, Scout com Meilisearch, mídia privada e auditoria. [Pacotes 00–02](doc:migrations) e [contratos compartilhados](doc:componentes-tecnicos).
+- [ ] **02 — Fundação:** starter kit de 2027, Flux 2 gratuito, Blaze, conta inicial única por seeder de instalação, onboarding obrigatório com perfil/senha, FKs de propriedade preservadas, ambiente de desenvolvimento com serviços instalados diretamente, identidade, espaço pessoal, Policies, tipos monetários, contexto regional compartilhado com Number/Carbon, Scout com Meilisearch, mídia privada e auditoria. [Pacotes 00–02](doc:migrations) e [contratos compartilhados](doc:componentes-tecnicos).
 - [ ] **03 — Pessoas e classificação:** contatos/empresas/grupos, tags/categorias, aliases, combobox com criação e regras locais. [Pessoas](doc:pessoas-empresas) e [tags](doc:tags).
 - [ ] **04 — Financeiro:** documentos/itens e uploads por meio do registro documental compartilhado, leitura revisável de XML/QR/imagem, adaptadores fiscais por UF (avaliar o scraper existente do RS), pagador explícito, múltiplos pagamentos, transferências, estornos, relatórios e arquivamento. Comprovantes enviados nesta tela também aparecem na biblioteca; a mesma regra será reutilizada nos demais módulos. Provar idempotência e somas sob concorrência. [Finanças](doc:financas) e [documentos](doc:documentos-arquivos).
 - [ ] **05 — Cartões e recorrências:** ciclos congelados, parcelas, várias contas por fatura, limite e ocorrências sem duplicatas. [Cartões](doc:cartoes).

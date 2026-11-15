@@ -8,14 +8,14 @@ visibility: public
 tags: james/2.0, planejamento
 related: home, modelo-de-dados, migrations, enums, escopo-2-0, fases-2-0, decisoes-e-pendencias, assistente-pessoal-rag, modulos-e-integracoes
 source_refs:
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## Direção
 
 O planejamento preserva a experiência e os dados úteis do James, melhora o núcleo financeiro e prepara módulos pessoais mais conectados. Esta é a documentação principal; a documentação da versão 1.x fica disponível no seletor de versões e na página inicial. Desenvolvimento previsto para 2027 com starter kit disponível naquele momento e Flux 2 gratuito.
 
-Cada conta terá seu próprio conjunto de dados. Relação entre usuários reais não está prevista inicialmente; rateios são registros privados com contatos. A migração será por arquivo baixado do 1.x e enviado no navegador do 2.0, sempre para a conta autenticada.
+A instalação opera com um único usuário proprietário. A tabela `users` permanece convencional e permite múltiplos registros estruturalmente. O fluxo de instalação cria uma conta, e o produto oferece login e manutenção do próprio perfil. Cadastro público, convites, gestão de outras contas e compartilhamento ficam fora do escopo atual. As FKs de propriedade e relações de domínio são preservadas. Rateios são registros pessoais com contatos. A migração será por arquivo baixado do 1.x e enviado no navegador do 2.0, sempre para a conta autenticada.
 
 ## Planejamento técnico
 

@@ -8,21 +8,21 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## `spaces`
 
 | Campo ou grupo | Contrato |
 | --- | --- |
-| `owner_user_id` | FK users, NOT NULL e UNIQUE; um espaço pessoal por conta na primeira versão. |
+| `owner_user_id` | FK users, NOT NULL e UNIQUE; um espaço pessoal por usuário. O bootstrap cria o espaço da única conta inicial. |
 | `name` | Nome de exibição opcional; não é identificador de autorização. |
 | `currency, timezone` | Fonte canônica da moeda padrão ISO 4217 e do fuso IANA do espaço. O contexto regional compartilha esses valores com formulários, Number/Carbon, filas e relatórios. Cada fato preserva sua própria moeda e seu fuso observado quando conhecidos. |
 | `archived_at` | Indisponibilidade do espaço; não elimina dados. |
 
 ## Integridade, índices e comportamento
 
-- Não criar memberships, convites de workspace ou papéis colaborativos agora: o usuário não prevê relação entre contas reais.
+- A instalação é pessoal e opera com um único usuário. Manter a FK de proprietário e a unicidade por usuário, permitindo vários espaços estruturalmente. Memberships, convites e papéis colaborativos ficam fora do escopo atual.
 - space_id sempre vem da conta autenticada; importação não pode escolher proprietário pelo arquivo.
 - Cada tabela escopada tem UNIQUE(space_id, id), permitindo FKs compostas entre registros de um mesmo espaço. Policies e Actions também revalidam o escopo.
 - Adicionar FKs de space_id em media e activity_log após criar spaces. Criar então `activity_location_contexts` como extensão opcional de `activity_log`, com escopo e `correlation_id` único; não colocar coordenadas no JSON de auditoria.

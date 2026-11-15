@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: modelo-de-dados, componentes-tecnicos, enums, migrations, ui-ux-2-0, ia-e-memoria, assistente-pessoal-rag, decisoes-e-pendencias
 source_refs:
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## Direção confirmada
@@ -17,11 +17,25 @@ Laravel com Livewire, Blade, Flux 2 gratuito e o starter kit oficial disponível
 
 O produto mantém os módulos reconhecíveis do James atual e reorganiza a persistência que limita múltiplos pagamentos, cartões e histórico. Código de domínio validado pode inspirar a implementação; a reescrita não é motivo para abandonar regras úteis.
 
-## Multiusuário inicial
+## Implantação no servidor
 
-Cada conta tem dados pessoais isolados. Relacionamento entre contas reais não está previsto inicialmente. O Space é o limite interno pessoal 1:1, sem memberships nem compartilhamento na primeira versão.
+Executar o James diretamente no servidor, com PHP e extensões, servidor HTTP, PostgreSQL, Meilisearch e demais serviços escolhidos instalados e gerenciados pelo sistema operacional. Workers de fila e serviços auxiliares persistentes têm processos supervisionados; o scheduler executa pelo agendador do servidor. Desenvolvimento segue instalação direta, substituindo a escolha anterior de Sail.
+
+Manter código, configuração e dados persistentes identificados para atualização e backup. O procedimento de atualização deve prever dependências, migrations, caches e reinício dos processos persistentes. Integrações podem se comunicar por API ou processo auxiliar conforme a necessidade concreta. A decisão de implantação é operar sem Docker.
+
+## Instalação pessoal
+
+A instalação opera com um único usuário proprietário. A tabela `users` permanece convencional e permite múltiplos registros estruturalmente. O fluxo de instalação cria uma conta, e o produto oferece login e manutenção do próprio perfil. Cadastro público, convites, gestão de outras contas e compartilhamento ficam fora do escopo atual. O Space permanece como limite interno pessoal 1:1, vinculado ao proprietário por FK. A autenticação, as Policies e o escopo persistido continuam aplicados a todas as entradas.
 
 Contato, empresa e participante de rateio pertencem ao catálogo do próprio usuário. Não vincular contas reais automaticamente por e-mail/documento. Dividir despesas com parcela própria zero funciona dentro do próprio histórico.
+
+## Conta inicial e primeiro acesso
+
+Prever um seeder específico de instalação para criar o usuário inicial e seu espaço pessoal em uma transação. Receber credenciais pela configuração protegida da instalação, usar o hasher do Laravel e manter senhas fora do código, dos logs e dos dados de exemplo. O seeder cria somente quando a instalação ainda está vazia. Reexecutar preserva a conta, suas credenciais e seus dados. Execuções concorrentes devem ser serializadas por um bloqueio de instalação.
+
+No primeiro login, solicitar revisão de nome/e-mail e definição de senha pessoal antes de liberar os módulos. Registrar a conclusão em `onboarding_completed_at` e aplicar a restrição também nas ações do servidor. A troca de e-mail segue a verificação escolhida no starter kit. Recuperação de acesso e edição de perfil continuam disponíveis depois da configuração inicial.
+
+O mecanismo de bootstrap mantém a cardinalidade inicial na aplicação. O banco conserva PKs e FKs convencionais, permitindo várias linhas em `users` e espaços pessoais independentes. Nunca inferir propriedade por `users.first()` ou por um ID fixo.
 
 ## Organização modular
 

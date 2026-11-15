@@ -1,14 +1,14 @@
 ---
 id: portabilidade-backup
 title: Exportação completa, relatórios e backup
-description: Portabilidade contínua de todos os módulos e recuperação integral da instalação multiusuário.
+description: Portabilidade contínua de todos os módulos e recuperação integral da instalação pessoal.
 type: planning
 status: proposed
 visibility: public
 tags: james/2.0, planejamento, exportação
 related: migracao-2-0, migration-20-imports, compatibilidade-legado, documentos-arquivos, tags, financas
 source_refs:
-updated: 2026-11-07
+updated: 2026-11-14
 ---
 
 ## Escopos e entrega
@@ -17,7 +17,7 @@ updated: 2026-11-07
 | --- | --- | --- |
 | Exportação completa da conta | Todos os dados pessoais retidos de todos os módulos, versões e vínculos, com arquivos originais e metadados | Própria conta autenticada, portabilidade pelo navegador |
 | Exportação de relatório | Resultado filtrado, medida, dimensões, regras de agregação e cobertura | Própria conta autenticada, análise em planilha e outros sistemas |
-| Backup integral da instalação | Banco completo, armazenamento privado, configurações necessárias, versões e segredos de recuperação protegidos | Operador autorizado da instalação, restauração do serviço multiusuário |
+| Backup integral da instalação | Banco completo, armazenamento privado, configurações necessárias, versões e segredos de recuperação protegidos | Operador autorizado da instalação, restauração do serviço pessoal |
 
 A exportação continua disponível no James 2.0 ao longo do uso. A migração do 1.x utiliza o mesmo princípio de pacote versionado e adaptadores por versão. Cada módulo precisa ter um contrato de exportação antes da entrega.
 

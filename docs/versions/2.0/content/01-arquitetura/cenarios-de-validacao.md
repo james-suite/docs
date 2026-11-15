@@ -8,20 +8,40 @@ visibility: public
 tags: james/2.0, planejamento, validação
 related: planejamento-2-0, modelo-de-dados, financas, cartoes, acertos, tags, migracao-2-0, fases-2-0, assistente-pessoal-rag
 source_refs:
-updated: 2026-11-10
+updated: 2026-11-14
 ---
 
 Estes casos são critérios para revisar o plano e, na implementação, criar testes de domínio e integração. Não representam testes já executados ou recursos implementados. Os números abaixo usam reais e nenhuma conversão de moeda.
+
+## Instalação pessoal e integridade
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Executar o seeder de instalação pela primeira vez e repetir, inclusive com duas execuções concorrentes. | Uma conta inicial e um espaço criados atomicamente sob bloqueio. Repetição preserva senha e dados existentes. |
+| Entrar antes de concluir o primeiro acesso e tentar acessar uma ação diretamente. | Servidor exige revisão de nome/e-mail e senha pessoal e registra a conclusão antes de liberar os módulos. |
+| Tentar cadastro público ou criação de outra conta pela interface. | O produto oferece somente acesso e manutenção do proprietário. |
+| Inserir outro usuário por fixture/manutenção e tentar vincular registros de espaços diferentes. | Banco permite a linha adicional em users. FKs compostas e validação de escopo impedem vínculos entre espaços. |
+| Executar uma automação sem sessão web. | Job recebe IDs explícitos do proprietário/espaço e conserva autoria/origem e integridade dos vínculos. |
 
 ## Contexto regional e busca
 
 | Caso | Resultado esperado |
 | --- | --- |
-| Duas contas com locale, moeda e fuso diferentes usam o mesmo worker, e um dos jobs falha. | Cada execução resolve suas preferências e limpa o contexto. A formatação e as datas da conta seguinte usam seus próprios valores. |
+| Em teste de isolamento, duas fixtures de contas com locale, moeda e fuso diferentes usam o mesmo worker, e um dos jobs falha. | Cada execução resolve suas preferências e limpa o contexto. A formatação e as datas da conta seguinte usam seus próprios valores. |
 | A pessoa muda a moeda padrão para USD, mantendo uma compra histórica em BRL. | Novos formulários recebem o padrão USD. A compra continua em BRL, com exibição pela moeda do registro e preservação exata dos valores exportados. |
 | Um instante UTC aparece em telas e avisos no fuso do espaço, junto de um evento de dia inteiro. | Carbon preserva o instante na conversão. O evento mantém sua data local. Componentes, gráficos e notificações usam os mesmos presets regionais. |
 | A criação inline de um contato termina antes da indexação no Meilisearch. | O seletor recebe o registro persistido diretamente. A opção mantém sua identidade e aparece na busca após a sincronização. |
 | Uma busca tenta consultar outro espaço ou retorna um candidato já excluído com índice atrasado. | Filtro de espaço é obrigatório no servidor, inclusive em facetas e contagens. Revalidação no banco impede exibir o registro excluído ou executar ações sobre ele. |
+
+## Diários e escrita assistida
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Criar vários diários e mover uma entrada entre dois deles. | FKs conservam espaço e diário válidos. Record, revisões e vínculos da entrada permanecem e a mudança aparece na auditoria. |
+| Arquivar um diário ou tentar excluir um diário com entradas. | Arquivamento conserva histórico. Exclusão exige realocar entradas ou confirmar exclusão do conteúdo pelo fluxo de retenção. |
+| Autorizar um diário somente para estilo e pedir um e-mail. | A tarefa usa características de escrita autorizadas e preserva fatos íntimos dos exemplos. A pessoa pode conferir e remover as fontes antes da geração. |
+| Revogar a finalidade, editar uma fonte ou mover a entrada durante a preparação do contexto. | Revalidação impede usar contexto desatualizado e invalida derivados afetados. |
+| Exportar e importar vários diários com revisões e anexos. | Estrutura e FKs são reconstruídas, fontes continuam rastreáveis e envio a IA no destino exige autorização renovada. |
 
 ## Financeiro e cartões
 
@@ -221,3 +241,14 @@ Estes casos são critérios para revisar o plano e, na implementação, criar te
 ## Gate de aprovação
 
 O protótipo de schema precisa resolver os casos centrais de dinheiro, cartão, rateio e migração antes de consolidar ledger/records. Os demais casos orientam cada marco; não exigir todos os módulos futuros para validar a migração do núcleo atual.
+
+
+## Investimentos — revisão do desenho
+
+| Caso | Resultado esperado |
+| --- | --- |
+| Comprar 100 cotas a R$ 10, cotar a R$ 9,80 e registrar R$ 10 de rendimento recebido, sem taxas/vendas. | Custo R$ 1.000, valor de mercado R$ 980, resultado não realizado -R$ 20 e rendimento R$ 10 separados. Caixa e posição integram o patrimônio uma vez. |
+| Cotação gratuita indisponível ou sem cobertura para o ativo. | Último preço mantém fonte/data e indicação de desatualização. Permitir cotação manual datada/importação e indicar cobertura incompleta. |
+| Importar saldo legado sem quantidade nem custo conhecidos. | Mostrar posição inicial pendente de complemento, conservar origem e pedir revisão antes de substituir o saldo na consolidação. |
+| Repetir uma compra importada ou registrar rendimento já vinculado ao financeiro. | Identidade externa/idempotência evitam duplicar posição, recebimento e movimento de caixa. |
+| Receber evento que altera cotas ou custo de aquisição. | Revisar e aplicar o evento com origem e regras próprias, conservando histórico de operações e avaliação. |

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: migrations, enums, financas, acertos, pessoas-empresas, veiculos, produtos-precos, arquitetura-2-0, compatibilidade-legado, assistente-pessoal-rag, migration-19-health, saude-treinos
 source_refs:
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## Estado do desenho
@@ -19,9 +19,11 @@ Dois pontos pedem protótipo antes de fechar o schema: o livro financeiro intern
 
 ## Limite pessoal
 
-Cada `User` possui um `Space` pessoal. Esse nome é um limite interno de dados; a primeira versão não oferece workspaces compartilhados nem memberships. Contatos, empresas e participantes de rateio são dados privados do dono, sem vínculo automático com usuários reais do sistema.
+O uso previsto é de uma conta por instalação. A estrutura relacional mantém `users` com PK convencional, sem restrição de linha única, e cada `User` possui um `Space` pessoal. Esse nome é um limite interno de dados; a primeira versão não oferece workspaces compartilhados nem memberships. Contatos, empresas e participantes de rateio são dados privados do dono, sem vínculo automático com usuários reais do sistema.
 
 Toda tabela de domínio contém `space_id` obrigatório. O servidor resolve esse valor por identidade autenticada; Jobs, arquivos, imports e respostas de IA não fornecem autoridade para mudá-lo. As relações entre dados escopados devem usar FKs compostas `(space_id, parent_id)` para pares `(space_id, id)` únicos, além das Policies. A PK continua `id` simples, compatível com Eloquent; não adotar PK composta no Model.
+
+A cardinalidade de uso não elimina FKs de propriedade, autoria ou relações entre módulos. Preservar `spaces.owner_user_id`, `user_preferences.user_id`, os `space_id` e as FKs de domínio já descritas. Policies, filas, busca e importação resolvem o proprietário explicitamente. Esses contratos preservam integridade mesmo com dados adicionais inseridos por manutenção ou testes.
 
 ## Campos e tipos comuns
 

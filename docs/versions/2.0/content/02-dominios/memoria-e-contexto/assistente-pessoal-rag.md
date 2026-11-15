@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, domínio, IA
 related: ia-e-memoria, diario, lugares-checkins, financas, veiculos, modelo-de-dados, migration-12-ai, componentes-tecnicos, fases-2-0, decisoes-e-pendencias
 source_refs: https://platform.openai.com/docs/guides/embeddings, https://github.com/pgvector/pgvector
-updated: 2026-11-08
+updated: 2026-11-15
 ---
 
 ## Visão
@@ -27,6 +27,16 @@ O assistente não ganha acesso irrestrito ao banco. Ele recebe ferramentas e fon
 | 4. Assistência proativa | Resumos, lembretes ou sugestões iniciados por preferências configuradas pela pessoa. | Opt-in separado, frequência/quiet hours, explicação da origem, controle de custo e desligamento fácil. |
 
 Voz, automação em segundo plano e ações autônomas ficam como decisões futuras separadas. A visão de assistente não autoriza monitoramento contínuo, captura de localização extra, execução financeira ou envio de mensagens sem um fluxo próprio aprovado.
+
+## E-mail e escrita assistida — possibilidade em avaliação
+
+Usar o [Overlook](https://github.com/last-refuge/overlook) como referência de experiência e comportamento. Os padrões selecionados de leitura, composição, sincronização e envio estão registrados em [UI e UX](doc:ui-ux-2-0).
+
+O usuário usa Gmail e considera conectar sua caixa ao James para leitura, resumo de conversas e auxílio na escrita. Planejar a conexão Gmail como autorização da caixa a partir da conta pessoal do James. O desenho detalhado de sincronização, permissões, credenciais, retenção e tratamento de anexos será fechado ao desenvolver essa integração.
+
+Um pedido de rascunho pode usar a conversa de e-mail, orientações dadas pela pessoa e entradas de diários selecionados. [Diários](doc:diario) define autorização independente para referência de estilo e para conteúdo pessoal. A recuperação filtra por diário, finalidade, entrada/período e revisão antes de montar o contexto. Mostrar as fontes em painel privado de revisão e usar somente as informações pertinentes ao destinatário e ao pedido.
+
+O usuário revisa destinatários, assunto, texto e anexos e confirma o envio em ação própria. Registrar o rascunho e sua proveniência, respeitando a retenção configurada e protegendo o texto pessoal. Conteúdo de e-mails e anexos recebe o mesmo tratamento de fonte não confiável aplicado aos textos recuperados. Esta possibilidade amplia a escrita assistida futura, com implementação e sincronização da caixa ainda em avaliação.
 
 ## Como o RAG funcionaria
 

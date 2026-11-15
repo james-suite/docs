@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento, dados
 related: planejamento-2-0, migrations, modelo-de-dados, enums, arquitetura-2-0, componentes-tecnicos
 source_refs:
-updated: 2026-11-08
+updated: 2026-11-14
 ---
 
 ## `users`
@@ -16,7 +16,10 @@ updated: 2026-11-08
 | Campo ou grupo | Contrato |
 | --- | --- |
 | `Campos nativos` | Conservar autenticação e segurança fornecidas pelo starter kit escolhido em 2027; não fixar schema desatualizado agora. |
-| `is_instance_admin` | boolean false; administração operacional de contas, sem acesso automático aos dados pessoais. |
+| `onboarding_completed_at` | Timestamp nullable. Primeiro acesso exige revisão do perfil e definição de senha antes de liberar os módulos. |
+| `Cardinalidade` | PK convencional e múltiplas linhas permitidas no banco. O seeder de instalação cria um único usuário inicial, com criação idempotente e serializada. |
+
+O proprietário da instalação executa as operações administrativas. O escopo atual dispensa papéis e flag de administrador. O bootstrap e o primeiro acesso seguem [Arquitetura do James](doc:arquitetura-2-0).
 
 ## `user_preferences`
 
@@ -24,7 +27,7 @@ updated: 2026-11-08
 | --- | --- |
 | `user_id` | FK users, única. |
 | `locale` | Identificador validado de apresentação, com fallback na configuração da instalação. O contexto regional compartilha esse valor com Number, Carbon e frontend. Moeda padrão e fuso de negócio têm fonte canônica em spaces.currency/timezone. |
-| `capture_location_on_save` | Boolean false por padrão, por ser um dado sensível num sistema multiusuário; ao ativar, tenta capturar uma posição do navegador em cada mutação manual no site. A permissão do navegador continua obrigatória. Ausência, recusa ou timeout curto não bloqueiam nem atrasam indefinidamente o salvamento. |
+| `capture_location_on_save` | Boolean false por padrão, por ser um dado sensível pessoal; ao ativar, tenta capturar uma posição do navegador em cada mutação manual no site. A permissão do navegador continua obrigatória. Ausência, recusa ou timeout curto não bloqueiam nem atrasam indefinidamente o salvamento. |
 
 ## `cache / jobs / failed_jobs / sessions`
 
