@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: tags, cartoes, acertos, notificacoes, veiculos, produtos-precos, migracao-2-0, componentes-tecnicos, assistente-pessoal-rag
 source_refs: https://tuffui.com/components, https://github.com/last-refuge/overlook, https://easyui.site/components
-updated: 2026-11-15
+updated: 2026-11-25
 ---
 
 ## Linguagem do produto
@@ -22,6 +22,23 @@ Outros produtos, inclusive SGE e TuffUI, podem inspirar organização, hierarqui
 Form Objects, validação, uploads temporários, propriedades computadas, paginação e estados de carregamento usam os recursos do Livewire descritos em [Ecossistema Laravel](doc:ecossistema-laravel). Avaliar lazy loading e navegação aprimorada por tela, com ciclo de vida explícito dos widgets JavaScript e preservação dos rascunhos.
 
 O histórico oferece reversão seletiva por campo ou seleção de campos de uma edição, com prévia de valores atuais/anteriores, conflitos e confirmação. Elegibilidade e correções de domínio seguem [Auditoria e histórico](doc:auditoria-2-0).
+
+## Operação completa por teclado
+
+O James 2.0 no desktop deve ser integralmente operável somente via teclado — navegação entre módulos, filtros, tabelas, formulários densos, seletores, modais e ações rápidas não podem exigir mouse. O padrão adotado é o modelo **híbrido** (Command Palette + sequências `G` + inicial + teclas contextuais) apoiado sobre a base de acessibilidade WAI-ARIA.
+
+| Camada | Padrão | Comportamento |
+| --- | --- | --- |
+| Base acessível (WAI-ARIA) | `Tab`, `Shift+Tab`, setas, `Enter`, `Space`, `Esc` | Ordem lógica de foco, foco sempre visível, focus trap em modais/drawers com retorno ao elemento de origem e navegação por setas em tabelas, abas, menus e seletores (`PartyPicker`, `TagPicker`, `CategoryPicker`). |
+| Atalhos globais | `Ctrl/Cmd+K`, `Esc`, `Ctrl/Cmd+Enter`, `Ctrl/Cmd+Shift+Enter` | Funcionam em qualquer contexto, inclusive com o cursor em campos de texto: `Ctrl/Cmd+K` abre a Command Palette (busca global via Scout/Meilisearch, troca de módulo e ações rápidas); `Esc` fecha overlays, limpa seleção ou tira foco do campo; `Ctrl/Cmd+Enter` envia o formulário ativo; `Ctrl/Cmd+Shift+Enter` salva e abre novo registro quando a tela suportar lançamento em sequência. |
+| Navegação entre telas ("Go to") | `G` + inicial do nome exibido na interface | Sequência de duas teclas sem modificadores, usando a inicial do rótulo visível da tela (por exemplo, `G D` para Dashboard, `G F` para Finanças, `G C` para Cartões, `G A` para Acertos). Conflitos de inicial são resolvidos explicitamente no registro central ou delegados à Command Palette. |
+| Ações contextuais da tela | `/`, `N` ou `C`, `J`/`K`, `Enter`, `E`, `?` | Disparam somente fora de `input`, `textarea`, `select` ou áreas editáveis: `/` foca busca/filtro da tela; `N`/`C` cria novo registro no módulo atual; `J`/`K` (espelhando `↓`/`↑`) percorre listas e tabelas; `Enter` abre e `E` edita o item focado; `?` abre o mapa de atalhos da tela atual. |
+
+### Regras de implementação e descoberta
+
+- **Registro central de atalhos:** manter um mapa único em JavaScript/Alpine para declarar escopos (global, tela, modal) e impedir colisões entre módulos.
+- **Respeito ao navegador e ao sistema operacional:** evitar atalhos que colidam com ações nativas do navegador (`Ctrl+T/W/N/R/L/F`) ou com acentuação e gerenciadores de janela (`Alt + letra`).
+- **Descoberta progressiva:** exibir dicas discretas de tecla (*Key Hints*) em botões, menus e na Command Palette, além da ajuda contextual em `?`.
 
 ## Referências visuais
 

@@ -8,7 +8,7 @@ visibility: public
 tags: james/2.0, planejamento
 related: planejamento-2-0, modelo-de-dados, fases-2-0, migracao-2-0, assistente-pessoal-rag, saude-treinos, migration-19-health
 source_refs:
-updated: 2026-11-14
+updated: 2026-11-25
 ---
 
 ## Confirmado pelo usuário
@@ -44,6 +44,7 @@ updated: 2026-11-14
 - Permitir vários diários criados livremente, com entradas vinculadas por FK. Textos selecionados podem orientar estilo e conteúdo de rascunhos assistidos, com autorizações independentes por diário e revisão das fontes. O usuário usa Gmail e considera integração de leitura/escrita assistida como possibilidade futura.
 - Investimentos devem usar dados e integrações gratuitas. Propor posições por ativo, quantidade e custo, com atualização de cotações, alternativa manual/importação e integração financeira sem dupla contagem, conforme [Patrimônio e bens](doc:patrimonio).
 - Quero guardar documentos pessoais como comprovantes, escrituras e certidões. Uploads feitos nos outros módulos devem ser localizáveis numa área de documentos; fotos entram como anexos quando necessário, sem tornar galeria de fotos o objetivo.
+- A versão 2.0 deve ser totalmente operável somente via teclado no desktop, adotando o padrão híbrido de atalhos (Command Palette em `Ctrl/Cmd+K`, sequências `G` + inicial do nome exibido da tela, teclas contextuais fora de inputs e base WAI-ARIA), conforme [UI e UX](doc:ui-ux-2-0).
 
 O histórico deve permitir propor reversão somente dos campos alterados em uma edição, inclusive seleção por linha, preservando outros atributos atuais. Prévia, conflitos posteriores, autorização e encaminhamento a correções financeiras seguem [Auditoria e histórico](doc:auditoria-2-0).
 
