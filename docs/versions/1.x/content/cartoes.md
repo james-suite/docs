@@ -26,6 +26,7 @@ O módulo de **Cartões de Crédito** gerencia limites, datas de vencimento/fech
 | `credit_limit` | decimal | Limite de crédito disponível. |
 | `closing_day` | integer | Dia padrão de fechamento da fatura (Ex: 7). |
 | `due_day` | integer | Dia padrão de vencimento da fatura (Ex: 2). |
+| `archived_at` | timestamp | Data de arquivamento do cartão (oculto de seletores de novas compras, preservando faturas e histórico). |
 | `deleted_at` | timestamp | Soft deletes (Lixeira). |
 
 ### `financial_credit_card_invoices`
@@ -85,6 +86,8 @@ Quando o pagamento total é confirmado:
 2. Caso informado valor de **Juros**, uma transação extra de juros é gerada aplicando a tag protegida `Juros`.
 3. Todas as transações atreladas à fatura têm seu status alterado para `TransactionStatus::Posted` (`posted`), consolidando o fluxo financeiro.
 
-### Exclusão (Soft Deletes)
+### Arquivamento e Exclusão (Soft Deletes)
+
+Cartões encerrados podem ser arquivados (`PATCH /financial/cards/{card}/archive`) e reativados (`PATCH /financial/cards/{card}/unarchive`). Antes de arquivar, um modal exibe avisos caso existam faturas em aberto ou recorrências vinculadas. Cartões arquivados saem da listagem ativa e dos seletores de novas compras, mas continuam acessíveis pelo filtro de arquivados preservando faturas e histórico.
 
 Cartões não podem ser excluídos permanentemente (`forceDelete`) se possuírem faturas ou transações ativas, garantindo a rastreabilidade contábil.

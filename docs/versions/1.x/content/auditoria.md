@@ -81,7 +81,15 @@ Ao abrir `/audit/{activity}`, o James normaliza os dados da atividade e mostra:
 
 O formatador trata arrays e objetos como JSON, datas com o timezone da aplicação, valores nulos como `null` e booleanos como `true`/`false`. Quando a entidade ainda está disponível, a tela tenta criar um link para seu registro.
 
-Em exclusões, o activity log pode guardar o estado anterior em `old` ou em `attributes`, dependendo do evento. O controller normaliza os dois formatos para que a tela mostre os dados que foram removidos.
+Em exclusões, o activity log pode guardar o estado anterior em `old` ou em `attributes`, dependendo do evento. O controller normaliza os dois formatos (incluindo fallback para `properties` em logs legados quando `attribute_changes` estiver vazio) para que a tela mostre os dados corretamente.
+
+## Reversão seletiva de campos
+
+Em eventos do tipo `updated` com valores anteriores (`old`), a tela `/audit/{activity}` exibe a coluna **Ação** permitindo reverter campos simples individualmente via `POST /audit/{activity}/revert`:
+
+- **Allowlist por entidade:** apenas atributos simples e seguros são elegíveis (por exemplo: `name`, `relationship_category`, `birthdate`, `notes`, `emails`, `phones` em `Contact`; `name`, `type`, `pix_keys`, `archived_at` em `FinancialAccount`; `name`, `credit_limit`, `archived_at` em `FinancialCreditCard`; `name`, `icon`, `color_hex` em `FinancialTag`; `description` em transações e acertos; `title`, `is_active`, `end_date` em recorrências). Campos financeiros críticos como `amount` e `status` permanecem bloqueados.
+- **Prévia e detecção de conflito:** o modal de confirmação mostra o valor atual do registro e o valor anterior que será restaurado, exibindo um alerta quando o campo já sofreu outra edição posterior ao evento analisado.
+- **Preservação do histórico:** a reversão aplica somente os campos selecionados em transação de banco, gera um novo evento `updated` no activity log e preserva intacto o registro original. Tags protegidas e registros enviados à lixeira não são elegíveis para reversão.
 
 ## Histórico dentro das telas
 

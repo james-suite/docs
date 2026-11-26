@@ -22,6 +22,7 @@ As **Contas Financeiras** são a origem e o destino de todas as movimentações 
 | `name` | string | Nome identificador (Ex: Nubank, Carteira, XP Investimentos). |
 | `type` | string | Enum `FinancialAccountType` (`checking`, `investment`, `wallet`). |
 | `pix_keys` | jsonb | Array contendo as chaves Pix cadastradas (para contas correntes). |
+| `archived_at` | timestamp | Data de arquivamento da conta (oculta de seletores de criação, preservando histórico e saldo). |
 | `deleted_at` | timestamp | Soft deletes (Lixeira). |
 
 ## Diagrama Relacional (ER)
@@ -35,7 +36,9 @@ O diagrama abaixo ilustra como a tabela de contas age como o pilar central do m�
 - **Tipos de Conta (`FinancialAccountType`):**
   - `Checking` (`Conta Corrente`): Contas bancárias de movimentação diária, com suporte a chaves Pix e pagamento de faturas de cartão.
   - `Investment` (`Investimentos`): Contas em corretoras ou carteiras de ativos (podem ser isoladas nos relatórios e saldo líquido do dashboard através do toggle de investimentos).
-  - `Wallet` (`Carteira / Dinheiro Físico`): Controle de dinheiro em espécie e valores não bancarizados.
+  - `Wallet` (`Dinheiro físico`): Controle de dinheiro em espécie e valores não bancarizados (mantém o valor `wallet` no banco).
+- **Autocomplete de Bancos (BrasilAPI):** No cadastro e edição de contas (exceto `Dinheiro físico`), o campo de nome oferece sugestões de instituições brasileiras via `GET /financial/accounts/banks` (proxy cacheado por 24h da BrasilAPI, com fallback gracioso e digitação livre caso o serviço esteja indisponível).
+- **Arquivamento (`archived_at`):** Contas encerradas podem ser arquivadas (`PATCH /financial/accounts/{financialAccount}/archive`) e reativadas (`PATCH /financial/accounts/{financialAccount}/unarchive`). Antes de arquivar, um modal alerta sobre saldo diferente de zero, cartões ativos e recorrências vinculadas. Contas arquivadas somem da listagem principal e dos seletores de novas operações, mas continuam acessíveis via filtro de arquivadas e mantêm histórico e saldo preservados.
 - **Exclusão Segura (Soft Deletes & Constraints):** Contas podem ser deletadas e enviadas à lixeira sem problemas. Contudo, a **exclusão permanente** (`forceDelete`) é estritamente bloqueada (tanto via aplicação quanto por `restrictOnDelete` no banco) se a conta possuir cartões de crédito, transações ou recorrências vinculadas.
 - **Ícones Dinâmicos (SSOT):** O Enum `FinancialAccountType` centraliza a inteligência de UI através do método `icon()`, garantindo a exibição do ícone correto de acordo com a natureza da conta.
 - **Chaves Pix:** O banco armazena via JSONB, e a interface reage ativando a adição de chaves exclusivamente quando o tipo selecionado for Conta Corrente.

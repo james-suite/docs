@@ -85,12 +85,12 @@ Uma divisão de conta cria um `SettlementGroup` para a despesa e um `Settlement`
 
 O fluxo exige ao menos um contato, não permite o mesmo contato duas vezes e oferece dois modos:
 
-- **Igual (`equal`)**: cada contato recebe a mesma parcela em centavos; a parte do usuário absorve eventual sobra do arredondamento.
-- **Exato (`exact`)**: cada participante e o usuário informam suas próprias partes.
+- **Igual (`equal`)**: divide o total igualmente entre os participantes ativos. Quando o usuário participa (`include_me = true`), cada contato recebe a mesma parcela em centavos e a parte do usuário absorve eventual sobra do arredondamento. Quando o usuário remove **Minha Parte** (`include_me = false`), sua cota fica em `0,00` e os centavos restantes são distribuídos de forma determinística entre os primeiros contatos.
+- **Exato (`exact`)**: cada participante e o usuário (quando incluído) informam suas próprias partes.
 
 Em ambos os modos, a soma da parte do usuário com as partes dos contatos precisa ser exatamente igual ao total da despesa. Valores dos contatos precisam ser positivos; a parte do usuário pode ser zero.
 
-Ao editar um grupo, o serviço atualiza os metadados e substitui os lançamentos filhos pelo novo rateio dentro de uma transação de banco. Um lançamento pertencente a grupo não pode ser editado ou excluído isoladamente; a edição deve ser feita no grupo.
+Tanto na criação quanto na edição de uma divisão (inclusive divisões antigas), é possível **adicionar ou remover participantes** — incluindo remover ou reincluir **Minha Parte** — com busca de contatos e recálculo automático no modo *Partes Iguais*. Ao editar um grupo, o serviço atualiza os metadados e substitui os lançamentos filhos pelo novo rateio dentro de uma transação de banco. Um lançamento pertencente a grupo não pode ser editado ou excluído isoladamente; a edição deve ser feita no grupo.
 
 ## Integração com Finanças
 
@@ -100,7 +100,7 @@ O formulário oferece **Criar transação no módulo financeiro**. Quando habili
 2. `they_paid` vira uma receita financeira; os demais tipos usam uma despesa financeira;
 3. um cartão resolve a fatura correspondente à data do lançamento;
 4. tags podem ser escolhidas para uma transação criada a partir de `i_paid`, com uma tag principal entre as selecionadas;
-5. uma divisão de conta cria uma despesa com um item `Minha Parte` e um item para cada contato, usando a tag protegida `Reembolso` nos itens dos participantes.
+5. uma divisão de conta cria uma despesa com um item `Minha Parte` (omitido quando `my_amount` é zero) e um item para cada contato, usando a tag protegida `Reembolso` nos itens dos participantes.
 
 A relação é mantida por `financial_transaction_id`. O acerto continua sendo o registro da relação pessoal; a transação é a representação no caixa.
 
